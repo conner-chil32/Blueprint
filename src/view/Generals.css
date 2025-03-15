@@ -3,6 +3,9 @@
 body {
     font-family: "Alexandria", sans-serif;
     background-color: #707070;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .generalText {
@@ -34,4 +37,46 @@ body {
     color: #000000;
     text-align: center;
     margin-top: 50px;
+}
+
+/*--Account forms stylings-->*/
+.account-box {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #c0c0c0;
+    font-family: "Alexandria", sans-serif;
+    box-sizing: border-box;
+}
+
+.submit-button {
+    font-family: "Alexandria", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    background-color: #404040;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 0;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
