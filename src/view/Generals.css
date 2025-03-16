@@ -31,6 +31,13 @@ body {
     
 }
 
+.loginContianer {
+    display: flex;
+    justify-content: center space-evenly;
+    align-items: center;
+    flex-direction: column;
+}
+
 .pageTitle{
     font-size: 20px;
     font-weight: 700;

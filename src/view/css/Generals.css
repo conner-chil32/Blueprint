@@ -9,6 +9,26 @@ body {
     font-family: "Alexandria", sans-serif;
 }
 
+.loginContainer {
+    /* Appearance */
+    background-color: hsl(0, 0%, 62%);
+    width: 45vw;
+    height: 75vh;
+    /* Positioning */
+    top: 70px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: auto;
+}
+
+/*Purely for development purposes 
+ensure to exlude any references to this*/
+.debug {
+    border-style: dotted;
+    border-color: red;
+}
+
 .logoStyle {
     /* Appearance */
     width: 50px;
