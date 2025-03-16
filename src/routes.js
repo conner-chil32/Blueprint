@@ -11,7 +11,7 @@ function registerRoutes(app) {
     app.use(express.static(path.join(__dirname, 'view')));
 
     //TODO: SCRUM-47'S tasks for routing will mainly be implemented here
-
+    
     //  !!!     ROUTES     !!!
     app.get('/', (req, res) => {
         console.log('GET / sending ./res/index.html');
