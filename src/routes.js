@@ -30,6 +30,11 @@ function registerRoutes(app) {
         res.sendFile('./view/UserWebBackend.html', { root: __dirname });
     });
 
+    app.get('/login', (req, res) => {
+        console.log('GET /login sending ./res/login.html');
+        res.sendFile('./view/Login.html', { root: __dirname });
+    });
+
 }
 
 module.exports = {
