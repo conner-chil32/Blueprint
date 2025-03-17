@@ -52,6 +52,12 @@ function registerRoutes(app) {
         res.sendFile('./view/Login.html', { root: __dirname });
     });
 
+    // Pricing page
+    app.get('/Pricing', (req, res) => {
+        console.log('GET /Pricing sending ./res/pricing.html');
+        res.sendFile('./view/pricing.html', { root: __dirname });
+    });
+
 }
 
 module.exports = {
