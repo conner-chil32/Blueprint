@@ -30,6 +30,12 @@ function registerRoutes(app) {
         res.sendFile('./view/UserWebBackend.html', { root: __dirname });
     });
 
+    // Acount Creation Page
+    app.get('/Account-Creation', (req, res) => {
+        console.log('GET /Account-Creation sending ./res/Account-Creation.html');
+        res.sendFile('./view/Account-Creation.html', { root: __dirname });
+    });
+
     app.get('/login', (req, res) => {
         console.log('GET /login sending ./res/login.html');
         res.sendFile('./view/Login.html', { root: __dirname });
