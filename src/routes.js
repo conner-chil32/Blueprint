@@ -58,6 +58,12 @@ function registerRoutes(app) {
         res.sendFile('./view/Pricing.html', { root: __dirname });
     });
 
+    // Features page
+    app.get('/Features', (req, res) => {
+        console.log('GET /Features sending ./res/features.html');
+        res.sendFile('./view/features.html', { root: __dirname });
+    });
+
     app.get('/portal', (req, res) => {
         console.log('GET /portal sending ./res/user_portal.html');
         res.sendFile('./view/user_portal.html', { root: __dirname });
