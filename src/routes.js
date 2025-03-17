@@ -57,6 +57,10 @@ function registerRoutes(app) {
         res.sendFile('./view/user_portal.html', { root: __dirname });
     });
 
+    app.get('/canvas', (req, res) => {
+        console.log('GET /canvas sending ./res/canvas.html');
+        res.sendFile('./view/canvas.html', { root: __dirname });
+    });
 }
 
 module.exports = {
