@@ -30,10 +30,16 @@ function registerRoutes(app) {
         res.sendFile('./view/UserWebBackend.html', { root: __dirname });
     });
 
+
     // Account Recovery backend
     app.get('/Account-Recovery', (req, res) => {
         console.log('GET /Account-Recovery sending ./res/Account-Recovery.html');
         res.sendFile('./view/Account-Recovery.html', { root: __dirname });
+
+    // Admin Page backend
+    app.get('/Admin-Page', (req, res) => {
+        console.log('GET /Admin-Page sending ./res/Admin-Page.html');
+        res.sendFile('./view/Admin-Page.html', { root: __dirname });
     });
 
     app.get('/login', (req, res) => {
