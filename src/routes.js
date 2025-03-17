@@ -51,13 +51,23 @@ function registerRoutes(app) {
         console.log('GET /login sending ./res/login.html');
         res.sendFile('./view/Login.html', { root: __dirname });
     });
-
+  
     // Pricing page
     app.get('/Pricing', (req, res) => {
         console.log('GET /Pricing sending ./res/Pricing.html');
         res.sendFile('./view/Pricing.html', { root: __dirname });
     });
 
+    app.get('/portal', (req, res) => {
+        console.log('GET /portal sending ./res/user_portal.html');
+        res.sendFile('./view/user_portal.html', { root: __dirname });
+    });
+
+    app.get('/canvas', (req, res) => {
+        console.log('GET /canvas sending ./res/canvas.html');
+        res.sendFile('./view/canvas.html', { root: __dirname });
+    });
+  
 }
 
 module.exports = {
