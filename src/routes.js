@@ -54,8 +54,8 @@ function registerRoutes(app) {
 
     // Pricing page
     app.get('/Pricing', (req, res) => {
-        console.log('GET /Pricing sending ./res/pricing.html');
-        res.sendFile('./view/pricing.html', { root: __dirname });
+        console.log('GET /Pricing sending ./res/Pricing.html');
+        res.sendFile('./view/Pricing.html', { root: __dirname });
     });
 
 }
