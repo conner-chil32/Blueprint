@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Top Menu Bar */
+        .top-menu {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-bottom: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+
+        .menu-items {
+            display: flex;
+            gap: 20px;
+        }
+
+        .menu-items span {
+            cursor: pointer;
+            color: #555;
+            font-size: 14px;
+            padding: 4px 8px;
+        }
+
+        .menu-items span:hover {
+            color: #007bff;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+
+        /* Account Dropdown */
+        .account-menu {
+            position: relative;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Main Content Area */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            border-right: 1px solid #ddd;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            background-color: #fff;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .category-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #444;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .category-item.active {
+            background-color: #e9ecef;
+            border-left: 3px solid #007bff;
+            font-weight: 500;
+        }
+
+        .category-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            flex: 1;
+            background-color: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-menu">
+        <div class="menu-items">
+            <span onclick="handleFile()">File</span>
+            <span onclick="handleEdit()">Edit</span>
+            <span onclick="handleUndo()">Undo</span>
+            <span onclick="handleRedo()">Redo</span>
+        </div>
+        
+        <div class="account-menu">
+            <div class="dropdown">
+                <span class="category-item">Account ▼</span>
+                <div class="dropdown-content">
+                    <div class="dropdown-item" onclick="handleProfile()">Profile</div>
+                    <div class="dropdown-item" onclick="handleSettings()">Settings</div>
+                    <div class="dropdown-item" onclick="handleLogout()">Logout</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        
+        <div class="sidebar">
+            <div class="categories">
+                <div class="section-title">Templates</div>
+                <button class="category-item active">Website Templates</button>
+                <button class="category-item">Blog Templates</button>
+            </div>
+
+            <div class="categories">
+                <div class="section-title">Text</div>
+                <button class="category-item">Headings</button>
+                <button class="category-item">Paragraphs</button>
+            </div>
+
+            <div class="categories">
+                <div class="section-title">Elements</div>
+                <button class="category-item">Buttons</button>
+                <button class="category-item">Forms</button>
+                <button class="category-item">Images</button>
+            </div>
+        </div>
+
+        <div class="canvas-area">
+            Drag elements here to build your page
+        </div>
+    </div>
+
+        // Placeholder functions for future
+    <script>
+        // Menu Functions
+        function handleFile() {
+            alert('File menu selected');
+        }
+
+        function handleEdit() {
+            alert('Edit menu selected');
+        }
+
+        function handleUndo() {
+            alert('Undo action performed');
+        }
+
+        function handleRedo() {
+            alert('Redo action performed');
+        }
+
+        // Account Functions
+        function handleProfile() {
+            alert('Navigating to Profile');
+        }
+
+        function handleSettings() {
+            alert('Opening Settings');
+        }
+
+        function handleLogout() {
+            alert('Logging out...');
+        }
+
+        // Dropdown Handling
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.querySelector('.dropdown-content').classList.toggle('show');
+            });
+        });
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown')) {
+                document.querySelectorAll('.dropdown-content').forEach(content => {
+                    content.classList.remove('show');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
