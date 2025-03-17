@@ -52,6 +52,11 @@ function registerRoutes(app) {
         res.sendFile('./view/Login.html', { root: __dirname });
     });
 
+    app.get('/portal', (req, res) => {
+        console.log('GET /login sending ./res/user_portal.html');
+        res.sendFile('./view/user_portal.html', { root: __dirname });
+    });
+
 }
 
 module.exports = {
