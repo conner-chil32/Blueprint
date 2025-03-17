@@ -30,12 +30,17 @@ function registerRoutes(app) {
         res.sendFile('./view/UserWebBackend.html', { root: __dirname });
     });
 
-
+    // Acount Creation Page
+    app.get('/Account-Creation', (req, res) => {
+        console.log('GET /Account-Creation sending ./res/Account-Creation.html');
+        res.sendFile('./view/Account-Creation.html', { root: __dirname });
+    });
+  
     // Account Recovery backend
     app.get('/Account-Recovery', (req, res) => {
         console.log('GET /Account-Recovery sending ./res/Account-Recovery.html');
         res.sendFile('./view/Account-Recovery.html', { root: __dirname });
-
+    });
     // Admin Page backend
     app.get('/Admin-Page', (req, res) => {
         console.log('GET /Admin-Page sending ./res/Admin-Page.html');
