@@ -30,7 +30,7 @@ function index() {
  *  developing.
  */
 function constructServer(app) {
-
+    
     //retrieves the port from the environment variable PORT or defaults to 4000
     const port = process.env.PORT ? process.env.PORT : 4000;
 

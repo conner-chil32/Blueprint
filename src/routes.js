@@ -1,4 +1,3 @@
-
 /**
  * Registers all routes for the app
  * @param {Express} app - The express app to register the routes on
@@ -9,6 +8,10 @@ const path = require('path');
 
 function registerRoutes(app) {
     app.use(express.static(path.join(__dirname, 'view')));
+
+    // Tell 'path' to use both of the Spot files
+    app.use('/src/SpotFront.js', express.static(path.join(__dirname, 'SpotFront.js')));
+    app.use('/src/SpotBack.js', express.static(path.join(__dirname, 'SpotBack.js')));
 
     //TODO: SCRUM-47'S tasks for routing will mainly be implemented here
 
