@@ -1,10 +1,11 @@
-const express = require('express');
-const path = require('path');
-
 /**
  * Registers all routes for the app
  * @param {Express} app - The express app to register the routes on
  */
+
+const express = require('express');
+const path = require('path');
+
 function registerRoutes(app) {
     app.use(express.static(path.join(__dirname, 'view')));
 
