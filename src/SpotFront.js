@@ -1,7 +1,7 @@
 /**
  * Spot file for containing universal variables.
  * 
- * These variables will be publicly available, anything that could compromise
+ * These variables could be publicly available, anything that could compromise
  * privacy or security should not be in here.
  * 
  * INSTRUCTIONS FOR ADDING VARIABLES:
@@ -14,12 +14,18 @@
  * make one if there isn't one already. Any value you assign to it will be 
  * the default value.
  * Then, when you want to use said variable: var(--name-here);
+ * Important: In the relevant html file, add this link:
+ * <script src='src/Spot.js'></script>
+ * 
+ * This is for front end variables.
  */
+
+console.log("Spot file loaded.");
 
 /* ----- CSS Variables ----- */
 // Listen for when the CSS files are instantiated
 document.addEventListener('DOMContentLoaded', () =>{
-    console.log("Spot file loaded.");
+    console.log("CSS globals loaded.");
 
     // Background
     document.documentElement.style.setProperty('--background-color', '#707070');

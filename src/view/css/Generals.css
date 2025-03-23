@@ -5,7 +5,7 @@
 
 /* Global variables from the Spot.js file */
 :root {
-    --background-color: rgb(102, 102, 102); /* Warning value, means the import is not working */
+    --background-color: rgb(175, 175, 175); /* Warning value, means the import is not working */
     --global-font: 'OpenDyslexic';
     --lime-green: #72D360;
     --dark-grey: #282828;
