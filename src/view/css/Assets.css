@@ -152,7 +152,7 @@ ensure to exlude any references to this*/
     cursor: pointer;
     transition: background-color 0.3s;
 }
-/*For features page header info*/
+/*For features page*/
 .features-page-container {
     display: flex;
     flex-direction: column;
@@ -177,8 +177,9 @@ ensure to exlude any references to this*/
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 20px;
-    align-self: flex-end;
-    margin-right: 50px;
+    align-self: flex-start;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .features-grid {
