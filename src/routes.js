@@ -76,7 +76,12 @@ function registerRoutes(app) {
         console.log('GET /canvas sending ./res/canvas.html');
         res.sendFile('./view/canvas.html', { root: __dirname });
     });
-  
+
+    //First time user (FTU) page
+    app.get('/FTU-main', (req, res) => {
+        console.log('GET /FTU-Main sending ./res/FTU-Main.html');
+        res.sendFile('./view/FTU-Main.html', { root: __dirname });
+    });
 }
 
 module.exports = {
