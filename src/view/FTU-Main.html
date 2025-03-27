@@ -10,8 +10,9 @@
     <link rel='stylesheet' type='text/css' href='css/Generals.css'>
     <link rel='stylesheet' type='text/css' href='css/Assets.css'>
 </head>
+
 <body>
-    <div class="TopBar">
+    <div class="topBarBackground TopBar-Main">
         <a href="index.html">
             <img title="Logo" src="Blueprint_trans.png">
         </a>
@@ -26,80 +27,110 @@
                 <button>Login</button>
             </a>
         </div>
-
     </div>
 
     <div class="content">
-        <h1>Get started on your website!</h1>
+        <h1>Get Started On <br> Your Website!</h1>
         <p>With Blueprint, you will be on your way to creating your dream website in no time.</p>
-    </div>
-
-    <div class="button-container">
+    
         <a href="canvas.html">
-            <button class="create-button">Create New Website</button>
+            <button class="createButton">Create New Website<br><b>+</b></button>
         </a>
     </div>
-
 </body>
 
 <style>
-    .TopBar {
-    display: flex;
-    align-items: center; /* Vertically aligns items */
-    gap: 70px; /* Space between items */
-    max-width: calc(100% - 8px); /* removes extra gap on the right side */
-    margin-left: auto;
-    margin-right: auto;
-
-    img {
-        /* Appearance */
-        width: 50px;
-        height: 50px;
-    }
-
-    button {
-        /* Fonts */
-        font-size: 15px;
-        font-weight: 400;
+    /* For top bar with buttons linking to features, pricing, and login*/
+    .TopBar-Main {
+        display: flex;
+        align-items: center;
+        gap: 70px; /* Space between items */
         
-        border-radius: var(--border-weight);
-
-        /* Button scalars */
-        width: 110px;
-        height: 45px;
-    }
-
-    #loginButton {
-        margin-left: auto;
-        margin-right: 2%;
-        
-    }
-}
-
-    body {
-        text-align: center;
-        display: inline;
         margin-right: 0px;
+
+        /* For the logo in top bar*/
+        img {
+            /* Appearance */
+            padding-left: 10px;
+            width: 50px;
+            height: 50px;
+        }
+
+        /* For all buttons in top bar*/
+        button {
+            /* Fonts */
+            font-size: 15px;
+            font-weight: 400;
+            
+            border-radius: var(--border-weight);
+
+            /* Button scalars */
+            width: 110px;
+            height: 45px;
+        }
+
+        button:hover{
+            cursor: pointer;
+        }
+
+        /* Moves login button to the right*/
+        #loginButton {
+            margin-left: auto;
+            margin-right: 2%;
+            
+        }
+       
     }
 
+    /* Vertically aligns title, subtitle, and create website button*/
+    body {
+        text-align: left;
+        display: inline;
+    }
+
+    /*Handles the content in the body of the page, outside of top bar*/
     .content {
-        margin-top: 80px;
-        /* Space below TopBar */
+        margin-left: 30px;
+        margin-top: 100px;
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-radius: 40px;
+        background-color: rgba(255, 255, 255, 0.568);
+        
+        padding-left: 30px;
+        max-width: 1700px;
+        min-width: 500px;
+        width: 90%; /*scales within the max and minrange */
+
+        /* Title: "Get started..." */
+        h1{
+            font-size: 70px;
+            padding-top: 30px;
+        }
+
+        /* Subtitle: "With Blueprint..." */
+        p {
+            font-size: 50px;
+            max-width: 1000px;
+        }
     }
 
-    .button-container {
-        margin-top: 20px;
-    }
-
-    .create-button {
+    /* Create a website button*/
+    .createButton {
         padding: 10px 20px;
-   
-        border: none;
-        border-radius: 5px;
+        border: dashed black;
+        border-width: 7px;
+        background:var(--background-color) ;
+        height: calc(100vh - 75vh);
+        border-radius: 20px;
+        width: 90%; 
+        font-size: 50px;
+        line-height: 80px;
     }
 
-    .create-button:hover {
-        background-color: #0056b3;
+    .createButton:hover {
+        background-color: var(--light-blue);
+        cursor: pointer;
     }
 </style>
 
