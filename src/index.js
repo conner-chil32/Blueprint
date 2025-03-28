@@ -5,8 +5,14 @@ function index() {
     //imports the express module
     const express = require('express');
 
+    // Initialize cookie-parser
+    const cookieParser = require('cookie-parser');
+
     //holds all actions for the server
     const app = express();
+
+    // Apply the cookie parser to the app
+    app.use(cookieParser());
     
     //contains the routes for our web server
     const routes = require('./routes');
@@ -30,7 +36,7 @@ function index() {
  *  developing.
  */
 function constructServer(app) {
-
+    
     //retrieves the port from the environment variable PORT or defaults to 4000
     const port = process.env.PORT ? process.env.PORT : 4000;
 

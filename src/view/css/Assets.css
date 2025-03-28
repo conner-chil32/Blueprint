@@ -1,3 +1,12 @@
+/* Global variables from Spot.js */
+:root {
+    --border-weight: 20px; /* Default is 20 */
+    --lime-green: #72D360;
+    --dark-grey: #282828;
+    --dark-blue: #1E4356;
+    --light-blue: #099CAC;
+}
+
 /*Purely for development purposes 
 ensure to exlude any references to this*/
 .debug {
@@ -11,7 +20,7 @@ ensure to exlude any references to this*/
     font-weight: 400;
 
     /* Button Appearance */
-    border-radius: 20px;
+    border-radius: var(--border-weight);
 
     /* Button scalars, Doubled sizes from original generals.css*/
     width: 200px;
@@ -57,7 +66,7 @@ ensure to exlude any references to this*/
 
 .generalButton {
     /* Button Appearance */
-    border-radius: 20px;
+    border-radius: var(--border-weight);
 }
 
 .topBarBackground {
@@ -76,7 +85,7 @@ ensure to exlude any references to this*/
 
 .logoutButton {
     /* Fonts */
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 400;
     /* Button scalars */
     width: 110px;
@@ -126,12 +135,12 @@ ensure to exlude any references to this*/
     padding: 12px;
     border-radius: 10px;
     border: 1px solid #c0c0c0;
-    font-family: "Alexandria", sans-serif;
+    font-family: var(--global-font), sans-serif;
     box-sizing: border-box;
 }
 
 .submit-button {
-    font-family: "Alexandria", sans-serif;
+    font-family: var(--global-font), sans-serif;
     font-size: 16px;
     font-weight: 600;
     background-color: #404040;
@@ -142,4 +151,58 @@ ensure to exlude any references to this*/
     width: 100%;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+/*For features page*/
+.features-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.features-header-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+/* For features list */
+.features-section {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto; 
+    width: 100%;
+}
+
+.features-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    align-self: flex-start;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-left: auto; 
+    max-width: 1000px;
+}
+
+.feature-card {
+    background-color: white;
+    border-radius: 8px;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 15px;
+}
+
+.feature-text {
+    font-size: 16px;
+    font-weight: normal;
 }
