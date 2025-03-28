@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/conner-chil32/Blueprint#readme",
   "dependencies": {
+    "blueprint": "file:",
     "express": "^4.21.2"
   }
 }
