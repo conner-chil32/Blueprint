@@ -152,3 +152,57 @@ ensure to exlude any references to this*/
     cursor: pointer;
     transition: background-color 0.3s;
 }
+/*For features page*/
+.features-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.features-header-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+/* For features list */
+.features-section {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto; 
+    width: 100%;
+}
+
+.features-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    align-self: flex-start;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-left: auto; 
+    max-width: 1000px;
+}
+
+.feature-card {
+    background-color: white;
+    border-radius: 8px;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 15px;
+}
+
+.feature-text {
+    font-size: 16px;
+    font-weight: normal;
+}
