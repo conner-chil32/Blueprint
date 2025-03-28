@@ -28,13 +28,13 @@ function registerRoutes(app) {
 
         if (tempCookie === 'loggedIn') {
             // If the user is logged in, send them to the user portal.
-            console.log('GET /portal sending ./res/user_portal.html');
-            res.sendFile('./view/user_portal.html', { root: __dirname });
+            console.log('GET /FTU-Main sending ./res/FTU-Main.html');
+            res.sendFile('./view/FTU-Main.html', { root: __dirname });
             
         } else if (tempCookie === 'loggedAgain') {
-            // If the user has logged in before (TEMP LOGIC), send them to ProjectView
-            console.log('GET /ProjectView sending ./res/ProjectView.html');
-            res.sendFile('./view/ProjectView.html', { root: __dirname });
+            // If the user has logged in before (TEMP LOGIC), send them to ProjectView;
+            console.log('GET /portal sending ./res/user_portal.html');
+            res.sendFile('./view/user_portal.html', { root: __dirname });
 
         } else {
             // Otherwise, send them to the features page
