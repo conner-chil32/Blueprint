@@ -65,9 +65,31 @@
 		td{ font-size: 50px; } 
 	</style>
 <!-- things that need to be changed can be overloaded from the stuff in Assets.css -->
+
+	<script>
+/* websiteAmount will have to be filled with a function that finds how many websites a user has on their account */
+		const websiteAmount = 1;
+
+		function siteCheck(){	//if no sites have been created go to FTU-Main.html
+			if(websiteAmount < 1){ 
+				window.location.href = "./FTU-Main.html"; 
+			}
+			else{
+				//code that builds a table in a for loop to build as many tables as are required
+			}
+		}
+
+	</script>
+
+	
 </head>
 
 <body>
+<!--		<a href='#' onload="siteCheck"></a>	this does not work-->
+	<script>siteCheck();</script>
+<!--		This works, just need to pull it from the js file instead of hardcoding it in the html	-->	
+
+
 	<img class="topBarBackground"/> 
 	<div class="nav bar">
 		<a href="./index.html">
@@ -88,14 +110,14 @@
 		<h class="largeTitleText">Welcome</h> 
 		<h class="mediumTitleText">Your Websites<h1> 
 	</div>
-<!-- javascript if statement that jumps to the FTU page if websites = 0 -->
+<!-- javascript if statement that jumps to "./FTU-Main.html" if websites = 0 -->
 	<div id="websites">
 <!-- dynamically build a number of this same thing in js -->
 		<table>
 			<tr>
 				<th rowspan="3" align="center">Website Preview image</th> <!-- this might need to be a js image -->
 				<td>Statistics</td>
-				<td ><a href="./canvas.html">
+				<td ><a href="./canvas.html"> <!-- <td button onclick="<function name>()">button here</button> -->
 					<button class="linkButton generalButton" class="generalText">
 						Website</button></a></td> <!--on click button that goes to client's site-->
 			</tr>
