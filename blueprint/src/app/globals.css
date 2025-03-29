@@ -1,0 +1,262 @@
+@import "tailwindcss";
+
+/* Global variables from Spot.js */
+:root {
+  --border-weight: 20px; /* Default is 20 */
+  --lime-green: #72D360;
+  --dark-grey: #282828;
+  --dark-blue: #1E4356;
+  --light-blue: #099CAC;
+}
+
+/*ensure to exlude any references to the css class .debug*/
+.debug {
+  border-style: dotted;
+  border-color: red;
+}
+
+.homeButton {
+  /* Fonts */
+  font-size: 15px;
+  font-weight: 400;
+
+  /* Button Appearance */
+  border-radius: var(--border-weight);
+
+  /* Button scalars, Doubled sizes from original generals.css*/
+  width: 200px;
+  height: 70px;
+
+  /* Positioning */
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.logoStyle {
+  /* Appearance */
+  width: 50px;
+  height: 50px;
+  /* Positioning */
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}
+
+.largeTitleText {
+  /* Fonts */
+  font-size: 70px;
+  font-weight: 700;
+  color: white;
+  /* Positioning */
+  position: fixed;
+  left: 30px;
+  top: 40px;
+}
+
+.mediumTitleText {
+  /* Fonts */
+  font-size: 30px;
+  font-weight: 500;
+  color: white;
+  /* Positioning */
+  position: fixed;
+  left: 30px;
+  top: 150px;
+}
+
+.generalButton {
+  /* Button Appearance */
+  border-radius: var(--border-weight);
+}
+
+.topBarBackground {
+  /* Appearance */
+  background-color: #282828;
+  /* Positioning */
+  width: 100%;
+  height: 70px;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.logoutButton {
+  /* Fonts */
+  font-size: 15px;
+  font-weight: 400;
+  /* Button scalars */
+  width: 110px;
+  height: 45px;
+  /* Positioning */
+  position: fixed;
+  top: 13px;
+  right: 15px;
+}
+
+.loginContianer {
+  display: flex;
+  justify-content: center space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
+.pageTitle{
+  font-size: 20px;
+  font-weight: 700;
+  color: #000000;
+  text-align: center;
+  margin-top: 50px;
+}
+
+/*--Account forms stylings-->*/
+.account-box {
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 30px;
+  width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #c0c0c0;
+  font-family: var(--global-font), sans-serif;
+  box-sizing: border-box;
+}
+
+.submit-button {
+  font-family: var(--global-font), sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #404040;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 15px 0;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic3-Regular.ttf') format('truetype');
+}
+
+/* Global variables from the Spot.js file */
+:root {
+  --background-color: rgb(175, 175, 175); /* Warning value, means the import is not working */
+  --global-font: 'OpenDyslexic';
+  --lime-green: #72D360;
+  --dark-grey: #282828;
+  --dark-blue: #1E4356;
+  --light-blue: #099CAC;
+}
+
+body {
+  font-family: var(--global-font), sans-serif;
+  background-color: var(--background-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.generalText {
+  font-family: var(--global-font), sans-serif;
+}
+
+/* THE FOLLOWING WAS PASTED FROM PRICING PLEASE RESOLVE THIS */
+body {
+  font-family: 'OpenDyslexic', sans-serif;
+  background-color: #555;
+  color: white;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #444;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logoStyle {
+  height: 40px;
+  cursor: pointer;
+}
+
+.nav-button {
+  background-color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  color: black;
+  display: inline-block;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 30px 0;
+}
+
+.plans {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.plan {
+  background-color: white;
+  color: black;
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  font-weight: 400;
+}
+
+.plan h2 {
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.plan ul {
+  list-style: none;
+  padding: 0;
+}
+
+.plan ul li {
+  margin-bottom: 15px;
+}

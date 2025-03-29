@@ -3,240 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='stylesheet' type = 'text/css' href='Generals.css'>
-    <link rel="stylesheet" type = 'text/css' href = "css/Assets.css">
     <title>Canvas Page</title>
+
+    <!-- Ill fix colors eventually, just need to change these colors after I find that paint thing Connor made -->
     <style>
-        * {
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
 
-        body {
+        .navbar {
+            background-color: var(--primary);
+            padding: 12px 24px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-items {
             display: flex;
-            flex-direction: column;
-            height: 100vh;
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+            justify-content: center;
+            
         }
 
-        /* Top Menu Bar */
-        .top-menu {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 20px;
-            border-bottom: 1px solid #ddd;
-            background-color: #f8f9fa;
+        .nav-items a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
         }
 
-        .menu-items {
-            display: flex;
-            gap: 20px;
+        .nav-items a:hover {
+            background-color: var(--secondary);
         }
 
-        .menu-items span {
-            cursor: pointer;
-            color: #555;
-            font-size: 14px;
-            padding: 4px 8px;
-        }
-
-        .menu-items span:hover {
-            color: #007bff;
-            background-color: #e9ecef;
-            border-radius: 4px;
-        }
-
-        /* Account Dropdown */
-        .account-menu {
-            position: relative;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 12px 16px;
-            cursor: pointer;
-            color: #333;
-            font-size: 14px;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f1f1f1;
-        }
-
-        /* Main Content Area */
+        /* Main Container */
         .main-container {
             display: flex;
-            flex: 1;
-            overflow: hidden;
+            height: 100vh;
+            padding-top: 60px; /* Offset for fixed navbar */
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            border-right: 1px solid #ddd;
+        /* Left Panel (15% of screen) */
+        .left-panel {
+            width: 15%;
+            min-width: 300px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
-            background-color: #fff;
+            overflow-y: auto;
         }
 
+        /* Canvas Area (85% of screen) */
+        .canvas-area {
+            width: 85%;
+            background-color: var(--surface);
+            padding: 24px;
+            position: relative;
+        }
+
+        .canvas-content {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            height: calc(100vh - 108px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 1.125rem;
+            transition: border-color 0.2s ease;
+        }
+
+        /* Control Buttons */
+        .control-menu {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .control-menu button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* Sidebar Elements */
         .section-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 12px;
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 12px 8px;
+            text-transform: uppercase;
         }
 
         .category-item {
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            color: #444;
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            margin: 4px 0;
             border: none;
             background: none;
-            width: 100%;
             text-align: left;
-        }
-
-        .category-item.active {
-            background-color: #e9ecef;
-            border-left: 3px solid #007bff;
-            font-weight: 500;
+            border-radius: 6px;
+            cursor: move;
+            transition: all 0.2s ease;
+            color: #1e293b;
         }
 
         .category-item:hover {
-            background-color: #f8f9fa;
+            background-color: #f1f5f9;
+            transform: translateX(4px);
         }
 
-        /* Canvas Area */
-        .canvas-area {
-            flex: 1;
-            background-color: #f8f9fa;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #666;
+        .divider {
+            height: 1px;
+            background-color: var(--border);
+            margin: 16px 0;
         }
     </style>
 </head>
 <body>
-    <div class="top-menu">
-        <div class="menu-items">
-            <span onclick="handleFile()">File</span>
-            <span onclick="handleEdit()">Edit</span>
-            <span onclick="handleUndo()">Undo</span>
-            <span onclick="handleRedo()">Redo</span>
+    <nav class="navbar">
+        <div class="nav-items">
+            <a href="">Home</a>
+            <a href="features">Features</a>
+            <a href="Pricing">Pricing</a>
+            <a href="Admin-Page">Admin Page</a>
+            <a href="">Account</a>
         </div>
-        
-        <div class="account-menu">
-            <div class="dropdown">
-                <span class="category-item">Account ▼</span>
-                <div class="dropdown-content">
-                    <div class="dropdown-item" onclick="handleProfile()">Profile</div>
-                    <div class="dropdown-item" onclick="handleSettings()">Settings</div>
-                    <div class="dropdown-item" onclick="handleLogout()">Logout</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </nav>
 
     <div class="main-container">
-        
-        <div class="sidebar">
-            <div class="categories">
-                <div class="section-title">Templates</div>
-                <button class="category-item active">Website Templates</button>
-                <button class="category-item">Blog Templates</button>
+        <div class="left-panel">
+            <div class="control-menu">
+                <button onclick="handleFile()">File</button>
+                <button onclick="handleEdit()">Edit</button>
+                <button onclick="handleUndo()">Undo</button>
+                <button onclick="handleRedo()">Redo</button>
             </div>
 
-            <div class="categories">
-                <div class="section-title">Text</div>
-                <button class="category-item">Headings</button>
-                <button class="category-item">Paragraphs</button>
-            </div>
+            <!-- Templates Section -->
+            <div class="section-title">Templates</div>
+            <button class="category-item">Website Templates</button>
+            <button class="category-item">Blog Templates</button>
 
-            <div class="categories">
-                <div class="section-title">Elements</div>
-                <button class="category-item">Buttons</button>
-                <button class="category-item">Forms</button>
-                <button class="category-item">Images</button>
-            </div>
+            <div class="divider"></div>
+
+            <!-- Text Elements -->
+            <div class="section-title">Text Elements</div>
+            <button class="category-item">Headings</button>
+            <button class="category-item">Paragraphs</button>
+
+            <div class="divider"></div>
+
+            <!-- UI Elements -->
+            <div class="section-title">UI Elements</div>
+            <button class="category-item">Buttons</button>
+            <button class="category-item">Forms</button>
+            <button class="category-item">Images</button>
         </div>
 
+        <!-- Canvas Area -->
         <div class="canvas-area">
-            Drag elements here to build your page
+            <div class="canvas-content" id="canvas">
+                Drop elements here to build your page
+            </div>
         </div>
     </div>
 
-        // Placeholder functions for future
     <script>
-        // Menu Functions
-        function handleFile() {
-            alert('File menu selected');
-        }
+        function handleFile() { alert('File menu selected'); }
+        function handleEdit() { alert('Edit menu selected'); }
+        function handleUndo() { alert('Undo action performed'); }
+        function handleRedo() { alert('Redo action performed'); }
 
-        function handleEdit() {
-            alert('Edit menu selected');
-        }
+        /* // Drag and drop functionality
+        const canvas = document.getElementById('canvas');
+        const items = document.querySelectorAll('.category-item');
 
-        function handleUndo() {
-            alert('Undo action performed');
-        }
+        items.forEach(item => {
+            item.addEventListener('dragstart', () => {
+                item.classList.add('dragging');
+            });
 
-        function handleRedo() {
-            alert('Redo action performed');
-        }
-
-        // Account Functions
-        function handleProfile() {
-            alert('Navigating to Profile');
-        }
-
-        function handleSettings() {
-            alert('Opening Settings');
-        }
-
-        function handleLogout() {
-            alert('Logging out...');
-        }
-
-        // Dropdown Handling
-        document.querySelectorAll('.dropdown').forEach(dropdown => {
-            dropdown.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdown.querySelector('.dropdown-content').classList.toggle('show');
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
             });
         });
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.dropdown')) {
-                document.querySelectorAll('.dropdown-content').forEach(content => {
-                    content.classList.remove('show');
-                });
-            }
-        }
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            canvas.classList.add('dragover');
+        });
+
+        canvas.addEventListener('dragleave', () => {
+            canvas.classList.remove('dragover');
+        });
+
+        canvas.addEventListener('drop', () => {
+            canvas.classList.remove('dragover');
+            // Add your drop handling logic here
+        }); */
     </script>
 </body>
 </html>
