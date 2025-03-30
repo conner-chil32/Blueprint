@@ -41,6 +41,6 @@ Adding a folder creatures a topic folder on the left-sidebar, this should be use
 
 ### References
 
--[Theme Guide](https://github.com/JV-conseil/jekyll-theme-read-the-docs) (Read the .md file as code to see how they are formatted with markdown)
--[Visual examples](https://jv-conseil.github.io/jekyll-theme-read-the-docs/)
--[Basic Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
+- [Theme Guide](https://github.com/JV-conseil/jekyll-theme-read-the-docs) (Read the .md file as code to see how they are formatted with markdown)
+- [Visual examples](https://jv-conseil.github.io/jekyll-theme-read-the-docs/)
+- [Basic Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
