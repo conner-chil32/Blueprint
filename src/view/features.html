@@ -1,25 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Blueprint Features For Website Creation</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    
-    <!-- Link to the relevant files -->
-    <script src='src/SpotFront.js'></script>
-    <link rel='stylesheet' type = 'text/css' href='css/Generals.css'>
-    <link rel='stylesheet' type = 'text/css' href='css/Assets.css'>
-    
-    <script src='main.js'></script>
+
+    <!-- Linked project files -->
+    <script src='/SpotFront.js'></script>
+    <link rel='stylesheet' type='text/css' href='css/Generals.css'>
+    <link rel='stylesheet' type='text/css' href='css/Assets.css'>
+    <script src='/main.js'></script>
+
+    <style>
+        body {
+            display: block !important;
+            justify-content: unset !important;
+            align-items: unset !important;
+            background-color: #555 !important;
+            font-family: var(--global-font), sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar layout */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background-color: var(--dark-grey, #333);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-button {
+            background-color: white;
+            color: black;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-button {
+            height: 40px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .logo-button:hover {
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .main-content h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .features-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .features-section h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .features-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            gap: 30px;
+            max-width: 1020px;
+            padding: 0 20px;
+            overflow-x: auto;
+        }
+
+        .feature-box {
+            background-color: white;
+            color: black;
+            padding: 30px 20px;
+            border-radius: 12px;
+            width: 180px;
+            height: 150px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+            flex-shrink: 0;
+        }
+
+        .feature-box:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Blueprint Features</h1>
-    <h2>Webdesign for goldfish</h2>
-<!-- this is comment notation
-it lets you put things on multiple lines
-this document needs to have a set of buttons like in the figma
-could also borrow the Home/Login code from Account-Creation.html
--->
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="ProjectView.html">
+                <img src="Blueprint_trans.png" alt="Blueprint Logo" class="logo-button">
+            </a>
+            <a href="Features.html" class="nav-button">Features</a>
+            <a href="Pricing.html" class="nav-button">Pricing</a>
+        </div>
+        <div class="navbar-right">
+            <a href="Login.html" class="nav-button">Login</a>
+        </div>
+    </div>
+
+    <!-- Main Section -->
+    <div class="main-content">
+        <h1>Your dream website is waiting to be created</h1>
+
+        <div class="features-section">
+            <h2>Features List</h2>
+            <div class="features-list">
+                <div class="feature-box">Dozens of Templates</div>
+                <div class="feature-box">Edit anytime</div>
+                <div class="feature-box">World class customer support</div>
+                <div class="feature-box">Choose your own domain</div>
+                <div class="feature-box">and many more features...</div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
