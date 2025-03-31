@@ -57,5 +57,59 @@
             </form>
         </div>
     </header>
+    <script>
+        //
+        document.addEventListener('DOMContentLoaded', function() {
+          const accountForm = document.getElementById('accountForm');
+          
+          accountForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            
+            // Simple validation
+            if (password !== confirmPassword) {
+              alert('Passwords do not match!');
+              return;
+            }
+            
+            // Create request data
+            const userData = {
+              username,
+              password,
+              fullName,
+              email
+            };
+            
+            try {
+              // Send data to server
+              const response = await fetch('/api/create-account', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+              });
+              
+              const result = await response.json();
+              
+              if (result.success) {
+                alert('Account created successfully!\nLook at console for username and hashed password\nSCRUM-40');
+                window.location.href = '/login';
+              } else {
+                alert('Error creating account: ' + result.message);
+              }
+            } catch (error) {
+              console.error('Error:', error);
+              alert('An error occurred while creating your account.');
+            }
+          });
+        });
+      </script>
 </body>
 </html>

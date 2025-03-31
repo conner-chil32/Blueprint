@@ -5,6 +5,7 @@
 
 const express = require('express');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const cookieParser = require('cookie-parser');
 
@@ -18,6 +19,7 @@ function registerRoutes(app) {
     // Tell 'path' to use both of the Spot files
     app.use('/src/SpotFront.js', express.static(path.join(__dirname, 'SpotFront.js')));
     app.use('/src/SpotBack.js', express.static(path.join(__dirname, 'SpotBack.js')));
+    app.use(express.json()); // For parsing application/json
 
     //TODO: SCRUM-47'S tasks for routing will mainly be implemented here
 
@@ -72,6 +74,7 @@ function registerRoutes(app) {
         res.sendFile('./view/Admin-Page.html', { root: __dirname });
     });
 
+    // Login Page
     app.get('/login', (req, res) => {
         console.log('GET /login sending ./res/login.html');
         res.sendFile('./view/Login.html', { root: __dirname });
@@ -123,6 +126,34 @@ function registerRoutes(app) {
     app.get('/deleteCookie', (req, res) => {
         cookieController.deleteCookie(res, 'TempCookie');
         res.send('Cookie deleted.');
+    });
+
+    // Add this near the top of your registerRoutes function
+    app.use(express.json()); // For parsing application/json
+
+    // Add this with your other routes
+    app.post('/api/create-account', async (req, res) => {
+    try {
+        const { username, password, fullName, email } = req.body;
+        
+        // Log the username
+        console.log('Username:', username);
+        
+        // Hash the password
+        const salt = await bcrypt.genSalt(13);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        
+        // Log the hashed password
+        console.log('Hashed password:', hashedPassword);
+        
+        // Here you would typically save the user to a database
+        // For now, we're just logging the information
+        
+        res.json({ success: true, message: 'Account created successfully' });
+    } catch (error) {
+        console.error('Error creating account:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
     });
 
     // Do this last; otherwise it will cause issues with Javascript files.
