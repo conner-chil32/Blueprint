@@ -6,8 +6,14 @@
 const express = require('express');
 const path = require('path');
 
+const cookieParser = require('cookie-parser');
+
+// Import the CookieController
+const CookieController = require('./CookieController.js');
+const cookieController = new CookieController();
+
 function registerRoutes(app) {
-    app.use(express.static(path.join(__dirname, 'view')));
+    app.use(cookieParser());
 
     // Tell 'path' to use both of the Spot files
     app.use('/src/SpotFront.js', express.static(path.join(__dirname, 'SpotFront.js')));
@@ -17,8 +23,24 @@ function registerRoutes(app) {
 
     //  !!!     ROUTES     !!!
     app.get('/', (req, res) => {
-        console.log('GET / sending ./res/index.html');
-        res.sendFile('./view/index.html', { root: __dirname });
+        const tempCookie = cookieController.getCookie(req, 'TempCookie');
+        console.log('tempCookie = ' + tempCookie);
+
+        if (tempCookie === 'loggedIn') {
+            // If the user is logged in, send them to the user portal.
+            console.log('GET /FTU-Main sending ./res/FTU-Main.html');
+            res.sendFile('./view/FTU-Main.html', { root: __dirname });
+            
+        } else if (tempCookie === 'loggedAgain') {
+            // If the user has logged in before (TEMP LOGIC), send them to ProjectView;
+            console.log('GET /portal sending ./res/user_portal.html');
+            res.sendFile('./view/user_portal.html', { root: __dirname });
+
+        } else {
+            // Otherwise, send them to the features page
+            console.log('GET /Features sending ./res/features.html');
+            res.sendFile('./view/features.html', { root: __dirname });
+        }
     });
 
     // Project View
@@ -76,7 +98,35 @@ function registerRoutes(app) {
         console.log('GET /canvas sending ./res/canvas.html');
         res.sendFile('./view/canvas.html', { root: __dirname });
     });
-  
+
+
+    //First time user (FTU) page
+    app.get('/FTU-main', (req, res) => {
+        console.log('GET /FTU-Main sending ./res/FTU-Main.html');
+        res.sendFile('./view/FTU-Main.html', { root: __dirname });
+    });
+
+    // Cookies (TEMP)
+    app.get('/loggingIn', (req, res) => {
+        if (cookieController.getCookie(req, 'TempCookie') === 'loggedIn') {
+            // If they have logged in before, set cookie to 'loggedAgain'
+            cookieController.setCookie(res, 'TempCookie', 'loggedAgain');
+            res.send('Cookie value sent: ' + 'loggedAgain');
+
+        } else {
+            // Otherwise, set them to logged in
+            cookieController.setCookie(res, 'TempCookie', 'loggedIn');
+            res.send('Cookie value sent: ' + 'loggedIn');
+        }
+    });
+
+    app.get('/deleteCookie', (req, res) => {
+        cookieController.deleteCookie(res, 'TempCookie');
+        res.send('Cookie deleted.');
+    });
+
+    // Do this last; otherwise it will cause issues with Javascript files.
+    app.use(express.static(path.join(__dirname, 'view')));
 }
 
 module.exports = {

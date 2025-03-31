@@ -1,0 +1,10 @@
+{
+  "types": {
+    "aliases": "aliases",
+    "cssclasses": "multitext",
+    "tags": "tags",
+    "nav_order": "number",
+    "nav_exclude": "checkbox",
+    "search_exclude": "checkbox"
+  }
+}

@@ -22,7 +22,6 @@
             padding: 0;
         }
 
-        /* Navbar layout */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -75,6 +74,13 @@
         .main-content h1 {
             font-size: 48px;
             font-weight: bold;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .main-content h2 {
+            font-size: 20px;
+            font-weight: 400;
             margin-bottom: 50px;
             color: white;
         }
@@ -86,14 +92,14 @@
             align-items: center;
         }
 
-        .features-section h2 {
+        .features-section h3 {
             margin-bottom: 30px;
             font-size: 24px;
             font-weight: bold;
             color: white;
         }
 
-        .features-list {
+        .features-grid {
             display: flex;
             justify-content: center;
             flex-wrap: nowrap;
@@ -103,7 +109,7 @@
             overflow-x: auto;
         }
 
-        .feature-box {
+        .feature-card {
             background-color: white;
             color: black;
             padding: 30px 20px;
@@ -120,8 +126,12 @@
             flex-shrink: 0;
         }
 
-        .feature-box:hover {
+        .feature-card:hover {
             background-color: #f0f0f0;
+        }
+
+        .feature-text {
+            font-size: 14px;
         }
     </style>
 </head>
@@ -143,16 +153,27 @@
 
     <!-- Main Section -->
     <div class="main-content">
-        <h1>Your dream website is waiting to be created</h1>
+        <h1>Blueprint Features</h1>
+        <h2>Webdesign for goldfish</h2>
 
         <div class="features-section">
-            <h2>Features List</h2>
-            <div class="features-list">
-                <div class="feature-box">Dozens of Templates</div>
-                <div class="feature-box">Edit anytime</div>
-                <div class="feature-box">World class customer support</div>
-                <div class="feature-box">Choose your own domain</div>
-                <div class="feature-box">and many more features...</div>
+            <h3>Features List</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <p class="feature-text">Dozens of Templates!<br><br><br><br>For all of your website needs.</p>
+                </div>
+                <div class="feature-card">
+                    <p class="feature-text">Edit your website at any time.<br><br><br>For maximum convenience and efficiency</p>
+                </div>
+                <div class="feature-card">
+                    <p class="feature-text">World class customer support<br><br><br><br>A service that you can count on.</p>
+                </div>
+                <div class="feature-card">
+                    <p class="feature-text">Choose your own domain...<br><br><br><br>Enter a world of possibilities.</p>
+                </div>
+                <div class="feature-card">
+                    <p class="feature-text">And many more features...</p>
+                </div>
             </div>
         </div>
     </div>
