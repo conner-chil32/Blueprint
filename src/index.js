@@ -1,12 +1,10 @@
+// Imports required modules
+const express = require('express');
+const bcrypt = require('bcrypt'); 
+const cookieParser = require('cookie-parser');
 
 //  !!!     ENTRY POINT FOR THE APPLICATION     !!!
-function index() {
-
-    //imports the express module
-    const express = require('express');
-
-    // Initialize cookie-parser
-    const cookieParser = require('cookie-parser');
+async function index() {
 
     //holds all actions for the server
     const app = express();
@@ -22,8 +20,28 @@ function index() {
 
     //starts the server
     constructServer(app);
-}
 
+    /** EXAMPLE OF PASSWORD SALT + HASHING USING BCRYPT
+    const password = 'password1';
+    try {
+        // Will hash password 2^13 times, the higher the number, the slower and safer it is.
+        const salt = bcrypt.genSaltSync(13);
+        const hash = await bcrypt.hash(password, salt);  // Hashes the password with salt
+        // Checks if plain-text password matches with the hashed password, returns true or false.
+        const isMatch = await bcrypt.compare(password, hash);
+
+        // Prints password, salt, hashed password, and if the plain text password matches with the hashed password
+        console.log({
+            password,
+            salt,
+            hash,
+            isMatch
+        });
+    } catch (error) {
+        console.error('Error hashing password:', error);
+    }
+    */
+}
 
 /**
  * Constructs the server
@@ -36,12 +54,10 @@ function index() {
  *  developing.
  */
 function constructServer(app) {
-    
-    //retrieves the port from the environment variable PORT or defaults to 4000
-    const port = process.env.PORT ? process.env.PORT : 4000;
+    // Retrieves the port from the environment variable PORT or defaults to 4000
+    const port = process.env.PORT || 4000;
 
-
-    //starts the server
+    // Starts the server
     app.listen(port, () => {
         console.log(`Server is listening on port ${port}`);
         console.log(`http://localhost:${port}`);
@@ -50,5 +66,11 @@ function constructServer(app) {
     return true;
 }
 
-//starts the application
-index();
+/** Dev Note (Angel)
+ * .catch(console.error); ensures that any unhandled errors in index() are properly logged. 
+ * Without it, unhandled promise rejections could crash the program or go unnoticed. 
+ * You can replace console.error with custom error handling to improve debugging and error recovery.
+ */
+
+// Starts the application
+index().catch(console.error);
