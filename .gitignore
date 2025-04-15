@@ -16,7 +16,7 @@ blueprint/node_modules
 /coverage
 
 # next.js
-/bluepint/.next/
+/blueprint/.next/
 /out/
 
 # production
