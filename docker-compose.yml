@@ -49,11 +49,11 @@ services:
   wordpress-db:
     image: mysql:latest
     env_file: .env
-    container_name: ${CONTAINER_NAME}-db
+    container_name: ${CONTAINER_NAME}-wordpress-db
     environment:
       MYSQL_ROOT_HOST: '%'
       MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}    #change to new variables in env before pushing. Only use same as database for testing
-      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_DATABASE: ${DATABASE_NAME}-wordpress
       MYSQL_USER: ${DATABASE_USER}
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
     ports:
@@ -66,9 +66,10 @@ services:
     env_file: .env
     container_name: ${CONTAINER_NAME}-wordpress
     environment:
-      WORDPRESS_DB_HOST: wordpress-db:3307
+      WORDPRESS_DB_HOST: ${CONTAINER_NAME}-wordpress-db
       WORDPRESS_DB_USER: ${DATABASE_USER}             #same as above
       WORDPRESS_DB_PASSWORD: ${DATABASE_PASSWORD}
+      WORDPRESS_DB_NAME: ${DATABASE_NAME}-wordpress
     depends_on: 
       - wordpress-db
     ports:
