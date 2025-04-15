@@ -1,0 +1,52 @@
+services:
+  database:
+    image: mysql:latest
+    env_file: .env
+    container_name: ${CONTAINER_NAME}-db
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    env_file: .env
+    container_name: ${CONTAINER_NAME}-phpmyadmin
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+    depends_on:
+      - database
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+  
+  web-app:
+    build: ./blueprint
+    env_file: .env
+    container_name: ${CONTAINER_NAME}-site
+    environment:
+      DB_HOST: database
+      DB_NAME: ${DATABASE_NAME}
+      DB_USER: ${DATABASE_USER}
+      DB_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+      - phpmyadmin
+    networks:
+      - app-network
+
+networks:
+  app-network:
+      
+      
