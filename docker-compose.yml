@@ -19,7 +19,7 @@ services:
     env_file: .env
     container_name: ${CONTAINER_NAME}-phpmyadmin
     environment:
-      PMA_HOST: database
+      PMA_HOSTS: database,wordpress-db
       PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
     depends_on:
@@ -43,6 +43,38 @@ services:
     depends_on:
       - database
       - phpmyadmin
+    networks:
+      - app-network
+
+  wordpress-db:
+    image: mysql:latest
+    env_file: .env
+    container_name: ${CONTAINER_NAME}-db
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}    #change to new variables in env before pushing. Only use same as database for testing
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
+
+  wordpress:
+    image: wordpress:latest
+    env_file: .env
+    container_name: ${CONTAINER_NAME}-wordpress
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db:3307
+      WORDPRESS_DB_USER: ${DATABASE_USER}             #same as above
+      WORDPRESS_DB_PASSWORD: ${DATABASE_PASSWORD}
+    depends_on: 
+      - wordpress-db
+    ports:
+      - "8000:80"
+    volumes:
+      - ./Wordpress:/var/www/html
     networks:
       - app-network
 
