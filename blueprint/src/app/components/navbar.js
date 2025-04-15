@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export default function Navbar() {
     return (
-      <div>
+      <div class = "topBarBackground">
         <div class="navbar">
         <div class="nav-left">
             <Link href="/HomePage">
