@@ -1,5 +1,8 @@
 import Navbar from "../components/navbar";  // Import the Navbar component
 import styles from './adminView.module.css'; // Import the CSS module for styling
+import adminActions from "../components/adminActions";
+import ActionButton from "../components/adminActions";
+
 
 
 
@@ -29,11 +32,11 @@ export default function admin_view() {
                         </div>
                         <div className={styles.topCell}>
                             <h1>Admin Actions:</h1>
-                            <div className={styles.adminActionButtons}>
-                                <button>Delete account</button>
-                                <button>Temporarily ban user</button>
-                                <button>Permanently ban user</button>
-                                <button>Add note</button>
+                            <div className={styles.ActionButtonsList}>
+                                <ActionButton label="Delete account" />
+                                <ActionButton label="Temporarily ban user" />
+                                <ActionButton label="Permanently ban user" />
+                                <ActionButton label="Add note" />
                             </div>
                         </div>
                     </div>
