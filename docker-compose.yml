@@ -19,7 +19,7 @@ services:
     env_file: .env
     container_name: ${CONTAINER_NAME}-phpmyadmin
     environment:
-      PMA_HOST: database
+      PMA_HOSTS: database,wordpress-db
       PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
     depends_on:
@@ -43,6 +43,39 @@ services:
     depends_on:
       - database
       - phpmyadmin
+    networks:
+      - app-network
+
+  wordpress-db:
+    image: mysql:latest
+    env_file: .env
+    container_name: ${CONTAINER_NAME}-wordpress-db
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: ${WORDPRESS_DATABASE_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${WORDPRESS_DATABASE_NAME}
+      MYSQL_USER: ${WORDPRESS_DATABASE_USER}
+      MYSQL_PASSWORD: ${WORDPRESS_DATABASE_PASSWORD}
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
+
+  wordpress:
+    image: wordpress:latest
+    env_file: .env
+    container_name: ${CONTAINER_NAME}-wordpress
+    environment:
+      WORDPRESS_DB_HOST: ${CONTAINER_NAME}-wordpress-db
+      WORDPRESS_DB_USER: ${WORDPRESS_DATABASE_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DATABASE_PASSWORD}
+      WORDPRESS_DATABASE_NAME: ${WORDPRESS_DATABASE_NAME}
+    depends_on: 
+      - wordpress-db
+    ports:
+      - "8000:80"
+    volumes:
+      - ./Wordpress:/var/www/html
     networks:
       - app-network
 
