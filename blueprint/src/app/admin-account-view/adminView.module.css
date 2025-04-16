@@ -1,7 +1,23 @@
 .quickView {
     margin-top: 100px;
+    margin-left: var(--min-margin);
+    margin-right: var(--min-margin);
 }
 
 .topRow {
     display: flex;
+    gap: 20px;
+}
+
+.topCell {
+    background-color: var(--light-grey);
+    border-radius: var(--border-weight);
+    width: fit-content;  
+    padding: 10px;
+    
+}
+
+.ActionButtonsList{
+    display: flex;
+    flex-direction: column;
 }
