@@ -37,9 +37,14 @@ function PasswField() {
     Date: 4/13/2025
     Author: Lydell Jones
 */
-function AccountSubmit() {
+function AccountSubmit( { path } ) {
+    const buttonMessage = {
+        "/login": "Login",
+        "/recovery": "Recover",
+        "/signup": "Create",
+    }
     return (
-        <button type = "submit" className={styles.accountSubmit} class = "submit-button" >Login</button>
+        <button type = "submit" className={styles.accountSubmit} class = "submit-button" >{buttonMessage[path] ?? "ERROR"}</button>
     );
 }
 
@@ -55,7 +60,7 @@ export default function AccountCollecter( { currentPage } ) {
     var account_pages = {
         "/login": "login_form",
         "/recovery": "revovery_form",
-        "/create": "creation_form",
+        "/signup": "creation_form",
     };
 
     /*XXX: The logic of this element is set so that /api/login, /api/recovery, and /api/create are the only submittable forms
@@ -69,20 +74,20 @@ export default function AccountCollecter( { currentPage } ) {
                     <>
                         <UserField />
                         <PasswField />
-                        <AccountSubmit />
+                        <AccountSubmit path={currentPage}/>
                     </>
                 )
                 : (currentPage == "/recovery") ? (
                     <>
                         <UserField />
                         <PasswField />
-                        <AccountSubmit />
+                        <AccountSubmit path={currentPage}/>
                     </>
-                ) : (currentPage == "/create") ? (
+                ) : (currentPage == "/signup") ? (
                     <>
                         <UserField />
-                        <PasswField order = {3} />
-                        
+                        <PasswField />
+                        <AccountSubmit path={currentPage}/>
                     </>
                 ) : (
                     <h1>ERR ACCTCOLLT 39</h1>
