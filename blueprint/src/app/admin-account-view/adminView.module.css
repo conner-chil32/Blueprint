@@ -1,23 +1,43 @@
+.root{
+    --info-color: #d9d9d9;
+    --button-color: #ffffff;
+    --text-color: #000000;
+}
+
 .quickView {
     margin-top: 100px;
     margin-left: var(--min-margin);
     margin-right: var(--min-margin);
+    color: var(--text-color)
 }
 
 .topRow {
     display: flex;
     gap: 20px;
+    width: 100%;
 }
 
 .topCell {
     background-color: var(--light-grey);
     border-radius: var(--border-weight);
-    width: fit-content;  
     padding: 10px;
+    flex: 1;
+    /* Share space equally */
     
 }
 
 .ActionButtonsList{
     display: flex;
     flex-direction: column;
+}
+
+.infoText {
+   
+}
+
+.infoText dt{
+    margin: 10px;
+    background-color: var(--text-background);
+    border-radius: var(--border-weight);
+    padding: 10px;
 }

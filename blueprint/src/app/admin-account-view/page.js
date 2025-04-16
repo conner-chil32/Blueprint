@@ -15,7 +15,7 @@ export default function admin_view() {
                     <div className={styles.topRow}>
                         <div className={styles.topCell}>
                             <h1>Server Status Summary:</h1>
-                            <dl>
+                            <dl className = {styles.infoText}>
                                 <dt>Ping: 00ms</dt>
                                 <dt>Mem. Usage: 0%</dt>
                                 <dt>Disk Used: 0%</dt>
@@ -23,7 +23,7 @@ export default function admin_view() {
                         </div>
                         <div className={styles.topCell}>
                             <h1>Selected User Summary:</h1>
-                            <dl>
+                            <dl className = {styles.infoText}>
                                 <dt>Username</dt>
                                 <dt>Email address</dt>
                                 <dt>Phone number</dt>
