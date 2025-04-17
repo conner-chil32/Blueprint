@@ -13,7 +13,7 @@ export default function admin_view() {
             <body className={styles.quickView}>
                 <div className={styles.leftSide}>
                     <div className={styles.topRow}>
-                        <div className={styles.topCell}>
+                        <div className={styles.cell}>
                             <h1>Server Status Summary:</h1>
                             <dl className = {styles.infoText}>
                                 <dt>Ping: 00ms</dt>
@@ -21,7 +21,7 @@ export default function admin_view() {
                                 <dt>Disk Used: 0%</dt>
                             </dl>
                         </div>
-                        <div className={styles.topCell}>
+                        <div className={styles.cell}>
                             <h1>Selected User Summary:</h1>
                             <dl className = {styles.infoText}>
                                 <dt>Username</dt>
@@ -30,7 +30,7 @@ export default function admin_view() {
                                 <dt>Name</dt>
                             </dl>
                         </div>
-                        <div className={styles.topCell}>
+                        <div className={styles.cell}>
                             <h1>Admin Actions:</h1>
                             <div className={styles.ActionButtonsList}>
                                 <ActionButton label="Delete account" />
@@ -41,20 +41,24 @@ export default function admin_view() {
                         </div>
                     </div>
                     <div className={styles.bottomRow}>
-                        <h1>Server Status</h1>
-                        <img src="images/usage_demo.png"></img>
+                        <div className={styles.cell}>
+                            <h1>Server Status</h1>
+                            <img src="images/usage_demo.png"></img>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.rightSide}>
-                    <h1>Modify Accounts:</h1>
-                    <input type="text" placeholder="Search For Account" />
-                    <div className={styles.accountList}>
-                        <div>Username</div>
-                        <div>Username</div>
-                        <div>Username</div>
-                        <div>Username</div>
+                    <div className={styles.cell}>
+                        <h1>Modify Accounts:</h1>
+                        <input type="text" placeholder="Search For Account" />
+                        <dl className={styles.accountList}>
+                            <dt>Username</dt>
+                            <dt>Username</dt>
+                            <dt>Username</dt>
+                            <dt>Username</dt>
+                        </dl>
+                        <ActionButton label="Add Account" />
                     </div>
-                    <button>Add Account</button>
                 </div>
         </body>
         </>
