@@ -28,7 +28,11 @@
     padding: 10px;
     flex: 1;
     /* Share space equally */
-    
+    text-align: left;
+}
+
+.cell h1{
+    margin-bottom: 10px;
 }
 
 .ActionButtonsList{
@@ -54,9 +58,24 @@
     gap: 20px;
 }
 
+.rightSide {
+    flex: 0 1 300px;
+    /* or however narrow you want */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .accountList dt{
-    margin: 10px;
+    margin: 15px 10px 30px 10px;
+    background-color: white;
+    border-radius: var(--border-weight);
+    padding: 10px 10px 50px 10px;
+    text-align: left;
+}
+
+.searchUser {
     background-color: var(--text-background);
     border-radius: var(--border-weight);
-    padding: 10px;
+    padding: 15px;
 }
