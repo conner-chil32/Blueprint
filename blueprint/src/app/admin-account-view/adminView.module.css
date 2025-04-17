@@ -10,9 +10,10 @@
     margin-right: var(--min-margin);
     color: var(--text-color);
     display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        /* ensures both sides match height */
+    flex-direction: row;
+    align-items: stretch;
+    /* ensures both sides match height */
+    gap: 20px;
 }
 
 .topRow {
@@ -51,4 +52,11 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+.accountList dt{
+    margin: 10px;
+    background-color: var(--text-background);
+    border-radius: var(--border-weight);
+    padding: 10px;
 }
