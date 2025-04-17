@@ -11,6 +11,7 @@
 !.yarn/versions
 package-lock.json
 blueprint/node_modules
+/node_modules
 
 # testing
 /coverage
