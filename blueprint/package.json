@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "local": "next dev -H localhost",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest"
   },
   "dependencies": {
     "blueprint": "file:",
