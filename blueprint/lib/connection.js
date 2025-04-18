@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise';
-import { validateConnection } from './utility';
+import { validateConnection } from './utility.js';
 
 /*
     getConnectionObject: A function that returns the connection object to the database.
