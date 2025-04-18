@@ -1,0 +1,53 @@
+/* Vertically aligns title, subtitle, and create website button*/
+.body {
+    text-align: left;
+    display: inline;
+
+    text-align: center;
+    color: black;
+
+    min-height: 80%;
+}
+
+/*Handles the content in the body of the page, outside of top bar*/
+.content {
+    margin-left: 30px;
+    margin-top: 100px;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-radius: 40px;
+    background-color: rgba(255, 255, 255, 0.568);
+    
+    padding-left: 30px;
+    max-width: 90%;
+    min-width: 60%;
+    width: 80%; /*scales within the max and minrange */
+}
+
+/* Title: "Get started..." */
+.h1{
+    font-size: 45px;
+    padding-top: 30px;
+}
+
+/* Subtitle: "With Blueprint..." */
+.p {
+    font-size: 40px;
+}
+
+/* Create a website button*/
+.createButton {
+    padding: 10px 20px;
+    border: dashed black;
+    border-width: 7px;
+    background: darkgrey;
+    border-radius: 20px;
+    width: 90%; 
+    font-size: 50px;
+    line-height: 80px;
+}
+
+.createButton:hover {
+    background-color: var(--light-blue);
+    cursor: pointer;
+}
