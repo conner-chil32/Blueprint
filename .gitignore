@@ -46,3 +46,6 @@ next-env.d.ts
 # wordpress
 /Wordpress/*
 
+# database
+/blueprint/lib/db_data/*
+
