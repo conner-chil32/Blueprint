@@ -1,6 +1,5 @@
 import Navbar from "../components/navbar";  // Import the Navbar component
 import styles from './adminView.module.css'; // Import the CSS module for styling
-import adminActions from "../components/adminActions";
 import ActionButton from "../components/adminActions";
 
 
