@@ -23,24 +23,26 @@ import { getConnectionObject } from './connection.js';
 
 //XXX: CHANGE THIS AS NEEDED
 //TODO: MAKE SURE TO ADD THIS SCHEMA TO THE DOCUMENTATION
-export async function createUserTable() {
-    if (!validateConnection()) return false;
-    global.connection.query(`
+export async function createUserTable(connection) {
+    if (!await validateConnection(connection)) return false;
+    
+    await connection.query(`
         CREATE TABLE IF NOT EXISTS userAccounts (
-            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            userId INT NOT NULL AUTO_INCREMENT,
             userName VARCHAR(255) NOT NULL,
             userPassHash VARCHAR(255) NOT NULL,
             userWpName VARCHAR(255),
             userWpPassHash VARCHAR(255),
             userEmail VARCHAR(255) NOT NULL,
             userPhone VARCHAR(255),
-            userWebsites INT(11) NOT NULL,
+            userWebsites INT(11),
             userDateCreated TIMESTAMP,
             userLastLogin TIMESTAMP,
             isAdmin BOOLEAN DEFAULT FALSE,
-    );`);
-    //userWPName, userWPPassHash - Wordpress credentials for the user when interacting with the API
-    commit();
+            PRIMARY KEY (userId)
+    );`.replace(/\n/g, ""));
+
+    return await commit(connection);
 }
 
 /**
@@ -53,18 +55,19 @@ export async function createUserTable() {
  */
 //XXX: CHANGE THIS AS NEEDED
 //TODO: MAKE SURE TO ADD THIS SCHEMA TO THE DOCUMENTATION
-export async function createWebsiteTable() {
-    if (!validateConnection()) return false;
+export async function createWebsiteTable(connection) {
+    if (!await validateConnection(connection)) return false;
 
-    global.connection.query(`
+    await connection.query(`
         CREATE TABLE IF NOT EXISTS userWebsites (
-            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            id INT NOT NULL AUTO_INCREMENT,
             websiteName VARCHAR(255) NOT NULL,
-            websiteDateAdded TIMESTAMP,
-            websiteDateLastVisited TIMESTAMP,
-            websiteDateLastModified TIMESTAMP,
-            FOREIGN KEY (website_user_id) REFERENCES users(id)
-        );`);
-    
-    commit();
+            websiteDateAdded TIMESTAMP NOT NULL DEFAULT NOW(),
+            websiteDateLastVisited TIMESTAMP DEFAULT NOW(),
+            websiteDateLastModified TIMESTAMP DEFAULT NOW(),
+            FOREIGN KEY (userid) REFERENCES users(userid),
+            PRIMARY KEY (id)
+        );`.replace(/\n/g, ""));
+
+    return await commit(connection);
 }

@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "paths": {
-      "blueprint/*": ["./src/*"]
+      "@lib/*": ["./lib/*"],
+      "@root/*": ["./src/app/*"],
+      "@components/*": ["./src/components/*"],
+      "@public/*": ["./public/*"]
     }
   }
 }
