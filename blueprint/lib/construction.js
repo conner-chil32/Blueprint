@@ -61,11 +61,12 @@ export async function createWebsiteTable(connection) {
     await connection.query(`
         CREATE TABLE IF NOT EXISTS userWebsites (
             id INT NOT NULL AUTO_INCREMENT,
+            userId INT NOT NULL,
             websiteName VARCHAR(255) NOT NULL,
             websiteDateAdded TIMESTAMP NOT NULL DEFAULT NOW(),
             websiteDateLastVisited TIMESTAMP DEFAULT NOW(),
             websiteDateLastModified TIMESTAMP DEFAULT NOW(),
-            FOREIGN KEY (userid) REFERENCES users(userid),
+            FOREIGN KEY (userId) REFERENCES userAccounts(userId),
             PRIMARY KEY (id)
         );`.replace(/\n/g, ""));
 
