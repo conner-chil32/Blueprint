@@ -1,6 +1,7 @@
 import mysql from 'mysql2/promise';
 import { validateConnection } from './utility.js';
 
+
 /*
     getConnectionObject: A function that returns the connection object to the database.
     Input: none
@@ -10,9 +11,8 @@ import { validateConnection } from './utility.js';
     Dependencies: mysql
 */
 export async function getConnectionObject() {
-    console.error("[DB] Getting connection object...");
-    return await openConnection(); //: GLOBAL.CONNECTION IS SET HERE
-
+    console.log("[DB] Getting connection object...");
+    return await openConnection(3); //: GLOBAL.CONNECTION IS SET HERE
 }
 
 /*
@@ -23,30 +23,25 @@ export async function getConnectionObject() {
     Author: Lydell Jones
     Dependencies: mysql
 */
-export async function openConnection() {
-    if (global.connection && global.connection.state !== 'disconnected') { // if a connection exists
-        console.error("[DB] Connection to database already exists. Acquiring connection...");
-        return global.connection; //TODO: 
-    } else if (global.connection) { // if a disconnected connection exists
-        await global.connection.destroy();
-        delete global.connection;
-        openConnection(); // re-create the connection
-    } else { // if no connection is present
-        try {
-            console.error("[DB] Creating connection to database...");
-            global.connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-            port: 3306,
-            multipleStatements: true,
-            connectionLimit: 10,
-            });
-        } catch (err) {
-            console.error("[DB] Error creating connection to database:", err);
-            return false;
-        }
+export async function openConnection(attempts = 1) {
+    if (attempts <= 0) return 0;
+    console.log("[DB] Creating connection to database...");
+    var connection = await mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: 3306,
+    multipleStatements: true,
+    connectionLimit: 10,
+    }).promise();
+
+    if (connection) {
+        console.log("[DB] Connection to database created successfully.");
+        return connection;
+    } else {
+        console.log("[DB] Error creating connection to database. Retrying...");
+        return await openConnection(attempts - 1);
     }
 }
 
@@ -58,21 +53,22 @@ export async function openConnection() {
     Author: Lydell Jones
     Dependencies: mysql
 */
-export async function closeConnection() {
-    if (global.connection) {
-        console.error("[DB] Closing connection to database...");
+export async function closeConnection(connection) {
+    const result = false;
+    
+    if (result = !await validateConnection(connection)) {
+        console.log("[DB] No connection to close.")
+    } 
+    try{
+        console.log("[DB] Closing connection to database...");
         try {
-            await global.connection.end();
-            console.error("[DB] Connection to database closed successfully.");
-            return true;
-        } catch (err) {
-            console.error("[DB] Error closing connection to database:", err);
-            await global.connection.destroy();
-            console.error("[DB] Connection to database destroyed.");
+            await connection.releaseConnection();
+        } catch (error) {
+            throw new Error("[DB] Error on closing the connection.")
         }
-        delete global.connection;
-        console.error("[DB] global variable connection deleted.");
-        return false;
+    } catch (err) {
+        console.log("[DB] Error on close... Shutting down.", err)
+        return await shutdownConnection(connection);
     }
 }
 
@@ -84,23 +80,20 @@ export async function closeConnection() {
     Author: Lydell Jones
     Dependencies: mysql
 */
-export async function shutdownConnection() {
-    try {
-        result = await validateConnection()
-        if (result) {
-            try{
-                await global.connection.destroy();
-            } catch (err) {
-                console.error("[DB] Error destroying connection to database:", err);
-            } finally {
-                delete global.connection;
-                console.error("[DB] global variable connection deleted.");
-            }
-        } else {
-            console.error("[DB] No connection to destroy.");
+async function shutdownConnection(connection) {
+    if (!await validateConnection(connection)) return true;
+    if (result) {
+        try{
+            console.log("[DB] Attempting to destroy connection")
+            await connection.destroy();
+        } catch (err) {
+            console.log("[DB] Error destroying connection to database:", err);
+            return false;
         }
-    } catch (err) {
-        console.error("[DB] Error validating connection:", err);
+    } else {
+        console.log("[DB] No connection to destroy.");
+        return true;
     }
+    return true;
 }   
 

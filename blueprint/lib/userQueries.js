@@ -1,3 +1,5 @@
+import { validateConnection } from "./db.js";
+
 /**
  * getUserByEmail - Retrieves a user by their email address.
  * Input: email - The email address of the user to retrieve.
@@ -6,10 +8,10 @@
  * Author: Lydell Jones
  * Dependencies: mysql2
  */
-export async function getUserByEmail(email) {
-    if (!validateConnection()) return false;
-    query = await global.connection.query(`SELECT * FROM userAccounts WHERE userEmail = ?`, [email]);
-    return false;
+export async function getUserByEmail(email, connection) {
+    if (!await validateConnection(connection)) return false;
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userEmail = ?;`, [email]);
+    return result;
 }
 
 /**
@@ -21,17 +23,9 @@ export async function getUserByEmail(email) {
  * Dependencies: mysql
  */
 export async function getUserByID(id) {
-    if (!validateConnection()) return false;
-    query = await global.connection.query(`SELECT * FROM userAccounts WHERE id = ?`, [id], (err, results) => {
-        if (err) {
-            console.error("[DB] Error retrieving user by ID:", err);
-            return false;
-        } else {
-            console.log("[DB] User retrieved successfully.");
-            return results[0];
-        }
-    });
-    return false;
+    if (!await validateConnection(connection)) return false;
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE id = ?;`, [id]);
+    return result;
 }
 
 /**
@@ -43,18 +37,10 @@ export async function getUserByID(id) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function signIn(user, password) {
-    if (!validateConnection()) return false;
-    query = global.connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, password], (err, results) => {
-        if (err) {
-            console.error("[DB] Error signing in user:", err);
-            return false;
-        } else {
-            console.log("[DB] User signed in successfully.");
-            return results[0];
-        }
-    });
-    return false;
+export async function signIn(user, password, connection) {
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, password]);
+    return result;
 }
 
 /**
@@ -66,16 +52,8 @@ export async function signIn(user, password) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function createAccount(user, password) {
-    if (!validateConnection()) return false;
-    query = global.connection.query(`INSERT INTO userAccounts (userName, userPassHash) VALUES (?, ?)`, [user, password], (err, results) => {
-        if (err) {
-            console.error("[DB] Error creating account:", err);
-            return false;
-        } else {
-            console.log("[DB] Account created successfully.");
-            return results[0];
-        }
-    });
-    return false;
+export async function createAccount(user, password, email, connection) {
+    if (!await validateConnection(connection)) return false;
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail) VALUES (?, ?, ?)`, [user, password, email]);
+    return result;
 }
