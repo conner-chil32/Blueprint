@@ -18,12 +18,12 @@ export async function GET(req) {
     //console.log('Cookie value: ' + cookieValue);
 
     if (cookieValue === 'LoggedIn') {
-        return NextResponse.redirect(new URL('/FTU-main', req.url));
+        return NextResponse.redirect(new URL('/ftu-main', req.url));
 
     } else if (cookieValue === 'LoggedAgain') {
         return NextResponse.redirect(new URL('/portal', req.url));
 
     } else {
-        return NextResponse.redirect(new URL('/Features', req.url));
+        return NextResponse.redirect(new URL('/features', req.url));
     }
 }

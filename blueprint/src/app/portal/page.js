@@ -29,7 +29,7 @@ export default function RawHTMLPage() {
                             <tr>
                                 <td className={styles.tableData}>Status</td>
                                 <td className={styles.tableData}>
-                                    <Link href="/UserWebBackend">
+                                    <Link href="/userwebbackend">
 									<button className={styles.linkButton}>
                                             Website Backend
                                         </button>
