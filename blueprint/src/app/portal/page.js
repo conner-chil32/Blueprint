@@ -29,7 +29,7 @@ export default function RawHTMLPage() {
                             <tr>
                                 <td className={styles.tableData}>Status</td>
                                 <td className={styles.tableData}>
-                                    <Link href="/Admin-Page">
+                                    <Link href="/UserWebBackend">
 									<button className={styles.linkButton}>
                                             Website Backend
                                         </button>
@@ -39,7 +39,7 @@ export default function RawHTMLPage() {
                             <tr>
                                 <td className={styles.tableData}>Description</td>
                                 <td className={styles.tableData}>
-                                    <Link href="./Admin-Account-View">{/*Page not present at time of writing*/}
+                                    <Link href="./admin-account-view">{/*Page not present at time of writing*/}
 									<button className={styles.linkButton}>
                                             Website Details
                                         </button>
