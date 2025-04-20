@@ -1,0 +1,131 @@
+.container {
+    --primary: #2563eb;
+    --secondary: #1e40af;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+}
+
+.htmlBody {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: var(--primary);
+    padding: 12px 24px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navItems {
+    display: flex;
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+.navItems a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.navItems a:hover {
+    background-color: var(--secondary);
+}
+
+.mainContainer {
+    display: flex;
+    height: 100vh;
+    padding-top: 60px;
+}
+
+.leftPanel {
+    width: 15%;
+    min-width: 300px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.canvasArea {
+    width: 85%;
+    background-color: var(--surface);
+    padding: 24px;
+    position: relative;
+}
+
+.canvasContent {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    height: calc(100vh - 108px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 1.125rem;
+    transition: border-color 0.2s ease;
+}
+
+.controlMenu {
+    display: flex;
+    gap: 15px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.controlMenu button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sectionTitle {
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 12px 8px;
+    text-transform: uppercase;
+}
+
+.categoryItem {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    margin: 4px 0;
+    border: none;
+    background: none;
+    text-align: left;
+    border-radius: 6px;
+    cursor: move;
+    transition: all 0.2s ease;
+    color: #1e293b;
+}
+
+.categoryItem:hover {
+    background-color: #f1f5f9;
+    transform: translateX(4px);
+}
+
+.divider {
+    height: 1px;
+    background-color: var(--border);
+    margin: 16px 0;
+}
