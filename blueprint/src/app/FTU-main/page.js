@@ -1,5 +1,6 @@
 'use client';
 
+
 //import { Main } from "next/document"; Causing errors
 import Navbar from "../components/navbar";  // Import the Navbar component
 import styles from "./FTU.module.css"; // Import FTU.modules.css for styling
