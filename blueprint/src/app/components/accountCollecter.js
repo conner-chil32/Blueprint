@@ -44,7 +44,7 @@ function AccountSubmit( { path } ) {
         "/signup": "Create",
     }
     return (
-        <button type = "submit" className={styles.accountSubmit} class = "submit-button" >{buttonMessage[path] ?? "ERROR"}</button>
+        <button type = "submit" className={`${styles.accountSubmit} submit-button`} >{buttonMessage[path] ?? "ERROR"}</button>
     );
 }
 

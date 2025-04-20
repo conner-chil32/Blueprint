@@ -9,7 +9,7 @@ export default function admin_view() {
     return (
         <>
             <Navbar />
-            <body className={styles.quickView}>
+            <div className={styles.quickView}>
                 <div className={styles.leftSide}>
                     <div className={styles.topRow}>
                         <div className={styles.cell}>
@@ -59,7 +59,7 @@ export default function admin_view() {
                         <ActionButton label="Add Account" />
                     </div>
                 </div>
-        </body>
+        </div>
         </>
     );
 
