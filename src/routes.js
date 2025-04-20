@@ -40,7 +40,7 @@ function registerRoutes(app) {
 
         } else {
             // Otherwise, send them to the features page
-            console.log('GET /Features sending ./res/features.html');
+            console.log('GET /features sending ./res/features.html');
             res.sendFile('./view/features.html', { root: __dirname });
         }
     });
@@ -87,8 +87,8 @@ function registerRoutes(app) {
     });
 
     // Features page
-    app.get('/Features', (req, res) => {
-        console.log('GET /Features sending ./res/features.html');
+    app.get('/features', (req, res) => {
+        console.log('GET /features sending ./res/features.html');
         res.sendFile('./view/features.html', { root: __dirname });
     });
 
