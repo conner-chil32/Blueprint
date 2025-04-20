@@ -1,4 +1,150 @@
 /* UserWebBackend.module.css */
+/* src/app/UserWebBackend/UserWebBackend.module.css */
+
+.wrapper {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  background-color: #444;       /* page background */
+  color: #000;                  /* black text everywhere */
+}
+
+/* top-left fixed buttons */
+.backButton,
+.deleteButton {
+  position: absolute;
+  left: 20px;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+.backButton {
+  top: 20px;
+  background-color: #ccc;
+}
+.deleteButton {
+  top: 80px;
+  background-color: #c0392b;
+  color: #fff;
+}
+
+/* content splits sidebar / main */
+.content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  margin-top: 140px; /* make room for buttons */
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-left: 20px;
+}
+
+/* Common box styling */
+.featuresBox,
+.connectionsBox,
+.statsPanel {
+  background-color: #999;  /* darker container bg */
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* Feature/Connection titles */
+.boxTitle {
+  margin-bottom: 12px;
+  font-size: 20px;
+  text-decoration: underline;
+}
+
+/* FEATURES */
+.featureItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+.featureItem input[type="checkbox"] {
+  width: 28px;
+  height: 28px;
+  accent-color: #27ae60; /* green check */
+  cursor: pointer;
+}
+
+/* CONNECTIONS */
+.connectionButton {
+  background-color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  margin-right: 10px;
+  font-size: 16px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  cursor: pointer;
+  color: black;
+}
+
+/* MAIN PANEL */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-right: 20px;
+}
+
+/* Website header */
+.header {
+  background: #999;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+/* STATS PANEL */
+.statsPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.statsGrid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.statItem {
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.statsFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 40px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+/*
 .wrapper {
   background-color: #f5f5f5;
   min-height: 100vh;
@@ -41,3 +187,4 @@
   height: 40px;
   width: auto;
 }
+*/
