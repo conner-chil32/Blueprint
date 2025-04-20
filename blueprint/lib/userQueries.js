@@ -1,4 +1,5 @@
-import { validateConnection } from "./db.js";
+import { validateConnection } from "@lib/utility.js";
+import { commit } from "@lib/utility.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -52,8 +53,8 @@ export async function signIn(user, password, connection) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function createAccount(user, password, email, connection) {
+export async function createAccount(user, password, connection) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail) VALUES (?, ?, ?)`, [user, password, email]);
-    return result;
+    await connection.query(`INSERT INTO userAccounts (userName, userPassword) VALUES (?, ?)`, [user, password]);
+    await commit(connection);
 }

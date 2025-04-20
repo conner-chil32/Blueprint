@@ -30,10 +30,10 @@ export async function createUserTable(connection) {
         CREATE TABLE IF NOT EXISTS userAccounts (
             userId INT NOT NULL AUTO_INCREMENT,
             userName VARCHAR(255) NOT NULL,
-            userPassHash VARCHAR(255) NOT NULL,
+            userPassword VARCHAR(255) NOT NULL,
             userWpName VARCHAR(255),
             userWpPassHash VARCHAR(255),
-            userEmail VARCHAR(255) NOT NULL,
+            userEmail VARCHAR(255),
             userPhone VARCHAR(255),
             userWebsites INT(11),
             userDateCreated TIMESTAMP,

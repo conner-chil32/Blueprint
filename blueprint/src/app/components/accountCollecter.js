@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 function UserField() {
     return (
         <div className = {styles.userFieldContainer}>
-            <input name = "" placeholder = "Enter Username" type = "text" className={styles.userField} id = "login_username"></input>
+            <input name = "username" placeholder = "Enter Username" type = "text" className={styles.userField} id = "username"></input>
         </div>
     )
 }
@@ -25,7 +25,7 @@ function UserField() {
 function PasswField() {
     return (
         <div className = {styles.passFieldContainer}>
-            <input name = "" className={styles.passField} placeholder="Enter Password" type = "password" id = "login_username"></input>
+            <input name = "password" className={styles.passField} placeholder="Enter Password" type = "password" id = "password"></input>
         </div>
     );
 }
@@ -58,9 +58,9 @@ function AccountSubmit( { path } ) {
 */
 export default function AccountCollecter( { currentPage } ) {
     var account_pages = {
-        "/login": "login_form",
-        "/recovery": "revovery_form",
-        "/signup": "creation_form",
+        "/login": "account-login",
+        "/recovery": "account-recovery",
+        "/signup": "account-creation",
     };
 
     /*XXX: The logic of this element is set so that /api/login, /api/recovery, and /api/create are the only submittable forms
@@ -68,7 +68,7 @@ export default function AccountCollecter( { currentPage } ) {
     console.log("[Login] Current Page: " + currentPage + " Loaded!");
     return (
         <div style = {{display: "block"}}>
-        <form id = {account_pages[currentPage] ?? "ERR ACCTCOLLT 39"} action = {"/api"+currentPage} method = "POST" className = {styles.AccountCollecter}>
+        <form id = {account_pages[currentPage] ?? "ERR ACCTCOLLT 39"} action = {"/api/".concat(account_pages[currentPage])} method = "POST" className = {styles.AccountCollecter}>
             {
                 (currentPage == "/login") ? (
                     <>

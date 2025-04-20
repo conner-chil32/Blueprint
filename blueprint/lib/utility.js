@@ -13,7 +13,7 @@ export async function commit(connection) {
     } else {
         try {
             const commitConnection = await connection.getConnection();
-            commitConnection.commit();
+            await commitConnection.commit();
         } catch (err) {
             console.log("[DB] Couldn't Commit!")
         }
