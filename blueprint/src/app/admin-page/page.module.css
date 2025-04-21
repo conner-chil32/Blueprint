@@ -1,14 +1,15 @@
-  .container {
-    width: 90%;
-    max-width: 1200px;
-    background: #666;
-    padding: 20px;
-    border-radius: 10px;
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    gap: 15px;
-  }
-  
+.container {
+  width: 80%;
+  max-width: 1200px;
+  background: #666;
+  padding: 20px;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 15px;
+  transform: translateY(150px);
+}
+
   .box {
     background: #888;
     padding: 15px;
