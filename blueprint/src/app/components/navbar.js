@@ -12,10 +12,10 @@ export default function Navbar({ loggedIn }) {
             </Link>
             <Link href="/Features" className="nav-button">Features</Link>
             <Link href="/Pricing" className="nav-button">Pricing</Link>
-            <Link href="/canvas" className="nav-button">Canvas</Link>
             <Link href="/FTU-main" className="nav-button">Portal</Link>
-            <Link href="/account-creation" className="nav-button">Sign Up</Link>
+            
         </div>
+        <Link href="/account-creation" className="nav-button">Sign Up</Link>
       </div>
     </div>
   )
