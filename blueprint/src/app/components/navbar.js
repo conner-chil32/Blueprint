@@ -1,5 +1,3 @@
-import { getCookie } from "@root/api/CookieController"
-import { cookies } from "next/headers"
 import Link from "next/link"
 
 export default function Navbar({ children }) {
