@@ -1,10 +1,11 @@
+import Link from "next/link";
 import Navbar from "../components/navbar";
 import styles from './page.module.css';
 
 export default function CanvasPage() {
   return (
     <>
-      <Navbar />
+      <Navbar><Link href="/UserWebBackend" className="nav-button">BackEnd</Link></Navbar>
       <div className={styles.mainContainer}>
         <div className={styles.leftPanel}>
           <div className={styles.controlMenu}>

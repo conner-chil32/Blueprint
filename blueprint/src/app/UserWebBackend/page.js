@@ -21,7 +21,7 @@ export default function UserWebBackend() {
   return (
     <div className={styles.wrapper}>
       {/* fixed top-left controls */}
-      <Link href="/">
+      <Link href="/canvas">
         <button className={styles.backButton}>Back</button>
       </Link>
       <button className={styles.deleteButton}>Delete</button>

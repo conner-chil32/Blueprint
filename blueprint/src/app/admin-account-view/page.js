@@ -8,7 +8,7 @@ import ActionButton from "../components/adminActions";
 export default function admin_view() {
     return (
         <>
-            <Navbar />
+            <Navbar></Navbar>
             <div className={styles.quickView}>
                 <div className={styles.leftSide}>
                     <div className={styles.topRow}>
