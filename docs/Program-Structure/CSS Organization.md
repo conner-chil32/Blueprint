@@ -2,7 +2,7 @@
 layout: default
 title: CSS Organization
 excerpt: Short description to include as an opening and SEO metatags.
-nav_order: 3
+nav_order: 2
 nav_exclude: false
 search_exclude: false
 ---

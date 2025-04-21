@@ -1,0 +1,183 @@
+{
+  "main": {
+    "id": "63b6fc6754d0584f",
+    "type": "split",
+    "children": [
+      {
+        "id": "c030275803e82831",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "657ff28b9a9e96e8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Documentation/mysql-database.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "mysql-database"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b493323f79412483",
+    "type": "split",
+    "children": [
+      {
+        "id": "d5098e411898284a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7a74e049865b41a6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "902e4b180377952d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "2f91051522ca2a57",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "81db4deead7fef62",
+    "type": "split",
+    "children": [
+      {
+        "id": "6cac071fc3c0892f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d9eeae27f616cca7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Documentation/mysql database.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for mysql database"
+            }
+          },
+          {
+            "id": "6da471d8e816f3d2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Documentation/mysql database.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from mysql database"
+            }
+          },
+          {
+            "id": "773923af8f522a4e",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "4e7e0cc884898edc",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Documentation/mysql database.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of mysql database"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "657ff28b9a9e96e8",
+  "lastOpenFiles": [
+    "makedocs.md",
+    "Documentation/protocol.md",
+    "Documentation/mysql-database.md",
+    "Program-Structure/CSS Organization.md",
+    "index.md",
+    "templates/document.md",
+    "imgs/insert-template-button-img.png",
+    "imgs/finder-img.png",
+    "imgs/new-note-button-img.png"
+  ]
+}
