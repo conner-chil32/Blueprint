@@ -8,10 +8,10 @@ export default function CanvasPage() {
       <div className={styles.mainContainer}>
         <div className={styles.leftPanel}>
           <div className={styles.controlMenu}>
-            <button onClick={() => alert('File')}>File</button>
-            <button onClick={() => alert('Edit')}>Edit</button>
-            <button onClick={() => alert('Undo')}>Undo</button>
-            <button onClick={() => alert('Redo')}>Redo</button>
+            <button>File</button>
+            <button>Edit</button>
+            <button>Undo</button>
+            <button>Redo</button>
           </div>
 
           <div className={styles.sectionTitle}>Templates</div>

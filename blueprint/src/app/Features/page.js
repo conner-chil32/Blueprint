@@ -30,7 +30,6 @@ export default function BlueprintFeatures() {
       <Navbar />
       <div className={styles.mainContent}>
         <h1>Blueprint Features</h1>
-        <h2>Webdesign for goldfish</h2>
 
         <div className={styles.featuresSection}>
           <h3>Features List</h3>

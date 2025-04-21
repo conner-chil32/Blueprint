@@ -1,18 +1,22 @@
+import { getCookie } from "@root/api/CookieController"
+import { cookies } from "next/headers"
 import Link from "next/link"
 
-export default function Navbar() {
-    return (
-      <div className = "topBarBackground">
-        <div className="navbar">
+export default function Navbar({ loggedIn }) {
+  return (
+    <div className = "topBarBackground">
+      <div className="navbar">
         <div className="nav-left">
             <Link href="/">
                 <img title="Logo" src="images/Blueprint_trans.png" className="logoStyle"></img>
             </Link>
             <Link href="/Features" className="nav-button">Features</Link>
             <Link href="/Pricing" className="nav-button">Pricing</Link>
-        </div>
-        <Link href="login" className="nav-button">Login</Link>
+            <Link href="/canvas" className="nav-button">Canvas</Link>
+            <Link href="/FTU-main" className="nav-button">Portal</Link>
+            <Link href="/account-creation" className="nav-button">Sign Up</Link>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
+}
