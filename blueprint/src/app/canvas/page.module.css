@@ -6,13 +6,6 @@
     --border: #e2e8f0;
 }
 
-.htmlBody {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
 .navbar {
     background-color: var(--primary);
     padding: 12px 24px;
@@ -88,7 +81,7 @@
 }
 
 .controlMenu button {
-    padding: 8px 16px;
+    padding: 8px 8px;
     border: none;
     border-radius: 6px;
     background: var(--primary);
