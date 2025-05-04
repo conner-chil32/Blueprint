@@ -70,6 +70,28 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 ## Timeline
+### Sprint 5 milestones:
+- The Canvas page will have basic functionality.
+- At the very least a blank but working website page will be capable of being created.
+- The foundation for widgets will be set up.
+- The login system will be at least partially implemented, with pages working.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+### Sprint 6 milestones:
+- Database implementation will be in its later stages, with all login information stored.
+- The Canvas Page will contain a collection of basic widgets, like buttons, links, and asthetics.
 
+### Sprint 7 milestones:
+- Websites and user information can be stored on the database.
+- The Canvas page will have more complex widgets, namely video players.
+
+### Sprint 8 milestones:
+- Testing and continued platform integration.
+- All websites will be mobile-compatible.
+
+### Sprint 9 milestones:
+- Major bugs tested for and fixed.
+
+### Sprints 10 milestones:
+- Database deployed on Azure.
+- All pages deployed on Github Pages.
+- Docker fully up and running.
