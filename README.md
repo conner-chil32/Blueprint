@@ -10,14 +10,21 @@
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr-closed/conner-chil32/Blueprint)
 
 
-
-
 ## Synopsis
 
 
 ### Objective
 
-- Create a web application that allows users to create a website using drag and drop functionality, then publish that designed website to other providers like Wordpress.
+- Blueprint is centered on creating a web application that allows users to drag and drop elements into a space to build their own website with ease of use. Users will also be able to manage their own backend of their own website with with flexibility to suit their personal and/or business needs.
+
+### Features
+
+- Password Validation
+- Multi-Factor Authentication
+- Account Creation/Recovery
+- Domain Registration
+- AWS Integration
+- Mobile Friendly Design
 
 ### Stack
 <h4 align="center">Front End</h3>
