@@ -9,18 +9,17 @@
 ![License](https://img.shields.io/github/license/conner-chil32/Blueprint)
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr-closed/conner-chil32/Blueprint)
 
-
-## Synopsis
-
-
-## Table of Contents
-- [Objective](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#objective)
-- [Stack](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#stack)
-- [Current-User-Flow](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#current-user-flow)
+# Table of Contents
+- [Synopsis](https://github.com/conner-chil32/Blueprint#synopsis)
+    - [Objective](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#objective)
+    - [Stack](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#stack)
+    - [Current-User-Flow](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#current-user-flow)
 - [Deployment](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#deployment)
 - [Testing](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#testing)
 - [Development-Notes](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#development-notes)
 - [Timeline](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#timeline)
+  
+## Synopsis
 
 ### Objective
 
