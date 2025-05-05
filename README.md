@@ -74,15 +74,41 @@
 
 ## Deployment
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 ## Testing
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-## Development Notes
+## Development
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+### Prototype
+
+<div style="display: flex; flex-direction:column">
+  <div style="display: flex; flex-direction:row">
+    <img src="https://github.com/user-attachments/assets/7765fcf8-6226-4f7c-ad6c-4c6594329a09" style="height:150px; width:190px;"></img>
+    <img src="https://github.com/user-attachments/assets/b3e55218-454e-4c24-a4f5-e5920d2b98e5" style="height:150px; width:190px;"></img>
+    <img src="https://github.com/user-attachments/assets/3818383b-c307-4232-a196-1ccf8b7507b1" style="height:150px; width:190px;"></img>
+    <img src="https://github.com/user-attachments/assets/cf1dfc99-6cbc-4ca9-b48d-e4cdf29be216" style="height:150px; width:190px;"></img>
+    <img src="https://github.com/user-attachments/assets/4985b048-dcd2-4e82-a01a-c22af2ca53bc" style="height:150px; width:190px;"></img>
+  </div>
+  <div style="display: flex; flex-direction:row">
+    <img src="https://github.com/user-attachments/assets/9e0ca395-e956-49c5-97ed-2986cce7c44d" style="height:150px; width:190px;"></img>
+    <img src="https://github.com/user-attachments/assets/b5686c5c-c7d4-4161-b80f-e5597fb7bd03" style="height:150px; width:190px;"></img>
+    <img src="https://github.com/user-attachments/assets/6cbdffc1-c1dc-48e3-bb92-d184320f5751" style="height:150px; width:190px;"></img>
+    <img src="https://github.com/user-attachments/assets/6c1a73e8-a50a-4096-8ec4-51e6fa0120e3" style="height:150px; width:190px;"></img>
+    <img src="https://github.com/user-attachments/assets/78754a4b-8363-418a-a438-ffda6ea85fd9" style="height:150px; width:190px;"></img>
+  </div>
+  <div style="display: flex; flex-direction:row">
+    <img src="https://github.com/user-attachments/assets/78754a4b-8363-418a-a438-ffda6ea85fd9" style="height:150px; width:190px;"></img>
+  </div>
+</div>
+
+### Database ERD
+
+![image](https://github.com/user-attachments/assets/11cfbb86-722a-4df7-b889-8118f6a5782b)
+
+
+
 
 ## Timeline
 ### Sprint 5 milestones:
