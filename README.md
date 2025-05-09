@@ -131,6 +131,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 - Major bugs tested for and fixed.
 
 ### Sprints 10 milestones:
-- Database deployed on Azure.
+- Database deployed on AWS.
 - All pages deployed on Github Pages.
 - Docker fully up and running.
