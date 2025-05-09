@@ -99,9 +99,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     <img src="https://github.com/user-attachments/assets/6c1a73e8-a50a-4096-8ec4-51e6fa0120e3" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/78754a4b-8363-418a-a438-ffda6ea85fd9" style="height:150px; width:190px;"></img>
   </div>
-  <div style="display: flex; flex-direction:row">
-    <img src="https://github.com/user-attachments/assets/78754a4b-8363-418a-a438-ffda6ea85fd9" style="height:150px; width:190px;"></img>
-  </div>
 </div>
 
 ### Database ERD
