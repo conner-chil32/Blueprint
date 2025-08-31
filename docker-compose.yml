@@ -11,6 +11,7 @@ services:
       MYSQL_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - ./blueprint/lib/db_data:/var/lib/mysql
+      - ./dbstart:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
     networks:
