@@ -24,6 +24,15 @@
     position: relative;
 }
 
+.accountCreateLink {
+    border-width: 0px; 
+    border-radius: 10px; 
+    height: 3.4vw; 
+    width: 25vw; 
+    align-self: center; 
+    position: relative;
+}
+
 .accountSubmit{
     align-self: center; 
     position: relative; 
