@@ -21,6 +21,8 @@
     "blueprint": "file:",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "react-rnd": "^10.5.2",
+    "react-zoom-pan-pinch": "^3.7.0"
   }
 }
