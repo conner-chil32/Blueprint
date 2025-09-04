@@ -4,13 +4,52 @@ import styles from './page.module.css'; // Import the CSS module for styling
 
 export default function SignUpPage() {
 
+    const infoBoxes = [
+        {
+            id: 'username',
+            text: "Username"
+        },
+        {
+            id: 'email',
+            text: "Email"
+        },
+        {
+            id: 'password1',
+            text: "Password"
+        },
+        {
+            id: 'password2',
+            text: "Re-enter Password"
+        },
+        {
+            id: 'phone' ,
+            text: "Phone Number (Optional)"
+        }
+    ];
+
     return (
     <>
         <Navbar />
-        <div className = {styles.loginContainer}>
-            <img src = "images/pog_web_logo.png" className = {styles.logo}></img>
-            <AccountCollecter currentPage = "/signup" />
-        </div>
+            <div className={styles.body}>
+                <div className={`${styles.bodySection} ${styles.createSection}`}>
+                    {infoBoxes.map((box) => (
+                        <div key={box.id} className={styles.infoBox}>
+                            <input type="text" placeholder={box.text}></input>
+                        </div>
+                    ))}
+                </div>
+                <div className={`${styles.bodySection} ${styles.reqsSection}`}>
+                    <p>
+                        Password Must Contain at least: <br/>
+                        - 1 Uppercase Letter <br/>
+                        - 1 Lowercase Letter <br/>
+                        - 1 Number Value {'(0 - 9)'} <br/>
+                        - 1 Special Character {'(#,$,%,&,!)'} <br/>
+                        - Minimum of 8 Characters <br/>
+                    </p>
+                </div>
+            {/* <AccountCollecter currentPage = "/signup" /> */}
+            </div>
     </>
     )
 }
