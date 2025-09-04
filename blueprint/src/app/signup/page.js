@@ -37,6 +37,12 @@ export default function SignUpPage() {
                             <input type="text" placeholder={box.text}></input>
                         </div>
                     ))}
+                    <div className={styles.form}>
+                        <form>
+                            <input type="checkbox" id="marketing" value="Yes"/>
+                            <label> I am interested in future marketing</label><br/>
+                        </form>
+                    </div>
                 </div>
                 <div className={`${styles.bodySection} ${styles.reqsSection}`}>
                     <p>
@@ -48,6 +54,7 @@ export default function SignUpPage() {
                         - Minimum of 8 Characters <br/>
                     </p>
                 </div>
+            
             {/* <AccountCollecter currentPage = "/signup" /> */}
             </div>
     </>

@@ -23,6 +23,7 @@
     border-style: solid;
     border-width: 8px;
     border-radius: 10px;
+    width: auto;
 }
 
 .createSection{
@@ -43,4 +44,15 @@
     border-radius: var(--border-weight);
     padding: 10px;
     margin: 10px;
+}
+
+.form{
+    padding: 10px;
+    color: var(--light-grey);
+
+}
+
+.form input[type="checkbox"] {
+    transform: scale(2);
+    margin: 0px 0px 10px 10px;
 }
