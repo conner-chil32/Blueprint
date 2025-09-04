@@ -11,12 +11,10 @@
 }
 
 .body {
-    margin-top: 30vh;
+    margin: 30vh 50px 0px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    /* Creates two equal-width columns */
-    gap: 25vw;
-    /* Adds space between columns */
+    gap: clamp(10px, 10vw, 100px);
 }
 
 .bodySection{
@@ -24,6 +22,17 @@
     border-width: 8px;
     border-radius: 10px;
     width: auto;
+    min-width: 350px;
+}
+
+.bodySection button{
+    border-width: 10px;
+    background-color: var(--light-blue);
+    color: var(--dark-grey);
+    border-radius: var(--border-weight);
+    width: 75%;
+    margin: 20px;
+    padding: 5px 0px;
 }
 
 .createSection{
@@ -32,11 +41,48 @@
     
 }
 
+.createSection form {
+    padding: 10px;
+    color: var(--dark-grey);
+
+}
+
+.createSection label {
+    padding: 10px;
+    color: var(--light-grey);
+
+}
+.createSection input[type="checkbox"] {
+    transform: scale(2);
+    margin: 0px 0px 10px 10px;
+    color: var(--dark-grey);
+}
+
+.createSection input[type="text"]::placeholder {
+    color: var(--dark-grey);
+    opacity: 1;
+}
+
 .reqsSection{
     background-color: var(--light-blue);
     border-color: var(--dark-grey);
     padding: 10px;
     text-align: left;
+
+    display: flex;
+    flex-direction: column;
+    /* Stacks the items vertically */
+    align-items: center;
+}
+
+.reqsSection button {
+    background-color: var(--dark-grey);
+    color: white;
+    min-height: 15%;
+}
+
+.reqsSection img {
+    max-width: 50%;
 }
 
 .infoBox{
@@ -44,15 +90,4 @@
     border-radius: var(--border-weight);
     padding: 10px;
     margin: 10px;
-}
-
-.form{
-    padding: 10px;
-    color: var(--light-grey);
-
-}
-
-.form input[type="checkbox"] {
-    transform: scale(2);
-    margin: 0px 0px 10px 10px;
 }
