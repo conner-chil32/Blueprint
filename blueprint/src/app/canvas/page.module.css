@@ -3,23 +3,20 @@
     --secondary: #1e40af;
     --background: #f8fafc;
     --surface: #ffffff;
-    --border: #e2e8f0;
+    --border: #000000;
 }
 
-.navbar {
-    background-color: var(--primary);
-    padding: 12px 24px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.htmlBody {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 
 .navItems {
     display: flex;
     gap: 32px;
-    max-width: 1200px;
+    /*max-width: 1200px;*/
     margin: 0 auto;
     justify-content: center;
 }
@@ -37,12 +34,26 @@
 }
 
 .mainContainer {
-    display: flex;
-    height: 100vh;
     padding-top: 60px;
 }
 
-.leftPanel {
+.switchButton {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.panelToggleButton {
+    position: fixed;
+    top: 10px;
+    padding: 5px 10px;
+    z-index: 20
+}
+
+.sidePanel {
     width: 15%;
     min-width: 300px;
     background: var(--surface);
@@ -53,23 +64,45 @@
     overflow-y: auto;
 }
 
+.leftPanel {
+    left: 0;
+}
+
+.rightPanel {
+    right: 0;
+}
+
 .canvasArea {
-    width: 85%;
+    border: 2px dashed #cbd5e1;
+    top: 70px;
+    width: 70vw;
+    height: 80vh;
     background-color: var(--surface);
-    padding: 24px;
+    /*padding: 24px;*/
     position: relative;
 }
 
 .canvasContent {
-    border: 2px dashed #cbd5e1;
     border-radius: 12px;
-    height: calc(100vh - 108px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    /*height: calc(100vh - 108px);*/
+    display:grid;
+    top: 70px;
+    width: 70vw;
+    height: 80vh;
     color: #94a3b8;
     font-size: 1.125rem;
     transition: border-color 0.2s ease;
+    position: relative;
+}
+
+.deleteButton {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    
 }
 
 .controlMenu {
