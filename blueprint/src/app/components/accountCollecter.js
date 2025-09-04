@@ -74,6 +74,7 @@ export default function AccountCollecter( { currentPage } ) {
                     <>
                         <UserField />
                         <PasswField />
+                        <center><div className={`${styles.accountCreateLink} submit-button`}><a href="/signup" >Create Account</a></div></center>
                         <AccountSubmit path={currentPage}/>
                     </>
                 )
