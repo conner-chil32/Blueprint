@@ -1,13 +1,3 @@
-const library = {
-    "features": features,
-    "pricing": pricing,
-    "logo": logo,
-    "login": login
-}
-export { library };
-
-
-
 /*template = {
     "label": "", 
     "href": "", 
@@ -26,7 +16,7 @@ const features = {
 
 const pricing = {
     "label": "Pricing", 
-    "href": "/Pricing", 
+    "href": "/pricing", 
     "className": "nav-button"
 }
 
@@ -42,3 +32,15 @@ const login = {
     "href": "login", 
     "className": "nav-button"
 }
+
+
+
+
+
+const library = {
+    "features": features,
+    "pricing": pricing,
+    "logo": logo,
+    "login": login
+}
+export { library };
