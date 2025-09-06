@@ -1,4 +1,5 @@
 import { connection, closeConnection } from "./connection.js";
+import { getUserByID } from "./userQueries.js";
 /*
     commit() - commits the current transaction to the database
     Input: none
@@ -63,5 +64,37 @@ export async function validateConnection() {
         }
     } catch (err) {
         throw false;
+    }
+}
+
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+let loggedIn = false; //stand in code replace with actual implementation later
+export async function encryptData(username, password){
+    if(loggedIn = true){//Check if already logged in
+        return true;
+    }else{
+        try{
+            const hashedPassword = await bcrypt.hash(password, saltRounds);//Hash and set hashed password
+
+            const user = await getUserByID(username);
+
+            if(!user){
+                return false;
+            }
+
+            const [storedUsername,StoredPassword] = user.getUserCredentials();
+
+            if(storedUsername === username && storedPassword === hashedPassword){
+                loggedIn = true;
+                return true;
+            }else{
+                return false;
+            }
+        } catch(err){
+            console.error(err);
+            return false;
+        }
+
     }
 }
