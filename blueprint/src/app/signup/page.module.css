@@ -86,7 +86,7 @@
 }
 
 .infoBox{
-    background-color: aliceblue;
+    background-color: var(--light-grey);
     border-radius: var(--border-weight);
     padding: 10px;
     margin: 10px;
