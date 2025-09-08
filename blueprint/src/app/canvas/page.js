@@ -12,7 +12,7 @@ import {
 
 export default function CanvasPage() {
   // Pages, each containing widgets
-  const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [] }]);
+  const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [], width: 800, height: 600 }]);
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
@@ -26,6 +26,7 @@ export default function CanvasPage() {
   // Moving and placing widgets
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isPlacing, setIsPlacing] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [widgetToPlace, setWidgetToPlace] = useState(null);
 
   // Selected widget container
@@ -52,7 +53,15 @@ export default function CanvasPage() {
 
   // Create a new page
   const createPage = () => {
-    setPages([...pages, {id: nextPageID, name: `Page ${nextPageID}`, widgets: []}])
+    setPages([
+      ...pages,
+      {id: nextPageID,
+        name: `Page ${nextPageID}`,
+        widgets: [],
+        width: 800,
+        height: 600
+      }])
+
     setSelectedPageID(nextPageID);
     console.log('Created page', nextPageID);
     setNextPageID(nextPageID+1);
@@ -75,7 +84,7 @@ export default function CanvasPage() {
 
       setMousePos({ x, y });
 
-      // If in placement mode and the canvas area, move the widget with the mouse
+      // If in the canvas area and in placement mode, move the widget with the mouse
       if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
         if (isPlacing && widgetToPlace) {
           setWidgetToPlace((prev) => ({
@@ -224,20 +233,32 @@ export default function CanvasPage() {
         </div>
         
           {/* Canvas for displaying and adding widgets to the site. */}
-          <div className={styles.canvasArea} ref={canvasRef} onClick={handleCanvasClick}>
+          <div className={styles.canvasArea} ref={canvasRef} onClick={handleCanvasClick}
+            style={{
+                position: "relative",
+                width: currentPage?.width + "px",
+                height: currentPage?.height + "px",
+              }}>
 
             <TransformWrapper
               initialScale={1}
               initialPositionX={0}
               initialPositionY={0}
-              disabled={true}
+              disabled={isPlacing || isDragging}
             >
             <TransformComponent>
 
-            <div className={styles.canvasContent} id="canvas">
+            <div className={styles.canvasContent} id="canvas"
+              style={{
+                position: "relative",
+                width: currentPage?.width + "px",
+                height: currentPage?.height + "px",
+              }}>
+
               {/* Render new objects, only if widgets exists */}
               {Array.isArray(widgets) && widgets.map((widget) => (
                 <WidgetRenderer
+                  bounds="parent"
                   key={widget.id}
                   widget={widget}
                   // selectedWidgets? means if selectedWidgets is not null
@@ -248,6 +269,8 @@ export default function CanvasPage() {
                     setSelectedWidgets([widget]);
                     console.log('Selected widget: ' + widget.id);
                   }}
+                  onDragStart={() => setIsDragging(true)}
+                  onDragStop={() => setIsDragging(false)}
                   alertDragStop={updateWidget}
                 />
               ))}
@@ -269,7 +292,7 @@ export default function CanvasPage() {
         {/* Panel on the right, showing options for the selected widgets and the canvas page */}
         <div className={`${styles.rightPanel} ${styles.sidePanel}`}>
           <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
-          pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} />
+          pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />
         </div>
     </>
   );
@@ -282,6 +305,16 @@ export default function CanvasPage() {
     );
 
     setWidgets(changedWidgets);
+  }
+
+  function changePageProperty(pageID, newProperties) {
+    const changedPages = pages.map(page =>
+      // If this is the correct widget, then update the object
+      page.id === pageID ? {...page, ...newProperties}
+      : page // Otherwise, leave it
+    );
+
+    setPages(changedPages);
   }
 }
 
@@ -304,7 +337,7 @@ function LeftPanel({ createWidget }) {
 
   function RightPanel({
     changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
-    pages, selectedPageID, setSelectedPageID, currentPage, createPage
+    pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty
    }) {
     const [buttonSelected, setButtonSelected] = useState(false);
 
@@ -321,7 +354,7 @@ function LeftPanel({ createWidget }) {
 
         {/* False = widget properties. True = page properties */}
         {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} />
-          : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} />}
+          : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />}
       </div>
 
     );
@@ -386,7 +419,7 @@ function LeftPanel({ createWidget }) {
   }
 }
 
-function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage }) {
+function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty }) {
 
   const downloadHTMLPage = (currentPage) => {
     console.log("Downloading page", currentPage);
@@ -401,7 +434,7 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
   }
 
   return(
-    <div>
+    <div className={styles.widgetOptions}>
       {/* A view of all pages */}
       <select value={selectedPageID} onChange={e => setSelectedPageID(Number(e.target.value))}>
         {pages.map(page => (
@@ -411,6 +444,38 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
       
       {/* Buttons for editing pages */}
       <button onClick={createPage}>+ New Page</button>
+
+      {/* Page size controls */}
+      <div>
+        <p>Width</p>
+        <input 
+          type="input"
+          min="0"
+          autoComplete="off"
+          value={currentPage.width}
+          onChange={e => {
+            if (e?.target.value === "") {
+              changePageProperty(selectedPageID, { width: 0 })
+            } else {
+              changePageProperty(selectedPageID, { width: parseInt(e?.target.value, 10) })
+            }
+          }}/>
+
+        <p>Height</p>
+        <input 
+          type="input"
+          min="0"
+          autoComplete="off"
+          value={currentPage.height}
+          onChange={e => {
+            if (e?.target.value === "") {
+              changePageProperty(selectedPageID, { height: 0 })
+            } else {
+              changePageProperty(selectedPageID, { height: parseInt(e?.target.value, 10) })
+            }
+          }}
+          />
+      </div>
 
       {/* Download current page as HTML */}
       <button >Download Page</button>
