@@ -11,15 +11,11 @@ export default function SignUpPage() {
         },
         {
             id: 'email',
-            text: "Email"
+            text: "Email/Phone Number"
         },
         {
             id: 'password',
             text: "Password"
-        },
-        {
-            id: 'phone',
-            text: "Phone Number (Optional)"
         }
     ];
 
@@ -27,35 +23,33 @@ export default function SignUpPage() {
     <>
         <Navbar />
             <div className={styles.body}>
-                <div className={`${styles.bodySection} ${styles.createSection}`}>
-                    <p>Forgot Username</p>
+                <div className={`${styles.bodySection}`}>
+                    <p>I Forgot My Username</p>
                     <form>
-                        {infoBoxes.map((box) => (
+                        {infoBoxes
+                            .filter((box) => box.id !== 'username')
+                            .map((box) => (
                             <div key={box.id} className={styles.infoBox}>
                                 <input type="text" name={box.id} placeholder={box.text} required={box.id !== 'phone'}></input>
                             </div>
                         ))}
-                        <input type="checkbox" id="marketing" value="Yes"/>
-                        <label> I am interested in future marketing</label><br />
-                        <button className="submit-button" type="submit">CREATE <br/> ACCOUNT</button>
+                        <button className="submit-button" type="submit">CONTINUE</button>
                     </form>
                 </div>
 
-                <div className={`${styles.bodySection} ${styles.createSection}`}>
-                    <p>Forgot Password</p>
+                <div className={`${styles.bodySection}`}>
+                    <p>I Forgot My Password</p>
                     <form>
-                        {infoBoxes.map((box) => (
+                        {infoBoxes
+                            .filter((box) => box.id !== 'password')
+                            .map((box) => (
                             <div key={box.id} className={styles.infoBox}>
                                 <input type="text" name={box.id} placeholder={box.text} required={box.id !== 'phone'}></input>
                             </div>
                         ))}
-                        <input type="checkbox" id="marketing" value="Yes" />
-                        <label> I am interested in future marketing</label><br />
-                        <button className="submit-button" type="submit">CREATE <br /> ACCOUNT</button>
+                        <button className="submit-button" type="submit">CONTINUE</button>
                     </form>
                 </div>
-            
-            {/* <AccountCollecter currentPage = "/signup" /> */}
             </div>
     </>
     )
