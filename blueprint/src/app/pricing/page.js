@@ -4,7 +4,7 @@ import styles from "./page.module.css"; // Import the CSS module for styling
 export default function RawHTMLPage() {
     return (
     <>
-        <Navbar />  {/* Render the Navbar component */}
+        <Navbar />
         <div className={styles.container}>
             <div className={styles.content}>
                 <h1 className={styles.title}>There is a plan for everyone</h1>
