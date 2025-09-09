@@ -15,6 +15,16 @@
     position: relative;
 }
 
+.phoneField {
+    order: 1;
+    border-width: 0px; 
+    border-radius: 10px; 
+    height: 3.4vw; 
+    width: 25vw; 
+    align-self: center; 
+    position: relative;
+}
+
 .passField{
     border-width: 0px; 
     border-radius: 10px; 

@@ -30,6 +30,21 @@ function PasswField() {
     );
 }
 
+/* 
+    PhoneNumberField A component that renders a phone number input field
+    Input: none
+    Output: a div containing an input for the user's phone number
+    Date: 09/08/2025
+    Author: Elijah White
+*/
+function PhoneNumberField(){
+    return (
+        <div className = {styles.userFieldContainer}>
+            <input name = "" placeholder = "Enter Phone Number" type = "text" className={styles.phoneField} id = "login_username"></input>
+        </div>
+    )
+}
+
 /*
     AccountSubmit: A component that renders a submit button for the form.
     Input: none
@@ -87,6 +102,7 @@ export default function AccountCollecter( { currentPage } ) {
                     <>
                         <UserField />
                         <PasswField />
+                        <PhoneNumberField />
                         <AccountSubmit path={currentPage}/>
                     </>
                 ) : (
