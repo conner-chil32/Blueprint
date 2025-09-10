@@ -41,6 +41,12 @@
     padding: 20px;
 }
 
+.displayText {
+    font-size: 14px;
+    margin: 0; 
+    width: 100%;
+}
+
 .plan {
     background-color: white;
     color: black;
@@ -63,4 +69,18 @@
 
 .plan ul li {
     margin-bottom: 15px;
+}
+
+
+/* Request this to go globals.css */
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }
