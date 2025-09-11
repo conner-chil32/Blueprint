@@ -67,14 +67,14 @@ export default function CanvasPage() {
     const handleMouseMove = (e) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-
-      // Calculate the position of the canvas
+  
+// Calculate the position of the canvas
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-
+  
       setMousePos({ x, y });
-
+  
       // If in placement mode and the canvas area, move the widget with the mouse
       if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
         if (isPlacing && widgetToPlace) {
@@ -86,23 +86,40 @@ export default function CanvasPage() {
         }
       }
     };
-
-    const handleKeyPresses = (e) => {
-      if ((e.keyCode === 8 || e.keyCode === 46) && selectedWidgets?.length) {
-        selectedWidgets.forEach(widget => {
-          console.log("Button pressed ", e.key);
-          deleteWidget(widget.id);
-        })
+  
+    /* 
+    Old keyDown handlen deleted widgets by pressing backspace or delete when typing in input fields.
+    Now modified to prevent Backspace/Delete from navigating back or deleting widgets when typing in an input field.
+    Can still delete widgets using the delete button in the right panel. 
+    */
+    const handleDocumentKeyDown = (e) => {
+      // Ignore when typing in any editable field
+      const t = e.target;
+      const tag = t?.tagName?.toLowerCase();
+      const isTyping =
+        tag === "input" ||
+        tag === "textarea" ||
+        t?.isContentEditable ||
+        t?.getAttribute?.("role") === "textbox";
+  
+      if (isTyping) return;
+  
+      // Do NOT delete widgets on Backspace/Delete anymore.
+      // Prevent browser back navigation in some contexts.
+      if (e.key === "Backspace" || e.key === "Delete") {
+        e.preventDefault();
       }
     };
-
-    document.addEventListener('keydown', handleKeyPresses);
+  
     window.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("keydown", handleDocumentKeyDown);
+  
     return () => {
-      document.removeEventListener('keydown', handleKeyPresses);
       window.removeEventListener("mousemove", handleMouseMove);
-    }
-  }, [isPlacing, widgetToPlace, selectedWidgets]);
+      document.removeEventListener("keydown", handleDocumentKeyDown);
+    };
+  }, [isPlacing, widgetToPlace]);
+  
 
   /**
   * Ensure changes to the widgets updates the whole page
@@ -180,6 +197,74 @@ export default function CanvasPage() {
           rotation: 0,
         };
         break;
+
+        case 'video':
+      newWidget = {
+        type: 'video',
+        id: nextId,
+        x: mousePos.x,
+        y: mousePos.y,
+        width: 320,
+        height: 180,
+        isSelected: false,
+        isMoving: true,
+        backgroundColor: '#000000',
+        pointerEventsNone: true,
+        rotation: 0,
+        // custom props:
+        videoUrl: '/images/DemoVideo.mp4',
+        loop: false,
+        muted: true,
+        autoplay: true,
+        controls: true,
+        objectFit: 'contain',
+      };
+      break;
+
+      case 'dropdown':
+      newWidget = {
+        type: 'dropdown',
+        id: nextId,
+        x: mousePos.x,
+        y: mousePos.y,
+        width: 220,
+        height: 50,
+        isSelected: false,
+        isMoving: true,
+        backgroundColor: '#ffffff',
+        pointerEventsNone: true,
+        rotation: 0,
+        // custom props:
+        options: ['Option 1', 'Option 2', 'Option 3'],
+        value: 'Option 1',
+        fontSize: 12,
+        textColor: '#111111',
+        bgColor: '#ffffff',
+      };
+      break;
+
+    case 'advert':
+      newWidget = {
+        type: 'advert',
+        id: nextId,
+        x: mousePos.x,
+        y: mousePos.y,
+        width: 300,
+        height: 250, // standard MPU size
+        isSelected: false,
+        isMoving: true,
+        backgroundColor: '#ffffff',
+        pointerEventsNone: true,
+        rotation: 0,
+        // custom props:
+        imageUrl: '/images/Blueprint.png',
+        linkUrl: 'http://localhost:3000/features',
+        alt: 'Advertisement',
+        objectFit: 'cover',
+        showBorder: true,
+        borderColor: '#333333',
+      };
+      break;
       default:
         console.warn('Warning: Unknown widget type: ' + typeToMake);
         return;
@@ -249,6 +334,7 @@ export default function CanvasPage() {
                     console.log('Selected widget: ' + widget.id);
                   }}
                   alertDragStop={updateWidget}
+                  changeWidgetProperty={changeWidgetProperty}
                 />
               ))}
 
@@ -294,6 +380,13 @@ function LeftPanel({ createWidget }) {
 
           <div className={styles.divider}></div>
 
+          <div className={styles.sectionTitle}>Widgets</div>
+          <button className={styles.categoryItem} onClick={() => createWidget('video')}>Video</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('dropdown')}>Dropdown</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('advert')}>Advertisement</button>
+
+          <div className={styles.divider}></div>
+
           <div className={styles.sectionTitle}>Shapes</div>
           <button className={styles.categoryItem} onClick={() => createWidget('box')}>Box</button>
           <button className={styles.categoryItem}>Forms</button>
@@ -305,7 +398,7 @@ function LeftPanel({ createWidget }) {
   function RightPanel({
     changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
     pages, selectedPageID, setSelectedPageID, currentPage, createPage
-   }) {
+  }) {
     const [buttonSelected, setButtonSelected] = useState(false);
 
     const handleButtonClick = () => {
@@ -330,20 +423,22 @@ function LeftPanel({ createWidget }) {
   function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget }) {
     // Render the selected widgets panel
     if (selectedWidgets && selectedWidgets.length > 0) {
-      // If something is selected
+    // If something is selected
       return (
         <div>
           <div>
             {/* Button for deleting widgets */}
-            <button className={styles.deleteButton} onClick={() => {
-              selectedWidgets.forEach(widget => {
-                console.log('Deleting ', widget)
-                deleteWidget(widget.id);
-              })
+            <button
+              className={styles.deleteButton}
+              onClick={() => {
+                selectedWidgets.forEach(widget => {
+                  console.log('Deleting ', widget)
+                  deleteWidget(widget.id);
+                })
               }}
-              >Delete Selected Widget</button>
+            >Delete Selected Widget</button>
           </div>
-
+  
           {/* Menu to change widgets */}
           {selectedWidgets.map((widget) => (
             <div key={widget.id} className={styles.widgetOptions}>
@@ -354,7 +449,7 @@ function LeftPanel({ createWidget }) {
                 value={widget.backgroundColor || "#cccccc"}
                 onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
               />
-
+  
               {/* Two rotation inputs, one as an editable display and the other as a slider */}
               <p>Rotation: {widget.rotation}</p>
               <input
@@ -364,27 +459,235 @@ function LeftPanel({ createWidget }) {
                 value={widget.rotation || 0}
                 onChange={e =>
                   changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value, 10) })
-              }/>
-              <input 
-              type="range"
-              min="0"
-              max="360"
-              value={widget.rotation || 0}
-              onChange={e =>
-                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value, 10) })
-              }/>
+                }/>
+              <input
+                type="range"
+                min="0"
+                max="360"
+                value={widget.rotation || 0}
+                onChange={e =>
+                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) })
+                }
+              />
+  
+              {/* ===== Video controls ===== */}
+              {widget.type === 'video' && (
+                <>
+                  <p>Video URL:</p>
+                  <input
+                    type="text"
+                    placeholder="/videos/intro.mp4 or https://cdn.example.com/clip.mp4"
+                    value={widget.videoUrl || ""}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, { videoUrl: e.target.value || null })
+                    }
+                  />
+  
+                  <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                  }}
+                >
+                  <span>Loop</span>
+                  <input
+                    type="checkbox"
+                    checked={!!widget.loop}
+                    onChange={e => changeWidgetProperty(widget.id, { loop: e.target.checked })}
+                  />
+                </label>
+
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                  }}
+                >
+                  <span>Muted</span>
+                  <input
+                    type="checkbox"
+                    checked={!!widget.muted}
+                    onChange={e => changeWidgetProperty(widget.id, { muted: e.target.checked })}
+                  />
+                </label>
+
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                  }}
+                >
+                  <span>Show controls</span>
+                  <input
+                    type="checkbox"
+                    checked={!!widget.controls}
+                    onChange={(e) =>
+                      changeWidgetProperty(widget.id, { controls: e.target.checked })
+                    }
+                  />
+                </label>
+
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                  }}
+                >
+                  <span>Autoplay</span>
+                  <input
+                    type="checkbox"
+                    checked={!!widget.autoplay}
+                    onChange={(e) =>
+                      changeWidgetProperty(widget.id, { autoplay: e.target.checked })
+                    }
+                  />
+                </label>
+                </>
+              )}
+  
+              {/* ===== Dropdown controls ===== */}
+              {widget.type === 'dropdown' && (() => {
+                // Use a draft string while typing; default to current options joined with ", "
+                const draft = widget.optionsText ?? (widget.options || []).join(", ");
+
+                // Commit helper: turn the draft string into an options array and normalize it
+                const commitOptions = (raw) => {
+                  const arr = (raw || "")
+                    .split(",")
+                    .map(s => s.trim())
+                    .filter(Boolean); // drop empty tokens on commit only
+
+                  const nextValue = arr.includes(widget.value) ? widget.value : (arr[0] || "");
+                  // Save normalized text too so the input shows tidy commas + spaces
+                  const normalizedText = arr.join(", ");
+
+                  changeWidgetProperty(widget.id, {
+                    options: arr,
+                    value: nextValue,
+                    optionsText: normalizedText,
+                  });
+                };
+
+                return (
+                  <>
+                    <p>Options (comma-separated):</p>
+                    <input
+                      type="text"
+                      value={draft}
+                      onChange={e => {
+                        // While typing, only update the draft string; don't parse/sanitize yet.
+                        changeWidgetProperty(widget.id, { optionsText: e.target.value });
+                      }}
+                      onKeyDown={e => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          commitOptions(e.currentTarget.value);
+                          // keep focus if you want: e.currentTarget.blur();
+                        }
+                      }}
+                      onBlur={e => commitOptions(e.currentTarget.value)}
+                    />
+
+                    <p>Selected Value:</p>
+                    <input
+                      type="text"
+                      value={widget.value || ""}
+                      onChange={e => changeWidgetProperty(widget.id, { value: e.target.value })}
+                    />
+
+                    <p>Font Size:</p>
+                    <input
+                      type="number"
+                      min="10"
+                      max="48"
+                      value={widget.fontSize || 14}
+                      onChange={e =>
+                        changeWidgetProperty(
+                          widget.id,
+                          { fontSize: parseInt(e.target.value || "14", 10) }
+                        )
+                      }
+                    />
+
+                    <p>Text Color:</p>
+                    <input
+                      type="color"
+                      value={widget.textColor || "#111111"}
+                      onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
+                    />
+                  </>
+                );
+              })()}
+
+  
+              {/* ===== Advertisement controls ===== */}
+              {widget.type === 'advert' && (
+                <>
+                  <p>Image URL:</p>
+                  <input
+                    type="text"
+                    placeholder="https://…/banner.jpg"
+                    value={widget.imageUrl || ""}
+                    onChange={e => changeWidgetProperty(widget.id, { imageUrl: e.target.value })}
+                  />
+  
+                  <p>Link URL:</p>
+                  <input
+                    type="text"
+                    placeholder="www.google.com"
+                    value={widget.linkUrl || ""}
+                    onChange={e => changeWidgetProperty(widget.id, { linkUrl: e.target.value })}
+                  />
+  
+                  <p>Object Fit:</p>
+                  <select
+                    value={widget.objectFit || "cover"}
+                    onChange={e => changeWidgetProperty(widget.id, { objectFit: e.target.value })}
+                  >
+                    <option value="contain">contain</option>
+                    <option value="cover">cover</option>
+                    <option value="fill">fill</option>
+                    <option value="none">none</option>
+                    <option value="scale-down">scale-down</option>
+                  </select>
+  
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={!!widget.showBorder}
+                      onChange={e => changeWidgetProperty(widget.id, { showBorder: e.target.checked })}
+                    />
+                    Show border
+                  </label>
+  
+                  <p>Border Color:</p>
+                  <input
+                    type="color"
+                    value={widget.borderColor || "#333333"}
+                    onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
+                  />
+                </>
+              )}
             </div>
           ))}
         </div>
       );
-  }
+    }
   else {
-    // If something is not selected
-    return (
+      // If something is not selected
+      return (
       <p>Select a widget to view its properties.</p>
     );
-  }
-}
+    }
+  }  
 
 function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage }) {
 
