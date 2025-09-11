@@ -85,14 +85,12 @@ export default function CanvasPage() {
       setMousePos({ x, y });
 
       // If in the canvas area and in placement mode, move the widget with the mouse
-      if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
-        if (isPlacing && widgetToPlace) {
-          setWidgetToPlace((prev) => ({
-            ...prev,
-            x,
-            y
-          }));
-        }
+      if (isPlacing && widgetToPlace) {
+        setWidgetToPlace((prev) => ({
+          ...prev,
+          x,
+          y
+        }));
       }
     };
 
@@ -239,7 +237,7 @@ export default function CanvasPage() {
         disabled={isPlacing || isDragging}
         limitToBounds={false}
         panning={{ velocityDisabled: true }}
-        zoom
+        minScale={0.05}
       >
         {/* Canvas area, a window to view the current page */}
         <div className={styles.canvasArea}>
@@ -247,10 +245,10 @@ export default function CanvasPage() {
           <TransformComponent>
 
             {/* The component for moving/zooming the camera */}
-            <div className={styles.canvasView}>
+            <div className={styles.canvasView} ref={canvasRef} onClick={handleCanvasClick}>
                 
                 {/* The page itself is its own component here */}
-                <div className={styles.pages} ref={canvasRef} onClick={handleCanvasClick}
+                <div className={styles.pages}
                   style={{
                     width: currentPage?.width + "px",
                     height: currentPage?.height + "px",
