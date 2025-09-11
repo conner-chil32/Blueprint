@@ -12,7 +12,7 @@ import {
 
 export default function CanvasPage() {
   // Pages, each containing widgets
-  const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [], width: 800, height: 600 }]);
+  const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [], width: 800, height: 600, backgroundColor: '#ffffff' }]);
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
@@ -227,73 +227,72 @@ export default function CanvasPage() {
     <>
       {/*<Navbar />*/}
       
-        {/* Panel on the left, showing options for adding widgets */}
-        <div className={`${styles.leftPanel} ${styles.sidePanel}`}>
-          <LeftPanel createWidget={createWidget} />
-        </div>
-        
-          {/* Canvas for displaying and adding widgets to the site. */}
-          <div className={styles.canvasArea} ref={canvasRef} onClick={handleCanvasClick}
-            style={{
-                position: "relative",
-                width: currentPage?.width + "px",
-                height: currentPage?.height + "px",
-              }}>
+      {/* Panel on the left, showing options for adding widgets */}
+      <div className={`${styles.leftPanel} ${styles.sidePanel}`}>
+        <LeftPanel createWidget={createWidget} />
+      </div>
 
-            <TransformWrapper
-              initialScale={1}
-              initialPositionX={0}
-              initialPositionY={0}
-              disabled={isPlacing || isDragging}
-            >
-            <TransformComponent>
+      <TransformWrapper
+        initialScale={1}
+        initialPositionX={0}
+        initialPositionY={0}
+        disabled={isPlacing || isDragging}
+        limitToBounds={false}
+        panning={{ velocityDisabled: true }}
+        zoom
+      >
+        {/* Canvas area, a window to view the current page */}
+        <div className={styles.canvasArea}>
 
-            <div className={styles.canvasContent} id="canvas"
-              style={{
-                position: "relative",
-                width: currentPage?.width + "px",
-                height: currentPage?.height + "px",
-              }}>
+          <TransformComponent>
 
-              {/* Render new objects, only if widgets exists */}
-              {Array.isArray(widgets) && widgets.map((widget) => (
-                <WidgetRenderer
-                  bounds="parent"
-                  key={widget.id}
-                  widget={widget}
-                  // selectedWidgets? means if selectedWidgets is not null
-                  // .some checks if any widgets in the array have the same id
-                  isSelected={selectedWidgets?.some(w => w.id === widget.id)}
-                  onClick={() => {
-                    // Select the widget when clicked
-                    setSelectedWidgets([widget]);
-                    console.log('Selected widget: ' + widget.id);
+            {/* The component for moving/zooming the camera */}
+            <div className={styles.canvasView}>
+                
+                {/* The page itself is its own component here */}
+                <div className={styles.pages} ref={canvasRef} onClick={handleCanvasClick}
+                  style={{
+                    width: currentPage?.width + "px",
+                    height: currentPage?.height + "px",
+                    backgroundColor: currentPage.backgroundColor,
                   }}
-                  onDragStart={() => setIsDragging(true)}
-                  onDragStop={() => setIsDragging(false)}
-                  alertDragStop={updateWidget}
-                />
-              ))}
+                >
+                  {/* Render new objects, only if widgets exists */}
+                  {Array.isArray(widgets) &&
+                    widgets.map((widget) => (
+                      <WidgetRenderer
+                        bounds="parent"
+                        key={widget.id}
+                        widget={widget}
+                        // selectedWidgets? means if selectedWidgets is not null
+                        // .some checks if any widgets in the array have the same id
+                        isSelected={selectedWidgets?.some((w) => w.id === widget.id)}
+                        onClick={() => {
+                          // Select the widget when clicked
+                          setSelectedWidgets([widget]);
+                          console.log("Selected widget: " + widget.id);
+                        }}
+                        onDragStart={() => setIsDragging(true)}
+                        onDragStop={() => setIsDragging(false)}
+                        alertDragStop={updateWidget}
+                      />
+                    ))}
 
-              {/* If placing a widget, render it at the mouse position */}
-              {isPlacing && widgetToPlace && (
-                <WidgetRenderer
-                  key={"placing-" + widgetToPlace.id}
-                  widget={widgetToPlace}
-                />
-              )}
+                  {/* If placing a widget, render it at the mouse position */}
+                  {isPlacing && widgetToPlace && (
+                    <WidgetRenderer key={"placing-" + widgetToPlace.id} widget={widgetToPlace} />
+                  )}
+                </div>
             </div>
-
             </TransformComponent>
-            </TransformWrapper>
-
-          </div>
-
-        {/* Panel on the right, showing options for the selected widgets and the canvas page */}
-        <div className={`${styles.rightPanel} ${styles.sidePanel}`}>
-          <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
-          pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />
         </div>
+      </TransformWrapper>
+
+      {/* Panel on the right, showing options for the selected widgets and the canvas page */}
+      <div className={`${styles.rightPanel} ${styles.sidePanel}`}>
+        <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
+        pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />
+      </div>
     </>
   );
   
@@ -457,7 +456,7 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
             if (e?.target.value === "") {
               changePageProperty(selectedPageID, { width: 0 })
             } else {
-              changePageProperty(selectedPageID, { width: parseInt(e?.target.value, 10) })
+              changePageProperty(selectedPageID, { width: parseInt(e.target.value, 10) })
             }
           }}/>
 
@@ -471,9 +470,21 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
             if (e?.target.value === "") {
               changePageProperty(selectedPageID, { height: 0 })
             } else {
-              changePageProperty(selectedPageID, { height: parseInt(e?.target.value, 10) })
+              changePageProperty(selectedPageID, { height: parseInt(e.target.value, 10) })
             }
           }}
+          />
+
+          <p>Background Color</p>
+          <input 
+            type="color"
+            onChange={e => {
+              if (e?.target.value === "") {
+                changePageProperty(selectedPageID, { backgroundColor: '#ffffff' })
+              } else {
+                changePageProperty(selectedPageID, { backgroundColor: e.target.value })
+              }
+            }}
           />
       </div>
 
