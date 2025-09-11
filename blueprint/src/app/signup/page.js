@@ -1,6 +1,7 @@
 import Navbar from "../components/navbar"
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; // Import the CSS module for styling
+import createAccount from '@blueprint/lib/userQueries'
 
 export default function SignUpPage() {
 

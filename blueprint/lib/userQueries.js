@@ -57,3 +57,9 @@ export async function createAccount(user, password, email, connection) {
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail) VALUES (?, ?, ?)`, [user, password, email]);
     return result;
 }
+
+export async function createAccountWithPhone(user, password, email, connection, phone) {
+    if (!await validateConnection(connection)) return false;
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, phone) VALUES (?, ?, ?, ?)`, [user, password, email, phone]);
+    return result;
+}
