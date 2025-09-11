@@ -35,12 +35,9 @@ export default function CanvasPage() {
   // Keep track of where the canvas page is
   const canvasRef = useRef(null);
 
-  // Visibility
-  const [leftPanelVisible, setLeftPanelVisible] = useState(true);
-  const [rightPanelVisible, setRightPanelVisible] = useState(true);
-
-  // Zooming
-  const [canZoom, setCanZoom] = useState(true);
+  // Scaling managment
+  const [scale, setScale] = useState(1);
+  const [dragOffset, setDragOffset] = useState(null);
 
   // Update the current page to include new widgets
   const setWidgets = (newWidgets) => {
@@ -75,12 +72,14 @@ export default function CanvasPage() {
   useEffect(() => {
     const handleMouseMove = (e) => {
       const canvas = canvasRef.current;
+
+      // If the canvas does not exist, return
       if (!canvas) return;
 
-      // Calculate the position of the canvas
+      // Calculate the position of the canvas, taking scale into account
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = (e.clientX - rect.left) / scale;
+      const y = (e.clientY - rect.top) / scale;
 
       setMousePos({ x, y });
 
@@ -88,11 +87,30 @@ export default function CanvasPage() {
       if (isPlacing && widgetToPlace) {
         setWidgetToPlace((prev) => ({
           ...prev,
-          x,
-          y
+          // Take the offset of scaling into account
+          x: x + dragOffset?.x,
+          y: y + dragOffset?.y,
         }));
       }
     };
+
+    const handleMouseDown = (e) => {
+      if (widgetToPlace && dragOffset) {
+        const canvas = canvasRef.current;
+        // If the canvas does not exist, return
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+
+        // Calculate the offset from the canvas
+        const mouseX = (e.clientX - rect.left) / scale;
+        const mouseY = (e.clientY - rect.top) / scale;
+        
+        setDragOffset({
+          x: widgetToPlace?.x - mouseX,
+          y: widgetToPlace?.y - mouseY,
+        });
+      }
+    }
 
     const handleKeyPresses = (e) => {
       if ((e.keyCode === 8 || e.keyCode === 46) && selectedWidgets?.length) {
