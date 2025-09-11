@@ -20,7 +20,8 @@ export default function CreateButton({code = ""}){
     
     return(
         <div className = "routingButton">
-            <Link href={path.href} className={path.className}>{path.label} 
+            <Link href={path.href} className={path.className}>
+                {path.label} 
             </Link>
         </div> 
     )
