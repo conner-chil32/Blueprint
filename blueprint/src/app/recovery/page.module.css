@@ -1,0 +1,70 @@
+.logo {
+    width: 50%;
+    align-self: center;
+    justify-self: center;
+    position: relative;
+    height: 60%; 
+    border-radius: 200px;
+    align-content: center;
+    transform: translateX(125px) translateY(-25px); /* centering logo */
+
+}
+
+.body {
+    margin: 30vh 50px 0px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(10px, 10vw, 100px);
+}
+
+.bodySection{
+    border-radius: 10px;
+    max-height: 600px;
+    width: 100%;
+    background-color: var(--dark-grey);
+    color: var(--light-grey);
+}
+
+.bodySection p{
+    margin: 15px;
+}
+
+.bodySection form {
+    padding: 10px;
+    color: var(--dark-grey);
+
+}
+
+.bodySection label {
+    padding: 10px;
+    color: var(--light-grey);
+
+}
+.bodySection input[type="checkbox"] {
+    transform: scale(2);
+    margin: 0px 0px 10px 10px;
+    color: var(--dark-grey);
+}
+
+.bodySection input[type="text"]::placeholder {
+    color: var(--dark-grey);
+    opacity: 1;
+    
+}
+
+.infoBox{
+    background-color: var(--light-grey);;
+    border-radius: var(--border-weight);
+    padding: 10px;
+    margin: 20px 75px;
+}
+
+.bodySection button {
+    border-width: 10px;
+    background-color: var(--light-blue);
+    color: var(--dark-grey);
+    border-radius: var(--border-weight);
+    width: 75%;
+    margin: 20px 0px 50px;
+    padding: 15px 0px;
+}
