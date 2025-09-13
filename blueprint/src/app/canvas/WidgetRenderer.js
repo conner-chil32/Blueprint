@@ -1,6 +1,6 @@
 import { Box } from '../components/widgets/Box';
 
-export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop }) {
+export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale }) {
 
   /**
    * Render the correct type of widget.
@@ -8,7 +8,7 @@ export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onD
   switch (widget.type) {
     case 'box':
       {/*console.log('Rendering box widget:', widget);*/}
-      return <Box key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} />;
+      return <Box key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} scale={scale} />;
     default:
       console.log("Warning: Unknown widget type:", widget.type);
       return null;

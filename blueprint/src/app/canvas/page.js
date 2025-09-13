@@ -37,7 +37,7 @@ export default function CanvasPage() {
 
   // Scaling managment
   const [scale, setScale] = useState(1);
-  const [dragOffset, setDragOffset] = useState(null);
+  const [transformCoords, setTransformCoords] = useState({ posX: 0, posY: 0 });
 
   // Update the current page to include new widgets
   const setWidgets = (newWidgets) => {
@@ -56,7 +56,8 @@ export default function CanvasPage() {
         name: `Page ${nextPageID}`,
         widgets: [],
         width: 800,
-        height: 600
+        height: 600,
+        backgroundColor: '#ffffff'
       }])
 
     setSelectedPageID(nextPageID);
@@ -78,39 +79,20 @@ export default function CanvasPage() {
 
       // Calculate the position of the canvas, taking scale into account
       const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / scale;
-      const y = (e.clientY - rect.top) / scale;
+      const x = (e.clientX - rect.left - transformCoords.posX) / scale;
+      const y = (e.clientY - rect.top - transformCoords.posY) / scale;
 
       setMousePos({ x, y });
 
-      // If in the canvas area and in placement mode, move the widget with the mouse
+      // If in placement mode, move the widget with the mouse
       if (isPlacing && widgetToPlace) {
         setWidgetToPlace((prev) => ({
           ...prev,
-          // Take the offset of scaling into account
-          x: x + dragOffset?.x,
-          y: y + dragOffset?.y,
+          x: x - prev.width / 2,
+          y: y - prev.height / 2,
         }));
       }
     };
-
-    const handleMouseDown = (e) => {
-      if (widgetToPlace && dragOffset) {
-        const canvas = canvasRef.current;
-        // If the canvas does not exist, return
-        if (!canvas) return;
-        const rect = canvas.getBoundingClientRect();
-
-        // Calculate the offset from the canvas
-        const mouseX = (e.clientX - rect.left) / scale;
-        const mouseY = (e.clientY - rect.top) / scale;
-        
-        setDragOffset({
-          x: widgetToPlace?.x - mouseX,
-          y: widgetToPlace?.y - mouseY,
-        });
-      }
-    }
 
     const handleKeyPresses = (e) => {
       if ((e.keyCode === 8 || e.keyCode === 46) && selectedWidgets?.length) {
@@ -256,6 +238,11 @@ export default function CanvasPage() {
         limitToBounds={false}
         panning={{ velocityDisabled: true }}
         minScale={0.05}
+        // Keep track of zoom transform and scale
+        onTransformed={({ state }) => {
+          setScale(state.scale);
+          setTransformCoords({posX: state.positionX, posY: state.positionY});
+        }}
       >
         {/* Canvas area, a window to view the current page */}
         <div className={styles.canvasArea}>
@@ -291,12 +278,13 @@ export default function CanvasPage() {
                         onDragStart={() => setIsDragging(true)}
                         onDragStop={() => setIsDragging(false)}
                         alertDragStop={updateWidget}
+                        scale={scale}
                       />
                     ))}
 
                   {/* If placing a widget, render it at the mouse position */}
                   {isPlacing && widgetToPlace && (
-                    <WidgetRenderer key={"placing-" + widgetToPlace.id} widget={widgetToPlace} />
+                    <WidgetRenderer key={"placing-" + widgetToPlace.id} widget={widgetToPlace} scale={scale} />
                   )}
                 </div>
             </div>

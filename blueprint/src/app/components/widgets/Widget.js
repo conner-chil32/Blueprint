@@ -1,7 +1,7 @@
 import { Rnd } from 'react-rnd';
 import { useRef } from 'react';
 
-export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDragStop }) {
+export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDragStop, scale }) {
 
   const handleResize = (e, direction, refToElement, delta, position) => {
     alertDragStop && alertDragStop(id, position.x, position.y, {width: parseInt(refToElement.style.width, 10), height: parseInt(refToElement.style.height, 10)});
@@ -33,6 +33,7 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
         // Alert the canvas page when dragging stops
         onDragStop && onDragStop(id);
       }}
+      scale={scale}
       >
         <div
           key={id}
