@@ -102,10 +102,15 @@ services:
       - wordpress
     volumes:
       - ./Wordpress:/var/www/html
+      - ./blueprint/lib/wordpress_setup:/temp
     command: >
       /bin/sh -c '
       sleep 30;
-      wp core --path='/var/www/html' install --url=localhost:8000 --title="WP-CLI" --admin_user=wpcli --admin_password=wpcli --admin_email=info@wp-cli.org
+      wp core --path='/var/www/html' multisite-install --url=localhost:8000 --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
+      cp /temp/.htaccess_dummy /var/www/html/.htaccess;
+      chmod 644 /var/www/html/.htaccess;
+      rm /temp/.htaccess_dummy;
+      echo "SETUP DONE!";
       '
     networks:
      - app-network
