@@ -2,10 +2,10 @@ import mysql from 'mysql2';
 import { validateConnection } from './utility.js';
 
 export const connection = await mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_NAME,
     port: 3306,
     multipleStatements: true,
     connectionLimit: 10,
