@@ -1,36 +1,37 @@
 /*template = {
-    "label": "", 
-    "href": "", 
-    "className": "", 
-    "image": "", 
-        "height": 100, 
-        "width": 100, 
-        "alt-text": ""
+    label: "", 
+    href: "", 
+    className: "", 
+    image: "", 
+        height: 100, 
+        width: 100, 
+        alt_text: ""
 }*/
 
 const features = {
-    "label": "Features", 
-    "href": "/features", 
-    "className": "nav-button", 
+    label: "Features", 
+    href: "/features", 
+    className: "nav-button", 
 }
 
 const pricing = {
-    "label": "Pricing", 
-    "href": "/pricing", 
-    "className": "nav-button"
+    label: "Pricing", 
+    href: "/pricing", 
+    className: "nav-button"
 }
 
 const logo = {
-    "label": "Logo", 
-    "href": "/", 
-    "className": "logoStyle", 
-    "image": "images/Blueprint_trans.png"
+//    label: "Logo", //may be desired later, but currently text is larger than icon
+    href: "/", 
+    className: "logoStyle", 
+    image: "images/Blueprint_trans.png",
+    alt_text: "Blueprint logo"
 }
 
 const login = {
-    "label": "Login", 
-    "href": "login", 
-    "className": "nav-button"
+    label: "Login", 
+    href: "login", 
+    className: "nav-button"
 }
 
 
@@ -38,9 +39,9 @@ const login = {
 
 
 const library = {
-    "features": features,
-    "pricing": pricing,
-    "logo": logo,
-    "login": login
+    features: features,
+    pricing: pricing,
+    logo: logo,
+    login: login
 }
 export { library };

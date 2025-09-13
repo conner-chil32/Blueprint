@@ -1,4 +1,5 @@
 import { connection, closeConnection } from "./connection.js";
+import { getUserByID } from "./userQueries.js";
 /*
     commit() - commits the current transaction to the database
     Input: none
@@ -65,3 +66,4 @@ export async function validateConnection() {
         throw false;
     }
 }
+
