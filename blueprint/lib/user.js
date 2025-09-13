@@ -6,11 +6,13 @@ node /path/to/run-parser-tests.js
 import { validateConnection, commit } from './utility.js';
 import {
     getUserByEmail,
+    getUserByUsername,
     getUserByID,
     signIn,
     createAccount
 } from './userQueries.js';
 import { Website } from './website.js';
+import bcrypt from "bcrypt";
 
 export class User {
     constructor() {
@@ -25,6 +27,7 @@ export class User {
         this.userDateCreated = null;
         this.userLastLogin = null;
         this.isAdmin = false;
+        this.loggedIn = false;
     }
 
     /**
@@ -238,6 +241,44 @@ export class User {
         }
     }
 
+    /**
+     * Encrypts and validates user login credentials
+     * @param {string} username The username
+     * @param {string} password The password to authenticate
+     * @returns {boolean} true if login is successful, false otherwise
+     */
+    async encryptData(username, password) {
+        try {
+            if (this.isLoggedIn()) return true; //If user already logged in
+            
+            const user = await getUserByUsername(username);
+
+            if (!user) return false; // If user not found, return false
+
+            const storedUsername = user.userName;
+            const storedPassword = user.userPassHash;
+
+            const match = await bcrypt.compare(password,storedPassword);
+
+            if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
+                this.loggedIn = true; 
+                return true;
+            } else {
+                return false;
+            }
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
+    /**
+     * Check if user is already logged in
+     * @returns {boolean} true if logged in, false otherwise
+     */
+    isLoggedIn() {
+        return this.loggedIn;
+    }
     /**
      * Handles errors from the database
      * @param {Error} error The error to handle

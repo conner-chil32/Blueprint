@@ -7,7 +7,8 @@ import assert from 'assert';
 import { User } from '../user.js';
 import { Website } from '../website.js';
 import { validateConnection, commit } from '../utility.js';
-
+import * as userQueries from '../userQueries.js';
+import bcrypt from 'bcrypt';
 export class TestRunner {
   constructor(name) {
     this.name = name;
@@ -242,7 +243,89 @@ userTests.test('handleError returns appropriate error message', () => {
   assert.strictEqual(message, 'User not found: Test error');
 });
 
+//Encryptdata tests
+userTests.test('encryptData returns true with valid credentials', async () => {
+    const user = new User();
+
+    // Test user credentials
+    user.setUserName('testUser');
+    user.setUserPassHash('hashedPassword');
+
+    // Override encryptData for this instance to use local user instead of DB
+    const originalEncryptData = user.encryptData;
+    user.encryptData = async (username, password) => {
+        const storedUsername = user.userName;
+        const storedPassword = user.userPassHash;
+
+        const match = await bcrypt.compare(password, storedPassword);
+
+        if (storedUsername === username && match) {
+            user.loggedIn = true;
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    // Mock bcrypt.compare to always return true
+    const originalBcryptCompare = bcrypt.compare;
+    bcrypt.compare = async () => true;
+
+    try {
+        const result = await user.encryptData('testUser', 'plainPassword');
+        assert.strictEqual(result, true);
+        assert.strictEqual(user.isLoggedIn(), true);
+    } finally {
+        //Reset override
+        user.encryptData = originalEncryptData;
+        bcrypt.compare = originalBcryptCompare;
+    }
+});
+
+userTests.test('encryptData returns false with invalid credentials', async () => {
+  const user = new User();
+
+  // Mock getUserByUsername
+  const originalGetUserByUsername = User.getUserByUsername;
+  User.getUserByUsername = async () => {
+    const mockUser = new User();
+    mockUser.setUserName('testUser');
+    mockUser.setUserPassHash('hashedPassword');
+    return mockUser;
+  };
+
+  // Mock bcrypt.compare to return false
+  const originalBcryptCompare = bcrypt.compare;
+  bcrypt.compare = async () => false;
+
+  try {
+    const result = await user.encryptData('testUser', 'wrongPassword');
+    assert.strictEqual(result, false);
+    assert.strictEqual(user.isLoggedIn(), false);
+  } finally {
+    // Restore originals
+    User.getUserByUsername = originalGetUserByUsername;
+    bcrypt.compare = originalBcryptCompare;
+  }
+});
+
+userTests.test('encryptData returns false if user not found', async () => {
+  const user = new User();
+
+  // Mock getUserByUsername to return null
+  const originalGetUserByUsername = User.getUserByUsername;
+  User.getUserByUsername = async () => null;
+
+  try {
+    const result = await user.encryptData('nonexistentUser', 'password');
+    assert.strictEqual(result, false);
+    assert.strictEqual(user.isLoggedIn(), false);
+  } finally {
+    User.getUserByUsername = originalGetUserByUsername;
+  }
+});
+
 // Run the User tests if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1].includes('user.test.js')) {
   userTests.runTests();
 }

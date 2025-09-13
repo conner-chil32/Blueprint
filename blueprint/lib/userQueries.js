@@ -57,3 +57,17 @@ export async function createAccount(user, password, email, connection) {
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail) VALUES (?, ?, ?)`, [user, password, email]);
     return result;
 }
+
+/**
+ * getUserByUsername - Retrieves a user by their Username.
+ * Input: username - The username of the user to retrieve.
+ * Output: object - The user with the specified Username.
+ * Date: 9/08/2025
+ * Author: Elijah White
+ * Dependencies: mysql
+ */
+export async function getUserByUsername(username, connection) {
+    if (!await validateConnection(connection)) return false;
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
+    return result;
+}
