@@ -119,6 +119,7 @@ services:
       echo "SETUP DONE!";
       '
 
+networks:  
   app-network:
       
       
