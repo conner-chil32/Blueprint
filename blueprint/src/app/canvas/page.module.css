@@ -55,13 +55,15 @@
 
 .sidePanel {
     width: 15%;
-    min-width: 300px;
+    /* min-width: 300px; */
     background: var(--surface);
     border-right: 1px solid var(--border);
     padding: 20px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    top: 70px;
+    position: relative;
 }
 
 .leftPanel {
@@ -73,13 +75,12 @@
 }
 
 .canvasArea {
+    position: relative;
     border: 2px dashed #cbd5e1;
     top: 70px;
     width: 70vw;
     height: 80vh;
     background-color: var(--surface);
-    /*padding: 24px;*/
-    /*overflow: hidden;*/
     display: flex;
 }
 
@@ -98,15 +99,6 @@
     position: relative;
 
     /* border:2px dotted blue; */
-}
-
-.canvasContent {
-    border-radius: 12px;
-    color: #94a3b8;
-    font-size: 1.125rem;
-    transition: border-color 0.2s ease;
-
-    /* border:2px solid green; */
 }
 
 .deleteButton {

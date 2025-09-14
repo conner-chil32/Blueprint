@@ -2,9 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import styles from './page.module.css';
-import {
-  useControls,
-} from "react-zoom-pan-pinch";
 
 import { Canvas } from './Canvas';
 import { LeftPanel } from './LeftPanel';
@@ -24,7 +21,8 @@ export default function CanvasPage() {
   const [nextWidgetId, setNextWidgetId] = useState(0);
 
   // Moving and placing widgets
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [canvasMousePos, setCanvasMousePos] = useState({ x: 0, y: 0 });
+  const [pageMousePos, setPageMousePos] = useState({ x: 0, y: 0 });
   const [isPlacing, setIsPlacing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [widgetToPlace, setWidgetToPlace] = useState(null);
@@ -72,6 +70,7 @@ export default function CanvasPage() {
    */
   useEffect(() => {
     const handleMouseMove = (e) => {
+      setPageMousePos({ x: e.clientX, y: e.clientY });
       const canvas = canvasRef.current;
 
       // If the canvas does not exist, return
@@ -82,14 +81,14 @@ export default function CanvasPage() {
       const x = (e.clientX - rect.left - transformCoords.posX) / scale;
       const y = (e.clientY - rect.top - transformCoords.posY) / scale;
 
-      setMousePos({ x, y });
+      setCanvasMousePos({ x, y });
 
       // If in placement mode, move the widget with the mouse
       if (isPlacing && widgetToPlace) {
         setWidgetToPlace((prev) => ({
           ...prev,
-          x: x - prev.width / 2,
-          y: y - prev.height / 2,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
         }));
       }
     };
@@ -193,8 +192,8 @@ export default function CanvasPage() {
         newWidget = {
           type: 'box',
           id: nextId,
-          x: mousePos.x,
-          y: mousePos.y,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
           width: 100,
           height: 100,
           isSelected: false,
@@ -205,73 +204,74 @@ export default function CanvasPage() {
         };
         break;
 
-        case 'video':
-      newWidget = {
-        type: 'video',
-        id: nextId,
-        x: mousePos.x,
-        y: mousePos.y,
-        width: 320,
-        height: 180,
-        isSelected: false,
-        isMoving: true,
-        backgroundColor: '#000000',
-        pointerEventsNone: true,
-        rotation: 0,
-        // custom props:
-        videoUrl: '/images/DemoVideo.mp4',
-        loop: false,
-        muted: true,
-        autoplay: true,
-        controls: true,
-        objectFit: 'contain',
-      };
-      break;
+      case 'video':
+        newWidget = {
+          type: 'video',
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 320,
+          height: 180,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: '#000000',
+          pointerEventsNone: true,
+          rotation: 0,
+          // custom props:
+          videoUrl: '/images/DemoVideo.mp4',
+          loop: false,
+          muted: true,
+          autoplay: true,
+          controls: true,
+          objectFit: 'contain',
+        };
+        break;
 
       case 'dropdown':
-      newWidget = {
-        type: 'dropdown',
-        id: nextId,
-        x: mousePos.x,
-        y: mousePos.y,
-        width: 220,
-        height: 50,
-        isSelected: false,
-        isMoving: true,
-        backgroundColor: '#ffffff',
-        pointerEventsNone: true,
-        rotation: 0,
-        // custom props:
-        options: ['Option 1', 'Option 2', 'Option 3'],
-        value: 'Option 1',
-        fontSize: 12,
-        textColor: '#111111',
-        bgColor: '#ffffff',
-      };
-      break;
+        newWidget = {
+          type: 'dropdown',
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 220,
+          height: 50,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: '#ffffff',
+          pointerEventsNone: true,
+          rotation: 0,
+          // custom props:
+          options: ['Option 1', 'Option 2', 'Option 3'],
+          value: 'Option 1',
+          fontSize: 12,
+          textColor: '#111111',
+          bgColor: '#ffffff',
+        };
+        break;
 
-    case 'advert':
-      newWidget = {
-        type: 'advert',
-        id: nextId,
-        x: mousePos.x,
-        y: mousePos.y,
-        width: 300,
-        height: 250, // standard MPU size
-        isSelected: false,
-        isMoving: true,
-        backgroundColor: '#ffffff',
-        pointerEventsNone: true,
-        rotation: 0,
-        // custom props:
-        imageUrl: '/images/Blueprint.png',
-        linkUrl: 'http://localhost:3000/features',
-        alt: 'Advertisement',
-        objectFit: 'cover',
-        showBorder: true,
-        borderColor: '#333333',
-      };
-      break;
+      case 'advert':
+        newWidget = {
+          type: 'advert',
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 300,
+          height: 250, // standard MPU size
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: '#ffffff',
+          pointerEventsNone: true,
+          rotation: 0,
+          // custom props:
+          imageUrl: '/images/Blueprint.png',
+          linkUrl: 'http://localhost:3000/features',
+          alt: 'Advertisement',
+          objectFit: 'cover',
+          showBorder: true,
+          borderColor: '#333333',
+        };
+        break;
+
       default:
         console.warn('Warning: Unknown widget type: ' + typeToMake);
         return;
@@ -293,18 +293,6 @@ export default function CanvasPage() {
     setSelectedWidgets(null);
     console.log('Deselected all widgets');
   }
-
-  const ZoomControls = () => {
-  const { zoomIn, zoomOut, resetTransform } = useControls();
-
-  return (
-    <div className="tools">
-      <button onClick={() => zoomIn()}>+</button>
-      <button onClick={() => zoomOut()}>-</button>
-      <button onClick={() => resetTransform()}>x</button>
-    </div>
-  );
-};
 
   return (
     <>
