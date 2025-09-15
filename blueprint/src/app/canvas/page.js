@@ -9,6 +9,7 @@ import {
   TransformComponent,
   useControls,
 } from "react-zoom-pan-pinch";
+import Navbar from "../components/navbar"; // <-- ADDED
 
 export default function CanvasPage() {
   // Pages, each containing widgets
@@ -58,6 +59,23 @@ export default function CanvasPage() {
     setNextPageID(nextPageID+1);
   };
 
+  // Delete a page
+  const deletePage = (pageId) => {
+    if (pages.length <= 1) {
+      console.log('Cannot delete the last page');
+      return;
+    }
+    setPages(prev => prev.filter(page => page.id !== pageId));
+    if (selectedPageID === pageId) {
+      setSelectedPageID(pages[0].id);
+    }
+  };
+
+  // Update page name
+  const updatePageName = (pageId, newName) => {
+    setPages(prev => prev.map(page => page.id === pageId ? { ...page, name: newName } : page));
+  };
+
   /**
    * When the mouse moves, keep track of its position.
    * useEffect is essentially a hook that keeps track of actions performed on the page.
@@ -68,7 +86,7 @@ export default function CanvasPage() {
       const canvas = canvasRef.current;
       if (!canvas) return;
   
-// Calculate the position of the canvas
+      // Calculate the position of the canvas
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -301,13 +319,25 @@ export default function CanvasPage() {
 
   return (
     <>
-      {/*<Navbar />*/}
+      <Navbar /> {/* <-- RENDERED NAVBAR */}
       
         {/* Panel on the left, showing options for adding widgets */}
         <div className={`${styles.leftPanel} ${styles.sidePanel}`}>
           <LeftPanel createWidget={createWidget} />
         </div>
         
+        {/* Page navigation bar above the canvas */}
+        <div className={styles.pageNavBar} style={{ top: '70px' }}>
+          <PageNavigation
+            pages={pages}
+            selectedPageID={selectedPageID}
+            setSelectedPageID={setSelectedPageID}
+            createPage={createPage}
+            updatePageName={updatePageName}
+            deletePage={deletePage}
+          />
+        </div>
+
           {/* Canvas for displaying and adding widgets to the site. */}
           <div className={styles.canvasArea} ref={canvasRef} onClick={handleCanvasClick}>
 
@@ -369,6 +399,83 @@ export default function CanvasPage() {
 
     setWidgets(changedWidgets);
   }
+}
+
+function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage }) {
+  const [editingId, setEditingId] = useState(null);
+  const [editName, setEditName] = useState('');
+
+  const startEdit = (page) => {
+    setEditingId(page.id);
+    setEditName(page.name);
+  };
+
+  const saveEdit = (id) => {
+    if (editName.trim()) {
+      updatePageName(id, editName.trim());
+    }
+    setEditingId(null);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this page?")) {
+      deletePage(id);
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '10px 0' }}>
+      {pages.map(page => (
+        <div
+          key={page.id}
+          style={{
+            margin: '0 10px',
+            padding: '5px 10px',
+            cursor: 'pointer',
+            backgroundColor: page.id === selectedPageID ? '#e2e8f0' : 'transparent',
+            borderRadius: '4px',
+            fontWeight: page.id === selectedPageID ? 'bold' : 'normal',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          onClick={() => {
+            if (editingId !== page.id) {
+              setSelectedPageID(page.id);
+            }
+          }}
+        >
+          {editingId === page.id ? (
+            <input
+              value={editName}
+              onChange={e => setEditName(e.target.value)}
+              onBlur={() => saveEdit(page.id)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  saveEdit(page.id);
+                } else if (e.key === 'Escape') {
+                  setEditingId(null);
+                }
+              }}
+              autoFocus
+              style={{ width: '100px' }}
+            />
+          ) : (
+            <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
+          )}
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(page.id);
+            }}
+            style={{ cursor: 'pointer', marginLeft: '5px' }}
+          >
+            🗑️
+          </span>
+        </div>
+      ))}
+      <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+    </div>
+  );
 }
 
 function LeftPanel({ createWidget }) {
