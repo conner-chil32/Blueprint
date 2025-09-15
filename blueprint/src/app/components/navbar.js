@@ -9,6 +9,8 @@ export default function Navbar() {
             <CreateImage code="logo" />
             <CreateButton code="features" />
             <CreateButton code="pricing" />
+            <CreateButton code="canvas" />
+
         </div>
         <CreateButton code="login" />
         </div>

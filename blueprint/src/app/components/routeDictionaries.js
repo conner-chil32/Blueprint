@@ -20,6 +20,12 @@ const pricing = {
     className: "nav-button"
 }
 
+const canvas = {
+    label: "Canvas", 
+    href: "/canvas", 
+    className: "nav-button"
+}
+
 const logo = {
 //    label: "Logo", //may be desired later, but currently text is larger than icon
     href: "/", 
@@ -42,6 +48,7 @@ const library = {
     features: features,
     pricing: pricing,
     logo: logo,
-    login: login
+    login: login,
+    canvas: canvas
 }
 export { library };
