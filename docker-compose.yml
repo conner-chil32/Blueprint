@@ -68,7 +68,7 @@ services:
       - app-network
 
   wordpress:
-    image: wordpress:latest
+    build: ./wordpress
     env_file: .env
     container_name: ${CONTAINER_NAME}-wordpress
     environment:
@@ -83,9 +83,10 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./Wordpress:/var/www/html
+      - ./wordpress/site-files:/var/www/html
     networks:
       - app-network
+
     
   wordpress-cli:
     image: wordpress:cli
@@ -101,15 +102,17 @@ services:
       - wordpress-db
       - wordpress
     volumes:
-      - ./Wordpress:/var/www/html
+      - ./wordpress/site-files:/var/www/html
       - ./blueprint/lib/wordpress_setup:/temp
     command: >
       /bin/sh -c '
-      sleep 30;
+      sleep 60;
       wp core --path='/var/www/html' multisite-install --url=localhost:8000 --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
       cp /temp/.htaccess_dummy /var/www/html/.htaccess;
       chmod 644 /var/www/html/.htaccess;
       rm /temp/.htaccess_dummy;
+      wp rewrite structure '/%postname%/';
+      wp rewrite flush --hard;
       echo "SETUP DONE!";
       '
     networks:
