@@ -44,7 +44,7 @@ export function Dropdown(props) {
             fontSize,
             color: textColor,
             background: "transparent",
-            border: "1px solid #ccc",
+            border: "1px solid #cccccc",
             borderRadius: 6,
             outline: "none",
             padding: "4px 8px",

@@ -2,18 +2,15 @@
 
 import { useEffect, useState, useRef } from "react";
 import styles from './page.module.css';
-import { WidgetRenderer } from './WidgetRenderer';
-import { RenderPage } from "./HtmlConverter";
-import {
-  TransformWrapper,
-  TransformComponent,
-  useControls,
-} from "react-zoom-pan-pinch";
-import Navbar from "../components/navbar"; // <-- ADDED
+
+import Navbar from "../components/navbar";
+import { Canvas } from './Canvas';
+import { LeftPanel } from './LeftPanel';
+import { RightPanel } from './RightPanel';
 
 export default function CanvasPage() {
   // Pages, each containing widgets
-  const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [] }]);
+  const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [], width: 800, height: 600, backgroundColor: '#ffffff' }]);
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
@@ -25,8 +22,10 @@ export default function CanvasPage() {
   const [nextWidgetId, setNextWidgetId] = useState(0);
 
   // Moving and placing widgets
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [canvasMousePos, setCanvasMousePos] = useState({ x: 0, y: 0 });
+  const [pageMousePos, setPageMousePos] = useState({ x: 0, y: 0 });
   const [isPlacing, setIsPlacing] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [widgetToPlace, setWidgetToPlace] = useState(null);
 
   // Selected widget container
@@ -35,12 +34,9 @@ export default function CanvasPage() {
   // Keep track of where the canvas page is
   const canvasRef = useRef(null);
 
-  // Visibility
-  const [leftPanelVisible, setLeftPanelVisible] = useState(true);
-  const [rightPanelVisible, setRightPanelVisible] = useState(true);
-
-  // Zooming
-  const [canZoom, setCanZoom] = useState(true);
+  // Scaling managment
+  const [scale, setScale] = useState(1);
+  const [transformCoords, setTransformCoords] = useState({ posX: 0, posY: 0 });
 
   // Update the current page to include new widgets
   const setWidgets = (newWidgets) => {
@@ -53,7 +49,16 @@ export default function CanvasPage() {
 
   // Create a new page
   const createPage = () => {
-    setPages([...pages, {id: nextPageID, name: `Page ${nextPageID}`, widgets: []}])
+    setPages([
+      ...pages,
+      {id: nextPageID,
+        name: `Page ${nextPageID}`,
+        widgets: [],
+        width: 800,
+        height: 600,
+        backgroundColor: '#ffffff'
+      }])
+
     setSelectedPageID(nextPageID);
     console.log('Created page', nextPageID);
     setNextPageID(nextPageID+1);
@@ -83,25 +88,26 @@ export default function CanvasPage() {
    */
   useEffect(() => {
     const handleMouseMove = (e) => {
+      setPageMousePos({ x: e.clientX, y: e.clientY });
       const canvas = canvasRef.current;
+
+      // If the canvas does not exist, return
       if (!canvas) return;
-  
-      // Calculate the position of the canvas
+
+      // Calculate the position of the canvas, taking scale into account
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-  
-      setMousePos({ x, y });
-  
-      // If in placement mode and the canvas area, move the widget with the mouse
-      if (x >= 0 && y >= 0 && x <= rect.width && y <= rect.height) {
-        if (isPlacing && widgetToPlace) {
-          setWidgetToPlace((prev) => ({
-            ...prev,
-            x,
-            y
-          }));
-        }
+      const x = (e.clientX - rect.left - transformCoords.posX) / scale;
+      const y = (e.clientY - rect.top - transformCoords.posY) / scale;
+
+      setCanvasMousePos({ x, y });
+
+      // If in placement mode, move the widget with the mouse
+      if (isPlacing && widgetToPlace) {
+        setWidgetToPlace((prev) => ({
+          ...prev,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+        }));
       }
     };
   
@@ -204,8 +210,8 @@ export default function CanvasPage() {
         newWidget = {
           type: 'box',
           id: nextId,
-          x: mousePos.x,
-          y: mousePos.y,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
           width: 100,
           height: 100,
           isSelected: false,
@@ -216,73 +222,74 @@ export default function CanvasPage() {
         };
         break;
 
-        case 'video':
-      newWidget = {
-        type: 'video',
-        id: nextId,
-        x: mousePos.x,
-        y: mousePos.y,
-        width: 320,
-        height: 180,
-        isSelected: false,
-        isMoving: true,
-        backgroundColor: '#000000',
-        pointerEventsNone: true,
-        rotation: 0,
-        // custom props:
-        videoUrl: '/images/DemoVideo.mp4',
-        loop: false,
-        muted: true,
-        autoplay: true,
-        controls: true,
-        objectFit: 'contain',
-      };
-      break;
+      case 'video':
+        newWidget = {
+          type: 'video',
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 320,
+          height: 180,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: '#000000',
+          pointerEventsNone: true,
+          rotation: 0,
+          // custom props:
+          videoUrl: '/images/DemoVideo.mp4',
+          loop: false,
+          muted: true,
+          autoplay: true,
+          controls: true,
+          objectFit: 'contain',
+        };
+        break;
 
       case 'dropdown':
-      newWidget = {
-        type: 'dropdown',
-        id: nextId,
-        x: mousePos.x,
-        y: mousePos.y,
-        width: 220,
-        height: 50,
-        isSelected: false,
-        isMoving: true,
-        backgroundColor: '#ffffff',
-        pointerEventsNone: true,
-        rotation: 0,
-        // custom props:
-        options: ['Option 1', 'Option 2', 'Option 3'],
-        value: 'Option 1',
-        fontSize: 12,
-        textColor: '#111111',
-        bgColor: '#ffffff',
-      };
-      break;
+        newWidget = {
+          type: 'dropdown',
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 220,
+          height: 50,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: '#ffffff',
+          pointerEventsNone: true,
+          rotation: 0,
+          // custom props:
+          options: ['Option 1', 'Option 2', 'Option 3'],
+          value: 'Option 1',
+          fontSize: 12,
+          textColor: '#111111',
+          bgColor: '#ffffff',
+        };
+        break;
 
-    case 'advert':
-      newWidget = {
-        type: 'advert',
-        id: nextId,
-        x: mousePos.x,
-        y: mousePos.y,
-        width: 300,
-        height: 250, // standard MPU size
-        isSelected: false,
-        isMoving: true,
-        backgroundColor: '#ffffff',
-        pointerEventsNone: true,
-        rotation: 0,
-        // custom props:
-        imageUrl: '/images/Blueprint.png',
-        linkUrl: 'http://localhost:3000/features',
-        alt: 'Advertisement',
-        objectFit: 'cover',
-        showBorder: true,
-        borderColor: '#333333',
-      };
-      break;
+      case 'advert':
+        newWidget = {
+          type: 'advert',
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 300,
+          height: 250, // standard MPU size
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: '#ffffff',
+          pointerEventsNone: true,
+          rotation: 0,
+          // custom props:
+          imageUrl: '/images/Blueprint.png',
+          linkUrl: 'http://localhost:3000/features',
+          alt: 'Advertisement',
+          objectFit: 'cover',
+          showBorder: true,
+          borderColor: '#333333',
+        };
+        break;
+
       default:
         console.warn('Warning: Unknown widget type: ' + typeToMake);
         return;
@@ -305,27 +312,10 @@ export default function CanvasPage() {
     console.log('Deselected all widgets');
   }
 
-  const ZoomControls = () => {
-  const { zoomIn, zoomOut, resetTransform } = useControls();
-
-  return (
-    <div className="tools">
-      <button onClick={() => zoomIn()}>+</button>
-      <button onClick={() => zoomOut()}>-</button>
-      <button onClick={() => resetTransform()}>x</button>
-    </div>
-  );
-};
-
   return (
     <>
       <Navbar /> {/* <-- RENDERED NAVBAR */}
-      
-        {/* Panel on the left, showing options for adding widgets */}
-        <div className={`${styles.leftPanel} ${styles.sidePanel}`}>
-          <LeftPanel createWidget={createWidget} />
-        </div>
-        
+    
         {/* Page navigation bar above the canvas */}
         <div className={styles.pageNavBar} style={{ top: '70px' }}>
           <PageNavigation
@@ -338,55 +328,33 @@ export default function CanvasPage() {
           />
         </div>
 
-          {/* Canvas for displaying and adding widgets to the site. */}
-          <div className={styles.canvasArea} ref={canvasRef} onClick={handleCanvasClick}>
+      {/* Panel on the left, showing options for adding widgets */}
+      <div className={`${styles.leftPanel} ${styles.sidePanel}`}>
+        <LeftPanel createWidget={createWidget} />
+      </div>
 
-            <TransformWrapper
-              initialScale={1}
-              initialPositionX={0}
-              initialPositionY={0}
-              disabled={true}
-            >
-            <TransformComponent>
+      <Canvas
+        widgets={widgets}
+        isPlacing={isPlacing}
+        isDragging={isDragging}
+        widgetToPlace={widgetToPlace}
+        selectedWidgets={selectedWidgets}
+        setSelectedWidgets={setSelectedWidgets}
+        setIsDragging={setIsDragging}
+        updateWidget={updateWidget}
+        scale={scale}
+        setScale={setScale}
+        setTransformCoords={setTransformCoords}
+        currentPage={currentPage}
+        canvasRef={canvasRef}
+        handleCanvasClick={handleCanvasClick}
+      />
 
-            <div className={styles.canvasContent} id="canvas">
-              {/* Render new objects, only if widgets exists */}
-              {Array.isArray(widgets) && widgets.map((widget) => (
-                <WidgetRenderer
-                  key={widget.id}
-                  widget={widget}
-                  // selectedWidgets? means if selectedWidgets is not null
-                  // .some checks if any widgets in the array have the same id
-                  isSelected={selectedWidgets?.some(w => w.id === widget.id)}
-                  onClick={() => {
-                    // Select the widget when clicked
-                    setSelectedWidgets([widget]);
-                    console.log('Selected widget: ' + widget.id);
-                  }}
-                  alertDragStop={updateWidget}
-                  changeWidgetProperty={changeWidgetProperty}
-                />
-              ))}
-
-              {/* If placing a widget, render it at the mouse position */}
-              {isPlacing && widgetToPlace && (
-                <WidgetRenderer
-                  key={"placing-" + widgetToPlace.id}
-                  widget={widgetToPlace}
-                />
-              )}
-            </div>
-
-            </TransformComponent>
-            </TransformWrapper>
-
-          </div>
-
-        {/* Panel on the right, showing options for the selected widgets and the canvas page */}
-        <div className={`${styles.rightPanel} ${styles.sidePanel}`}>
-          <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
-          pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} />
-        </div>
+      {/* Panel on the right, showing options for the selected widgets and the canvas page */}
+      <div className={`${styles.rightPanel} ${styles.sidePanel}`}>
+        <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
+        pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />
+      </div>
     </>
   );
   
@@ -478,352 +446,13 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
   );
 }
 
-function LeftPanel({ createWidget }) {
-    return (
-      <div>
-          <div className={styles.sectionTitle}>Objects</div>
-          <button className={styles.categoryItem}>Text Box</button>
-          <button className={styles.categoryItem}>Image</button>
-
-          <div className={styles.divider}></div>
-
-          <div className={styles.sectionTitle}>Widgets</div>
-          <button className={styles.categoryItem} onClick={() => createWidget('video')}>Video</button>
-          <button className={styles.categoryItem} onClick={() => createWidget('dropdown')}>Dropdown</button>
-          <button className={styles.categoryItem} onClick={() => createWidget('advert')}>Advertisement</button>
-
-          <div className={styles.divider}></div>
-
-          <div className={styles.sectionTitle}>Shapes</div>
-          <button className={styles.categoryItem} onClick={() => createWidget('box')}>Box</button>
-          <button className={styles.categoryItem}>Forms</button>
-          <button className={styles.categoryItem}>Images</button>
-      </div>
+  function changePageProperty(pageID, newProperties) {
+    const changedPages = pages.map(page =>
+      // If this is the correct widget, then update the object
+      page.id === pageID ? {...page, ...newProperties}
+      : page // Otherwise, leave it
     );
+
+    setPages(changedPages);
   }
-
-  function RightPanel({
-    changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
-    pages, selectedPageID, setSelectedPageID, currentPage, createPage
-  }) {
-    const [buttonSelected, setButtonSelected] = useState(false);
-
-    const handleButtonClick = () => {
-      setButtonSelected(!buttonSelected);
-      console.log(`Canvas status: ${!buttonSelected}`);
-    }
-
-    // Return a button to switch between the selected widgets and canvas settings
-    return (
-      <div>
-        {/* Button to switch, always rendered. When clicked, invert buttonSelected */}
-        <button className={styles.switchButton} onClick={handleButtonClick}>Switch</button>
-
-        {/* False = widget properties. True = page properties */}
-        {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} />
-          : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} />}
-      </div>
-
-    );
-  }
-
-  function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget }) {
-    // Render the selected widgets panel
-    if (selectedWidgets && selectedWidgets.length > 0) {
-    // If something is selected
-      return (
-        <div>
-          <div>
-            {/* Button for deleting widgets */}
-            <button
-              className={styles.deleteButton}
-              onClick={() => {
-                selectedWidgets.forEach(widget => {
-                  console.log('Deleting ', widget)
-                  deleteWidget(widget.id);
-                })
-              }}
-            >Delete Selected Widget</button>
-          </div>
-  
-          {/* Menu to change widgets */}
-          {selectedWidgets.map((widget) => (
-            <div key={widget.id} className={styles.widgetOptions}>
-              {/* Inputs to change widget properties */}
-              <p>Color:</p>
-              <input
-                type="color"
-                value={widget.backgroundColor || "#cccccc"}
-                onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
-              />
-  
-              {/* Two rotation inputs, one as an editable display and the other as a slider */}
-              <p>Rotation: {widget.rotation}</p>
-              <input
-                type="number"
-                min="0"
-                max="360"
-                value={widget.rotation || 0}
-                onChange={e =>
-                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value, 10) })
-                }/>
-              <input
-                type="range"
-                min="0"
-                max="360"
-                value={widget.rotation || 0}
-                onChange={e =>
-                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) })
-                }
-              />
-  
-              {/* ===== Video controls ===== */}
-              {widget.type === 'video' && (
-                <>
-                  <p>Video URL:</p>
-                  <input
-                    type="text"
-                    placeholder="/videos/intro.mp4 or https://cdn.example.com/clip.mp4"
-                    value={widget.videoUrl || ""}
-                    onChange={e =>
-                      changeWidgetProperty(widget.id, { videoUrl: e.target.value || null })
-                    }
-                  />
-  
-                  <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span>Loop</span>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.loop}
-                    onChange={e => changeWidgetProperty(widget.id, { loop: e.target.checked })}
-                  />
-                </label>
-
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span>Muted</span>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.muted}
-                    onChange={e => changeWidgetProperty(widget.id, { muted: e.target.checked })}
-                  />
-                </label>
-
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span>Show controls</span>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.controls}
-                    onChange={(e) =>
-                      changeWidgetProperty(widget.id, { controls: e.target.checked })
-                    }
-                  />
-                </label>
-
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span>Autoplay</span>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.autoplay}
-                    onChange={(e) =>
-                      changeWidgetProperty(widget.id, { autoplay: e.target.checked })
-                    }
-                  />
-                </label>
-                </>
-              )}
-  
-              {/* ===== Dropdown controls ===== */}
-              {widget.type === 'dropdown' && (() => {
-                // Use a draft string while typing; default to current options joined with ", "
-                const draft = widget.optionsText ?? (widget.options || []).join(", ");
-
-                // Commit helper: turn the draft string into an options array and normalize it
-                const commitOptions = (raw) => {
-                  const arr = (raw || "")
-                    .split(",")
-                    .map(s => s.trim())
-                    .filter(Boolean); // drop empty tokens on commit only
-
-                  const nextValue = arr.includes(widget.value) ? widget.value : (arr[0] || "");
-                  // Save normalized text too so the input shows tidy commas + spaces
-                  const normalizedText = arr.join(", ");
-
-                  changeWidgetProperty(widget.id, {
-                    options: arr,
-                    value: nextValue,
-                    optionsText: normalizedText,
-                  });
-                };
-
-                return (
-                  <>
-                    <p>Options (comma-separated):</p>
-                    <input
-                      type="text"
-                      value={draft}
-                      onChange={e => {
-                        // While typing, only update the draft string; don't parse/sanitize yet.
-                        changeWidgetProperty(widget.id, { optionsText: e.target.value });
-                      }}
-                      onKeyDown={e => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          commitOptions(e.currentTarget.value);
-                          // keep focus if you want: e.currentTarget.blur();
-                        }
-                      }}
-                      onBlur={e => commitOptions(e.currentTarget.value)}
-                    />
-
-                    <p>Selected Value:</p>
-                    <input
-                      type="text"
-                      value={widget.value || ""}
-                      onChange={e => changeWidgetProperty(widget.id, { value: e.target.value })}
-                    />
-
-                    <p>Font Size:</p>
-                    <input
-                      type="number"
-                      min="10"
-                      max="48"
-                      value={widget.fontSize || 14}
-                      onChange={e =>
-                        changeWidgetProperty(
-                          widget.id,
-                          { fontSize: parseInt(e.target.value || "14", 10) }
-                        )
-                      }
-                    />
-
-                    <p>Text Color:</p>
-                    <input
-                      type="color"
-                      value={widget.textColor || "#111111"}
-                      onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
-                    />
-                  </>
-                );
-              })()}
-
-  
-              {/* ===== Advertisement controls ===== */}
-              {widget.type === 'advert' && (
-                <>
-                  <p>Image URL:</p>
-                  <input
-                    type="text"
-                    placeholder="https://…/banner.jpg"
-                    value={widget.imageUrl || ""}
-                    onChange={e => changeWidgetProperty(widget.id, { imageUrl: e.target.value })}
-                  />
-  
-                  <p>Link URL:</p>
-                  <input
-                    type="text"
-                    placeholder="www.google.com"
-                    value={widget.linkUrl || ""}
-                    onChange={e => changeWidgetProperty(widget.id, { linkUrl: e.target.value })}
-                  />
-  
-                  <p>Object Fit:</p>
-                  <select
-                    value={widget.objectFit || "cover"}
-                    onChange={e => changeWidgetProperty(widget.id, { objectFit: e.target.value })}
-                  >
-                    <option value="contain">contain</option>
-                    <option value="cover">cover</option>
-                    <option value="fill">fill</option>
-                    <option value="none">none</option>
-                    <option value="scale-down">scale-down</option>
-                  </select>
-  
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={!!widget.showBorder}
-                      onChange={e => changeWidgetProperty(widget.id, { showBorder: e.target.checked })}
-                    />
-                    Show border
-                  </label>
-  
-                  <p>Border Color:</p>
-                  <input
-                    type="color"
-                    value={widget.borderColor || "#333333"}
-                    onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
-                  />
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      );
-    }
-  else {
-      // If something is not selected
-      return (
-      <p>Select a widget to view its properties.</p>
-    );
-    }
-  }  
-
-function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage }) {
-
-  const downloadHTMLPage = (currentPage) => {
-    console.log("Downloading page", currentPage);
-
-    const file = new Blob([RenderPage(currentPage)], {type: 'text/html'});
-
-    const element = document.createElement("a");
-    element.href = URL.createObjectURL(file);
-    element.download = "Page" + Date.now() + ".html";
-
-    document.body.appendChild(element);
-  }
-
-  return(
-    <div>
-      {/* A view of all pages */}
-      <select value={selectedPageID} onChange={e => setSelectedPageID(Number(e.target.value))}>
-        {pages.map(page => (
-          <option key={page.id} value={page.id}>{page.name}</option>
-        ))}
-      </select>
-      
-      {/* Buttons for editing pages */}
-      <button onClick={createPage}>+ New Page</button>
-
-      {/* Download current page as HTML */}
-      <button >Download Page</button>
-    </div>
-  );
 }
