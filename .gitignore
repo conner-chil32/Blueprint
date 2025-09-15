@@ -44,7 +44,7 @@ yarn-error.log*
 next-env.d.ts
 
 # wordpress
-/Wordpress/*
+/wordpress/site-files/*
 
 # database
 /blueprint/lib/db_data/*
