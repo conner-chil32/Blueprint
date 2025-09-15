@@ -15,11 +15,13 @@ export default function SignUpPage() {
         },
         {
             id: 'password1',
-            text: "Password"
+            text: "Password",
+            type: "password"
         },
         {
             id: 'password2',
-            text: "Re-enter Password"
+            text: "Re-enter Password",
+            type: "password"
         },
         {
             id: 'phone' ,
@@ -33,11 +35,16 @@ export default function SignUpPage() {
             <div className={styles.body}>
                 <div className={`${styles.bodySection} ${styles.createSection}`}>
                     <form>
-                        {infoBoxes.map((box) => (
+                            {infoBoxes.map((box) => (
                             <div key={box.id} className={styles.infoBox}>
-                                <input type="text" name={box.id} placeholder={box.text} required={box.id !== 'phone'}></input>
+                                <input
+                                type={box.type || "text"}
+                                name={box.id}
+                                placeholder={box.text}
+                                required={box.id !== "phone"}
+                                />
                             </div>
-                        ))}
+                            ))}
                         <input type="checkbox" id="marketing" value="Yes"/>
                         <label> I am interested in future marketing</label><br />
                         <button className="submit-button" type="submit">CREATE <br/> ACCOUNT</button>
