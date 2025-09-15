@@ -1,0 +1,37 @@
+{
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react", "react-hooks"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "settings": {
+    "react": { "version": "detect" }
+  },
+  "overrides": [
+    {
+      "files": ["**/src/app/**/*.js", "**/src/app/**/*.jsx"],
+      "env": { "browser": true },
+      "parserOptions": {
+        "sourceType": "module",
+        "ecmaFeatures": { "jsx": true }
+      }
+    },
+    {
+      "files": ["**/src/**/*.test.js", "**/__tests__/**/*.js"],
+      "env": { "jest": true }
+    }
+  ]
+}
