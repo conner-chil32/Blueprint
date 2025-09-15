@@ -1,13 +1,14 @@
 import { Widget } from './Widget';
 
-export function Box(props) {
+export function Box({ scale, ...props }) {
   
   return (
     <Widget
       {...props}
       style={{
-        backgroundColor: props.backgroundColor || '#ccc',
+        backgroundColor: props.backgroundColor || '#cccccc',
       }}
+      scale={scale}
     />
   );
 }

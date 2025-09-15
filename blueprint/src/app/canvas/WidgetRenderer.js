@@ -3,7 +3,7 @@ import { Video } from "../components/widgets/video";
 import { Dropdown } from "../components/widgets/Dropdown";
 import { Advert } from "../components/widgets/Advert";
 
-export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, changeWidgetProperty }) {
+export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty }) {
 
   /**
    * Render the correct type of widget.
@@ -19,8 +19,9 @@ export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, cha
   };
 
   switch (widget.type) {
-    case "box":
-      return <Box {...common} />;
+    case 'box':
+      {/*console.log('Rendering box widget:', widget);*/}
+      return <Box key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} scale={scale} />;
     case "video":
       return <Video {...common} />;
     case "dropdown":
