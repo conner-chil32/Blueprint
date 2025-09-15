@@ -107,7 +107,8 @@ services:
     command: >
       /bin/sh -c '
       sleep 60;
-      wp core --path='/var/www/html' multisite-install --url=${ADDRESS}:8000 --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
+      wp core multisite-install --path='/var/www/html' --url=localhost:8000 --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
+      wp plugin install jwt-authentication-for-wp-rest-api --activate
       cp /temp/.htaccess_dummy /var/www/html/.htaccess;
       chmod 644 /var/www/html/.htaccess;
       rm /temp/.htaccess_dummy;
