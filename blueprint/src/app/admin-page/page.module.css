@@ -4,8 +4,7 @@
   background: #666;
   padding: 20px;
   border-radius: 5px;
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  display: flex;
   gap: 15px;
   transform: translateY(150px);
 }
@@ -14,6 +13,13 @@
     background: #888;
     padding: 15px;
     border-radius: 10px;
+  }
+
+  .listelement {
+    background: #4d4d4d;
+    padding: 15px;
+    border-radius: 10px;
+    align-items: flex-start;
   }
   
   .logo {
@@ -85,4 +91,9 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+  }
+  .searchUser {
+    background-color: var(--text-background);
+    border-radius: var(--border-weight);
+    padding: 15px;
   }
