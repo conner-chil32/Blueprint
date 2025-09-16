@@ -78,6 +78,8 @@ services:
       WORDPRESS_DB_NAME: ${WORDPRESS_DATABASE_NAME}
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_ALLOW_MULTISITE', true);
+        define('JWT_AUTH_SECRET_KEY', getenv_docker('JWT_AUTH_SECRET_KEY', 'secret'));
+
     depends_on: 
       - wordpress-db
     ports:
@@ -106,8 +108,8 @@ services:
     command: >
       /bin/sh -c '
       sleep 60;
-      wp core multisite-install --path='/var/www/html' --url=localhost:8000 --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
-      wp plugin install jwt-authentication-for-wp-rest-api --activate
+      wp core multisite-install --path=/var/www/html --url=localhost:8000 --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
+      wp plugin install jwt-authentication-for-wp-rest-api --activate;
       cp /temp/.htaccess_dummy /var/www/html/.htaccess;
       chmod 644 /var/www/html/.htaccess;
       echo "SETUP DONE!";

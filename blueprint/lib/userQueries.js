@@ -1,4 +1,5 @@
 import { validateConnection } from "./db.js";
+import { encryptString } from "./utility.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -39,7 +40,7 @@ export async function getUserByID(id) {
  */
 export async function signIn(user, password, connection) {
     if (!await validateConnection()) return false;
-    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, password]);
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, encryptString(password)]);
     return result;
 }
 
@@ -54,7 +55,7 @@ export async function signIn(user, password, connection) {
  */
 export async function createAccount(user, password, email, connection) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail) VALUES (?, ?, ?)`, [user, password, email]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail) VALUES (?, ?, ?)`, [user, await encryptString(password), email]);
     return result;
 }
 
@@ -68,7 +69,7 @@ export async function createAccount(user, password, email, connection) {
  */
 export async function createAccountWithPhone(user, password, email, connection, phone) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone) VALUES (?, ?, ?, ?)`, [user, password, email, phone]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone) VALUES (?, ?, ?, ?)`, [user, await encryptString(password), email, phone]);
     return result;
 }
 
