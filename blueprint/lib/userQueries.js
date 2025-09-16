@@ -1,4 +1,5 @@
 import { validateConnection } from "./db.js";
+import { encryptString } from "./utility.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -39,7 +40,7 @@ export async function getUserByID(id) {
  */
 export async function signIn(user, password, connection) {
     if (!await validateConnection()) return false;
-    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, password]);
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, encryptString(password)]);
     return result;
 }
 
@@ -55,7 +56,7 @@ export async function signIn(user, password, connection) {
  */
 export async function createAccount(user, password, email, connection, securityQuestion, securityAnswer) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?)`, [user, password, email, securityQuestion, securityAnswer]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?)`, [user, await encryptString(password), email, securityQuestion, securityAnswer]);
     return result;
 }
 
@@ -70,7 +71,7 @@ export async function createAccount(user, password, email, connection, securityQ
  */
 export async function createAccountWithPhone(user, password, email, connection, phone, securityQuestion, securityAnswer) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?)`, [user, password, email, phone, securityQuestion, securityAnswer]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?)`, [user, await encryptString(password), email, phone, securityQuestion, securityAnswer]);
     return result;
 }
 
