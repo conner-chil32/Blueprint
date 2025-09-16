@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { createAccount, createAccountWithPhone } from '@lib/userQueries';
 import { openConnection, closeConnection, connection } from '@lib/connection'; 
 import { validateConnection } from '@lib/utility';
-import { encryptData } from '@lib/user';
+import { encryptData, loginWordpress } from '@lib/user';
+import { User } from '@lib/user';
 
 export async function POST(request) {//Handles sending user form data to database via user queries calls, is called in /signup/page.js
   try {
@@ -18,7 +19,7 @@ export async function POST(request) {//Handles sending user form data to databas
     }
 
     let result = await encryptData(username,password);
-
+    loginWordpress(username, password);
     return NextResponse.json({ success: true, result });//return if successful
   } catch (err) {
     console.error(err);

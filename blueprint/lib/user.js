@@ -243,37 +243,6 @@ export class User {
     }
 
     /**
-     * Encrypts and validates user login credentials
-     * @param {string} username The username
-     * @param {string} password The password to authenticate
-     * @returns {boolean} true if login is successful, false otherwise
-     */
-    async encryptData(username, password) {
-        try {
-            if (this.isLoggedIn()) return true; //If user already logged in
-            
-            const user = await getUserByUsername(username);
-
-            if (!user) return false; // If user not found, return false
-
-            const storedUsername = user.userName;
-            const storedPassword = user.userPassHash;
-
-            const match = await bcrypt.compare(password,storedPassword);
-
-            if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
-                this.loggedIn = true; 
-                return true;
-            } else {
-                return false;
-            }
-        } catch (err) {
-            console.error(err);
-            return false;
-        }
-    }
-
-    /**
      * Check if user is already logged in
      * @returns {boolean} true if logged in, false otherwise
      */
@@ -290,5 +259,79 @@ export class User {
         return `User not found: ${error.message}`;
     }
 }
+
+/**
+ * Encrypts and validates user login credentials
+ * @param {string} username The username
+ * @param {string} password The password to authenticate
+ * @returns {boolean} true if login is successful, false otherwise
+ */
+export async function encryptData(username, password) {
+    try {
+        if (this.isLoggedIn()) return true; //If user already logged in
+        
+        const user = await getUserByUsername(username);
+
+        if (!user) return false; // If user not found, return false
+
+        const storedUsername = user.userName;
+        const storedPassword = user.userPassHash;
+
+        const match = await bcrypt.compare(password,storedPassword);
+
+        if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
+            this.loggedIn = true; 
+            return true;
+        } else {
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
+
+export async function registerWordpress(username, password, email) {
+    const requestOptions = {
+        method: "POST",
+        redirect: "follow"
+    };
+
+fetch(`http://localhost:80/wp-json/jwt-auth/v1/token?username=${process.env.DB_USER}&password=${process.env.DB_PASSWORD}`, requestOptions)
+  .then((response) => response.json())
+  .then((result) => {
+    console.log(result["token"]);
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${result["token"]}`);
+    const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    redirect: "follow"
+    };
+    fetch(`http://localhost:80/wp-json/wp/v2/users?${username}=&password=${password}&email=${email}`, requestOptions)
+      .then((response) => {
+        console.log("root token successful, creating user.")
+      })
+      .catch((error) => console.error(error));
+  })
+  .catch((error) => console.log("Unable to log into Wordpress."));
+}
+
+export async function loginWordpress(username, password) {
+    const requestOptions = {
+        method: "POST",
+        redirect: "follow"
+    };
+
+    fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+        sessionStorage.setItem("WP_TOKEN", result["token"])
+        console.log("token set")
+    })
+    .catch((error) => console.error(error));
+}
+
+
 
 export default User;

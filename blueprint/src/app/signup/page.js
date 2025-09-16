@@ -85,7 +85,7 @@ export default function SignUpPage() {
         <Navbar />
             <div className={styles.body}>
                 <div className={`${styles.bodySection} ${styles.createSection}`}>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                             {infoBoxes.map((box) => (
                             <div key={box.id} className={styles.infoBox}>
                                 <input
@@ -112,9 +112,7 @@ export default function SignUpPage() {
             </p>
             <button className="submit-button" type="submit"><a href='/login'>BACK TO LOGIN</a></button>
             
-        </div>
-    
-    {/* <AccountCollecter currentPage = "/signup" /> */}
+        </div>    
     </div>  
     </>
     )
