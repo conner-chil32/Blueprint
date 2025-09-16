@@ -1,17 +1,13 @@
 import Navbar from "../components/navbar";
 import styles from "./page.module.css";
 
-class User {
-  
-  constructor(id, name, sites) {
-    this.id = id
-    this.name = name
-    this.sites = sites
-  }
+async function getUserData() {
+  const res = await fetch("http://localhost:8000/wp-json/wp/v2/users")
+  return res.json()
 }
 
-export default function RawHTMLPage() {
-  const users = [new User(1, "Steve", ["http://localhost:8000/site1"]), new User(2, "Jeff", ["htttp://localhost:8000/site2"])]
+export default async function RawHTMLPage() {
+  const users = await getUserData()
 
   return (
     <>
