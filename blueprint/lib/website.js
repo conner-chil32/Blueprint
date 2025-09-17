@@ -10,6 +10,7 @@ import {
     getSiteByName, 
     getSiteCount, 
     createSite, 
+    updateSite, 
     deleteSite 
 } from './siteQueries.js';
 
@@ -109,6 +110,9 @@ export class Website {
      * Gets the website ID
      * @returns {number} The website ID
      */
+    getId() {
+        return this.id;
+    }
 
     /**
      * Gets the website name

@@ -1,18 +1,17 @@
-import CreateButton from "./CreateRouteButton.js"
-import CreateImage from "./CreateRouteImage.js"
+import Link from "next/link"
 
 export default function Navbar() {
     return (
       <div className = "topBarBackground">
         <div className="navbar">
         <div className="nav-left">
-            <CreateImage code="logo" />
-            <CreateButton code="features" />
-            <CreateButton code="pricing" />
-            <CreateButton code="canvas" />
-
+            <Link href="/">
+                <img title="Logo" src="images/Blueprint_trans.png" className="logoStyle"></img>
+            </Link>
+            <Link href="/features" className="nav-button">Features</Link>
+            <Link href="/pricing" className="nav-button">Pricing</Link>
         </div>
-        <CreateButton code="login" />
+        <Link href="login" className="nav-button">Login</Link>
         </div>
       </div>
     )
