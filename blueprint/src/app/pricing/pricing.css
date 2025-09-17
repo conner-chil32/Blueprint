@@ -1,0 +1,86 @@
+.container {
+    font-family: 'OpenDyslexic', sans-serif;
+    background-color: #555;
+    color: white;
+    text-align: center;
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.logoStyle {
+    height: 40px;
+    cursor: pointer;
+}
+
+.nav-button {
+    background-color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    color: black;
+    display: inline-block;
+}
+
+.title {
+    padding-top: 10vh;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 30px 0;
+}
+
+.plans {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.displayText {
+    font-size: 14px;
+    margin: 0; 
+    width: 100%;
+}
+
+.plan {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    font-weight: 400;
+}
+
+.plan h2 {
+    margin: 10px 0;
+    font-weight: 600;
+}
+
+.plan ul {
+    list-style: none;
+    padding: 0;
+}
+
+.plan ul li {
+    margin-bottom: 15px;
+}
+
+
+/* Request this to go globals.css */
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
