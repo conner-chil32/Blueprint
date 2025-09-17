@@ -10,7 +10,7 @@
 */
 
 import { commit, validateConnection } from './utility.js';
-import { getConnectionObject } from './connection.js';
+import { connection } from './connection.js';
 
 /**
  * createUserTable() - Creates the userAccounts table in the database.
@@ -23,26 +23,33 @@ import { getConnectionObject } from './connection.js';
 
 //XXX: CHANGE THIS AS NEEDED
 //TODO: MAKE SURE TO ADD THIS SCHEMA TO THE DOCUMENTATION
-export async function createUserTable(connection) {
-    if (!await validateConnection(connection)) return false;
-    
-    await connection.query(`
-        CREATE TABLE IF NOT EXISTS userAccounts (
-            userId INT NOT NULL AUTO_INCREMENT,
-            userName VARCHAR(255) NOT NULL,
-            userPassHash VARCHAR(255) NOT NULL,
-            userWpName VARCHAR(255),
-            userWpPassHash VARCHAR(255),
-            userEmail VARCHAR(255) NOT NULL,
-            userPhone VARCHAR(255),
-            userWebsites INT(11),
-            userDateCreated TIMESTAMP,
-            userLastLogin TIMESTAMP,
-            isAdmin BOOLEAN DEFAULT FALSE,
-            PRIMARY KEY (userId)
-    );`.replace(/\n/g, ""));
 
-    return await commit(connection);
+export async function createUserTable() {    
+    console.log("[DB] CREATING USER TABLE");
+
+    try {
+        await validateConnection()
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS userAccounts (
+                userId INT NOT NULL AUTO_INCREMENT,
+                userName VARCHAR(255) NOT NULL,
+                userPassword VARCHAR(255) NOT NULL,
+                userWpName VARCHAR(255),
+                userWpPassHash VARCHAR(255),
+                userEmail VARCHAR(255),
+                userPhone VARCHAR(255),
+                userWebsites INT(11),
+                userDateCreated TIMESTAMP,
+                userLastLogin TIMESTAMP,
+                isAdmin BOOLEAN DEFAULT FALSE,
+                PRIMARY KEY (userId)
+        );`.replace(/\n/g, ""));
+        await commit();
+    }
+    catch (err) {
+        throw false
+    }
+    return true;
 }
 
 /**
@@ -55,10 +62,11 @@ export async function createUserTable(connection) {
  */
 //XXX: CHANGE THIS AS NEEDED
 //TODO: MAKE SURE TO ADD THIS SCHEMA TO THE DOCUMENTATION
-export async function createWebsiteTable(connection) {
-    if (!await validateConnection(connection)) return false;
-
-    await connection.query(`
+export async function createWebsiteTable() {
+    
+    try{
+        await validateConnection();
+        await connection.query(`
         CREATE TABLE IF NOT EXISTS userWebsites (
             id INT NOT NULL AUTO_INCREMENT,
             userId INT NOT NULL,
@@ -69,6 +77,9 @@ export async function createWebsiteTable(connection) {
             FOREIGN KEY (userId) REFERENCES userAccounts(userId),
             PRIMARY KEY (id)
         );`.replace(/\n/g, ""));
-
-    return await commit(connection);
+        await commit();
+    } catch (err) {
+        throw false;
+    }
+    return true;
 }
