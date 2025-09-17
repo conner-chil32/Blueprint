@@ -276,15 +276,3 @@
 .plan ul li {
   margin-bottom: 15px;
 }
-
-.uppercase {  /* className = "uppercase" makes connected text all caps */
-  text-transform: uppercase;
-}
-
-.lowercase {  /* className = "lowercase" makes connected text all lowercase */
-  text-transform: lowercase;
-}
-
-.capitalize { /* className = "capitalize" makes connected text start with an uppercase letter */
-  text-transform: capitalize;
-}

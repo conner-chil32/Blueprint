@@ -57,31 +57,3 @@ export async function createAccount(user, password, email, connection) {
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail) VALUES (?, ?, ?)`, [user, password, email]);
     return result;
 }
-
-/**
- * createAccountWithPhone - Creates a user with all required information and its optional phone number.
- * Input: user - The username of the user to create, password - password of user, emaile - email of user, connection - connection to DB, phone - the phone number of the user. 
- * Output: boolean - true if the account was created successfully, false otherwise.
- * Date: 09/11/2025
- * Author: Elijah White
- * Dependencies: mysql
- */
-export async function createAccountWithPhone(user, password, email, connection, phone) {
-    if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone) VALUES (?, ?, ?, ?)`, [user, password, email, phone]);
-    return result;
-}
-
-/**
- * getUserByUsername - Retrieves a user by their Username.
- * Input: username - The username of the user to retrieve.
- * Output: object - The user with the specified Username.
- * Date: 9/08/2025
- * Author: Elijah White
- * Dependencies: mysql
- */
-export async function getUserByUsername(username, connection) {
-    if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
-    return result;
-}

@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 function UserField() {
     return (
         <div className = {styles.userFieldContainer}>
-            <input name = "username" placeholder = "Enter Username" type = "text" className={styles.userField} id = "login_username"></input>
+            <input name = "" placeholder = "Enter Username" type = "text" className={styles.userField} id = "login_username"></input>
         </div>
     )
 }
@@ -25,7 +25,7 @@ function UserField() {
 function PasswField() {
     return (
         <div className = {styles.passFieldContainer}>
-            <input name = "password" className={styles.passField} placeholder="Enter Password" type = "password" id = "login_username"></input>
+            <input name = "" className={styles.passField} placeholder="Enter Password" type = "password" id = "login_username"></input>
         </div>
     );
 }
@@ -74,7 +74,6 @@ export default function AccountCollecter( { currentPage } ) {
                     <>
                         <UserField />
                         <PasswField />
-                        <center><div className={`${styles.accountCreateLink} submit-button`}><a href="/signup" >Create Account</a></div></center>
                         <AccountSubmit path={currentPage}/>
                     </>
                 )
