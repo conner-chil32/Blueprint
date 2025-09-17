@@ -64,7 +64,7 @@ services:
       - app-network
 
   wordpress:
-    image: wordpress:latest
+    build: ./wordpress
     env_file: .env
     container_name: ${CONTAINER_NAME}-wordpress
     environment:
@@ -72,14 +72,47 @@ services:
       WORDPRESS_DB_USER: ${WORDPRESS_DATABASE_USER}
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DATABASE_PASSWORD}
       WORDPRESS_DB_NAME: ${WORDPRESS_DATABASE_NAME}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ALLOW_MULTISITE', true);
     depends_on: 
       - wordpress-db
     ports:
       - "8000:80"
     volumes:
-      - ./Wordpress:/var/www/html
+      - ./wordpress/site-files:/var/www/html
     networks:
       - app-network
+
+    
+  wordpress-cli:
+    image: wordpress:cli
+    env_file: .env
+    container_name: ${CONTAINER_NAME}-wordpress-cli
+    environment:
+      WORDPRESS_DB_HOST: ${CONTAINER_NAME}-wordpress-db
+      WORDPRESS_DB_USER: ${WORDPRESS_DATABASE_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DATABASE_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DATABASE_NAME}
+    user: '33'
+    depends_on:
+      - wordpress-db
+      - wordpress
+    volumes:
+      - ./wordpress/site-files:/var/www/html
+      - ./blueprint/lib/wordpress_setup:/temp
+    command: >
+      /bin/sh -c '
+      sleep 60;
+      wp core --path='/var/www/html' multisite-install --url=localhost:8000 --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
+      cp /temp/.htaccess_dummy /var/www/html/.htaccess;
+      chmod 644 /var/www/html/.htaccess;
+      rm /temp/.htaccess_dummy;
+      wp rewrite structure '/%postname%/';
+      wp rewrite flush --hard;
+      echo "SETUP DONE!";
+      '
+    networks:
+     - app-network
 networks:
   app-network:
       

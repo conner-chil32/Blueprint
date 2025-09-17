@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:current-alpine3.22
 
 WORKDIR /blueprint
 COPY package*.json ./
