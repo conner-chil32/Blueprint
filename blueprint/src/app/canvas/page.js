@@ -312,6 +312,16 @@ export default function CanvasPage() {
     console.log('Deselected all widgets');
   }
 
+  function changePageProperty(pageID, newProperties) {
+    const changedPages = pages.map(page =>
+      // If this is the correct widget, then update the object
+      page.id === pageID ? {...page, ...newProperties}
+      : page // Otherwise, leave it
+    );
+
+    setPages(changedPages);
+  }
+
   return (
     <>
       <Navbar /> {/* <-- RENDERED NAVBAR */}
@@ -444,15 +454,4 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
       <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
     </div>
   );
-}
-
-  function changePageProperty(pageID, newProperties) {
-    const changedPages = pages.map(page =>
-      // If this is the correct widget, then update the object
-      page.id === pageID ? {...page, ...newProperties}
-      : page // Otherwise, leave it
-    );
-
-    setPages(changedPages);
-  }
 }
