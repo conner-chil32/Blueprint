@@ -2,18 +2,42 @@ import { useEffect, useState, useRef } from "react";
 import styles from './page.module.css';
 import { RenderPage } from "./HtmlConverter";
 
+/** Christopher Parsons, 9/18/2025
+ * Inputs:
+ *  selectedWidgets: array
+ *  changePageProperty: function
+ *  widgets: array
+ *  deleteWidget: function
+ *  pages: array
+ *  selectedPageID: number
+ *  setSelectedPageID: function
+ *  currentPage: Page
+ *  createpage: function
+ *  changePageProperty: function
+ * 
+ * A panel on the right side of the screen that allows
+ * for the manipulation of existing widgets and pages.
+ */
 export function RightPanel({
     changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
     pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty
    }) {
     const [buttonSelected, setButtonSelected] = useState(false);
 
+    /** Christopher Parsons, 9/18/2025
+     * If a button is clicked, flip the buttonSelected boolean.
+     * The buttonSelected variable controls what the RightPanel
+     * is displaying.
+     */
     const handleButtonClick = () => {
       setButtonSelected(!buttonSelected);
       console.log(`Canvas status: ${!buttonSelected}`);
     }
 
-    // Return a button to switch between the selected widgets and canvas settings
+    /** Christopher Parsons, 9/18/2025
+     * Return a button to switch between the page controls and the widget controls.
+     * Also return the controls.
+     */
     return (
       <div>
         {/* Button to switch, always rendered. When clicked, invert buttonSelected */}
@@ -27,6 +51,16 @@ export function RightPanel({
     );
   }
 
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  chagneWidgetProperty: function
+   *  selectedWidgets: array
+   *  widgets: array
+   *  deleteWidget: function
+   * 
+   * Returns a series of controls for the manipulation of
+   * widgets.
+   */
   function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget }) {
     // Render the selected widgets panel
     if (selectedWidgets && selectedWidgets.length > 0) {
@@ -296,6 +330,17 @@ export function RightPanel({
     }
   }  
 
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  pages: array
+   *  selectedPageID: number
+   *  setSelectedID: number
+   *  currentPage: Page
+   *  createPage: function
+   *  changePageProperty: function
+   * 
+   * Returns an interface for creating and modifying pages.
+   */
 function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty }) {
 
   const downloadHTMLPage = (currentPage) => {
@@ -322,7 +367,10 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
       {/* Buttons for editing pages */}
       <button onClick={createPage}>+ New Page</button>
 
-      {/* Page size controls */}
+      {/** Christopher Parsons, 9/18/2025
+       * An interface for changing the width, height, and background color
+       * of the currently selected page.
+       */}
       <div>
         <p>Width</p>
         <input 
@@ -366,7 +414,7 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
           />
       </div>
 
-      {/* Download current page as HTML */}
+      {/* Download current page as HTML. IN PROGRESS */}
       <button >Download Page</button>
     </div>
   );

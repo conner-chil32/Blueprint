@@ -8,6 +8,15 @@ import { Canvas } from './Canvas';
 import { LeftPanel } from './LeftPanel';
 import { RightPanel } from './RightPanel';
 
+
+/** Christpher Parsons
+ *  Angel Ramirez
+ *  Jacob Francis
+ *  (Other contributors add names here and where needed)
+ * 
+ * This function sets up the base layer for the canvas page. Sets up and runs
+ * the RightPanel, LeftPanel, and the Canvas components.
+ */
 export default function CanvasPage() {
   // Pages, each containing widgets
   const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [], width: 800, height: 600, backgroundColor: '#ffffff' }]);
@@ -38,7 +47,16 @@ export default function CanvasPage() {
   const [scale, setScale] = useState(1);
   const [transformCoords, setTransformCoords] = useState({ posX: 0, posY: 0 });
 
-  // Update the current page to include new widgets
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  newWidgets: Widget object
+   * Outputs:
+   *  widgets: array
+   * 
+   * Replaces the widgets within the current selected page with
+   * a new set of widgets. Allows for the manipulation/creation
+   * of new widgets.
+   */
   const setWidgets = (newWidgets) => {
     setPages(prev => 
       prev.map(page =>
@@ -47,7 +65,17 @@ export default function CanvasPage() {
     );
   };
 
-  // Create a new page
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  none
+   * Outputs:
+   *  pages: array
+   *  selectedPageID: number
+   *  nextPageID: number
+   * 
+   * Creates a new page. Replaces the pages variable with what
+   * it was before, but with a new page added.
+   */
   const createPage = () => {
     setPages([
       ...pages,
@@ -64,7 +92,16 @@ export default function CanvasPage() {
     setNextPageID(nextPageID+1);
   };
 
-  // Delete a page
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  pageId: string
+   * Outputs:
+   *  pages: array
+   * 
+   * Deletes a page from the pages array by replacing the
+   * pages variable with itself minus the page you want to delete.
+   * Protects from accidentally deleting the last page.
+   */
   const deletePage = (pageId) => {
     if (pages.length <= 1) {
       console.log('Cannot delete the last page');
@@ -81,10 +118,16 @@ export default function CanvasPage() {
     setPages(prev => prev.map(page => page.id === pageId ? { ...page, name: newName } : page));
   };
 
-  /**
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  e: MouseEvent
+   * Outputs:
+   *  pageMousePos: { x: number, y: number }
+   *  canvasMousePos: { x: number, y: number }
+   *  widgetToPlace (updated if in placement mode)
+   * 
    * When the mouse moves, keep track of its position.
    * useEffect is essentially a hook that keeps track of actions performed on the page.
-   * @param {*} e 
    */
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -112,7 +155,7 @@ export default function CanvasPage() {
     };
   
     /* 
-    Old keyDown handlen deleted widgets by pressing backspace or delete when typing in input fields.
+    Old keyDown handles deleted widgets by pressing backspace or delete when typing in input fields.
     Now modified to prevent Backspace/Delete from navigating back or deleting widgets when typing in an input field.
     Can still delete widgets using the delete button in the right panel. 
     */
@@ -145,8 +188,15 @@ export default function CanvasPage() {
   }, [isPlacing, widgetToPlace]);
   
 
-  /**
-  * Ensure changes to the widgets updates the whole page
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  widgets: array
+   *  selectedWidgets: array
+   * Outputs:
+   *  selectedWidgets: array
+   * 
+  * Ensure changes to the widgets updates the whole page. Whenever
+  * a widget is changed, update React's state.
   * @param {*} e 
   */
   useEffect(() => {
@@ -160,10 +210,17 @@ export default function CanvasPage() {
     setSelectedWidgets(updatedSelection);
   }, [widgets]);
 
-  /**
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  none
+   * Outputs:
+   *  widgets: array
+   *  isPlacing: boolean
+   * 
    * Triggers when the canvas page itself is clicked.
    * Handles the placement of widgets and deselection of all widgets.
    * If in placement mode, it will drop the current widget.
+   * Otherwise, it deselects all widgets on the page.
    */
   const handleCanvasClick = () => {
     // If in placement mode, drop the current widget.
@@ -189,6 +246,18 @@ export default function CanvasPage() {
     }
   };
 
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  widgetID: string | number
+   *  newX: number
+   *  newY: number
+   *  newSize: { width: number, height: number } | null
+   * Outputs:
+   *  widgets: array
+   * 
+   * Replace the current widget with a clone,
+   * but with a different attribute.
+   */
   const updateWidget = (widgetID, newX, newY, newSize = null) => {
     const updatedWidgets = widgets.map(widget =>
       widget.id === widgetID ? { ...widget, x: newX, y: newY, ...(newSize && { width: newSize.width, height: newSize.height }) } : widget
@@ -196,10 +265,17 @@ export default function CanvasPage() {
     setWidgets(updatedWidgets);
   };
 
-  /**
-   * Create a new widget with default values.
-   * @param {*} typeToMake 
-   * @returns 
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  typeToMake: string
+   * Outputs:
+   *  widgetToPlace: Widget object
+   *  nextWidgetId: number
+   *  isPlacing: boolean
+   * 
+   * Create a new widget with default values. Determines
+   * what type of widget to create depending on the
+   * string fed in. Advances nextWidgetID + 1.
    */
   const createWidget = (typeToMake) => {
     let newWidget = null;
@@ -301,17 +377,43 @@ export default function CanvasPage() {
     setWidgetToPlace(newWidget);
   };
   
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  id: number
+   * Outputs:
+   *  widgets: array
+   * Replaces the widgets of the current page with a clone
+   * but without the designated widget.
+   */
   function deleteWidget(id) {
     console.log('Deleting widget', id);
     setWidgets(widgets.filter(widget => widget.id !== id));
     deselectAllWidgets();
   }
 
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  none
+   * Outputs:
+   *  selectedWidgets: null
+   * 
+   * Removes all widgets from selection.
+   */
   function deselectAllWidgets() {
     setSelectedWidgets(null);
     console.log('Deselected all widgets');
   }
 
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  pageID: number
+   *  newProperties: object
+   * Outputs:
+   *  pages: array
+   * 
+   * Replaces the current page with a clone but
+   * with a modified attribute.
+   */
   function changePageProperty(pageID, newProperties) {
     const changedPages = pages.map(page =>
       // If this is the correct widget, then update the object
@@ -338,11 +440,33 @@ export default function CanvasPage() {
           />
         </div>
 
-      {/* Panel on the left, showing options for adding widgets */}
+      {/** Christopher Parsons, 9/18/2025
+       * Renders the LeftPanel section on the left side of the screen.
+       * @param {*} createWidget
+       */}
       <div className={`${styles.leftPanel} ${styles.sidePanel}`}>
         <LeftPanel createWidget={createWidget} />
       </div>
 
+      {/** Christopher Parsons, 9/18/2025
+       * Inputs:
+       *  widgets: array
+       *  isPlacing: Boolean
+       *  isDragging: Boolean
+       *  widgetToPlace: Widget
+       *  selectedWidgets: array
+       *  setSelectedWidgets: function
+       *  setIsDragging: function
+       *  updateWidget: function
+       *  scale: number
+       *  setScale: function
+       *  setTransformCoords: function
+       *  currentPage: Page
+       *  canvasRef: React reference, type unknown
+       *  handleCanvasClick: function
+       * 
+       * Renders the central portion of the canvas page.
+       */}
       <Canvas
         widgets={widgets}
         isPlacing={isPlacing}
@@ -360,7 +484,22 @@ export default function CanvasPage() {
         handleCanvasClick={handleCanvasClick}
       />
 
-      {/* Panel on the right, showing options for the selected widgets and the canvas page */}
+      {/** Christopher Parsons, 9/18/2025
+       * Inputs:
+       *  selectedWidgets: array
+       *  changePageProperty: function
+       *  widgets: array
+       *  deleteWidget: function
+       *  pages: array
+       *  selectedPageID: number
+       *  setSelectedPageID: function
+       *  currentPage: Page
+       *  createPage: function
+       *  changePageProperty: function
+       * 
+       * Renders the right panel for modifying the properties of selected
+       * widgets and pages.
+       */}
       <div className={`${styles.rightPanel} ${styles.sidePanel}`}>
         <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
         pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />
@@ -368,6 +507,15 @@ export default function CanvasPage() {
     </>
   );
   
+  /** Christopher Parsons, 9/18/2025
+   * Inputs:
+   *  widgetID: number
+   *  newProperties: JSX Attribute
+   * Outputs:
+   *  pages: array
+   * 
+   * Replaces a widget with itself but with a new attribute.
+   */
   function changeWidgetProperty(widgetID, newProperties) {
     const changedWidgets = widgets.map(widget =>
       // If this is the correct widget, then update the object
@@ -379,6 +527,9 @@ export default function CanvasPage() {
   }
 }
 
+/** 
+ * 
+ */
 function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage }) {
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');

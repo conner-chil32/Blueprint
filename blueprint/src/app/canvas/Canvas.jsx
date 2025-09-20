@@ -5,10 +5,31 @@ import { WidgetRenderer } from "./WidgetRenderer";
 import styles from "./page.module.css";
 import React from "react";
 
+/** Christopher Parsons, 9/18/2025
+ * Inputs:
+ *  widgets: array
+ *  isPlacing: Boolean
+ *  isDragging: Boolean
+ *  widgetToPlace: Widget
+ *  selectedWidgets: array
+ *  setSelectedWidgets: function
+ *  setIsDragging: function
+ *  updateWidget: function
+ *  scale: number
+ *  setScale: function
+ *  setTransformCoords: function
+ *  currentPage: Page
+ *  canvasRef: JSX Reference
+ *  handleCanvasClick: function
+ * 
+ * Returns the central part of the page. An interface for manipulating the page itself
+ * and positioning widgets.
+ */
 export function Canvas({ widgets, isPlacing, isDragging, widgetToPlace, selectedWidgets, setSelectedWidgets,
     setIsDragging, updateWidget, scale, setScale, setTransformCoords, currentPage, canvasRef, handleCanvasClick }) {
 
     return (
+        /* The wrapper that applies react-zoom-pan-pinch's attributes to the draggable component */
         <TransformWrapper
             initialScale={1}
             initialPositionX={0}
@@ -26,6 +47,7 @@ export function Canvas({ widgets, isPlacing, isDragging, widgetToPlace, selected
             {/* Canvas area, a window to view the current page */}
             <div className={styles.canvasArea}>
 
+                {/* Contains the draggable component of reach-zoom-pan-pinch */}
                 <TransformComponent>
 
                     {/* The component for moving/zooming the camera */}

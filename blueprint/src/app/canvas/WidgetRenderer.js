@@ -3,6 +3,20 @@ import { Video } from "../components/widgets/video";
 import { Dropdown } from "../components/widgets/Dropdown";
 import { Advert } from "../components/widgets/Advert";
 
+/** Christopher Parsons, 9/18/2025
+ *  Angel Ramirez
+ * Inputs:
+ *  widget: Widget
+ *  onClick: function
+ *  alertDragStop: function
+ *  isSelected: Boolean
+ *  onDragStart: function
+ *  onDragStop: function
+ *  scale: number
+ *  changeWidgetProperty: function
+ * 
+ * Updates the current state of the inputted widget in React.
+ */
 export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty }) {
 
   /**
@@ -20,7 +34,6 @@ export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onD
 
   switch (widget.type) {
     case 'box':
-      {/*console.log('Rendering box widget:', widget);*/}
       return <Box key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} scale={scale} />;
     case "video":
       return <Video {...common} />;

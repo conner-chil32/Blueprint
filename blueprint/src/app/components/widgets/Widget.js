@@ -1,6 +1,25 @@
 import { Rnd } from 'react-rnd';
-import { useRef } from 'react';
 
+/** Christopher Parsons, 9/18/2025
+ * Inputs:
+ *  id: number
+ *  x: number
+ *  y: number
+ *  width: number
+ *  height: number
+ *  isSelected: Boolean
+ *  isMoving: Boolean
+ *  rotation: number
+ *  style: CSS attributes
+ *  onClick: function
+ *  alertDragStop: function
+ *  onDragStart: function
+ *  onDragStop: function
+ *  scale: number
+ * 
+ * A widget component holding all the information about its own position, movement, and every attribute.
+ * A base funciton for other widget types.
+ */
 export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDragStop, scale }) {
 
   const handleResize = (e, direction, refToElement, delta, position) => {

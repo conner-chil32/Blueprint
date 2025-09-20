@@ -3,6 +3,12 @@
 import { useEffect, useState, useRef } from "react";
 import styles from './page.module.css';
 
+/** Christopher Parsons, 9/18/2025
+ * Inputs:
+ *  createWidget: function
+ * 
+ * Returns an interface for creating widget types.
+ */
 export function LeftPanel({ createWidget }) {
     return (
         <div>

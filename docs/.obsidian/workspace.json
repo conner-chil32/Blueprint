@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Documentation/mysql-database.md",
+                "file": "Documentation/protocol.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "mysql-database"
+              "title": "protocol"
             }
           }
         ]
@@ -160,6 +160,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -168,14 +169,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "657ff28b9a9e96e8",
+  "active": "7a74e049865b41a6",
   "lastOpenFiles": [
+    "templates/document.md",
+    "Documentation/mysql-database.md",
     "makedocs.md",
     "Documentation/protocol.md",
-    "Documentation/mysql-database.md",
     "Program-Structure/CSS Organization.md",
     "index.md",
-    "templates/document.md",
     "imgs/insert-template-button-img.png",
     "imgs/finder-img.png",
     "imgs/new-note-button-img.png"
