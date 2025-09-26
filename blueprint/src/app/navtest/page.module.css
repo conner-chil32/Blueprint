@@ -1,0 +1,14 @@
+
+/* a table of generic white buttons with black text in a grid */
+
+.table {
+    display: flex;
+    flex-wrap: wrap;
+    place-items: center;
+    margin-top: 500px;
+}
+
+.cell{
+    justify-content: center;
+    align-items: center;
+}

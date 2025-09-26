@@ -12,8 +12,10 @@ export default function Navbar() {
             <CreateButton code="canvas" />
 
         </div>
+        <CreateButton code='navtest' />
         <CreateButton code="login" />
         </div>
       </div>
     )
   }
+//remove line 13 when testing complete
