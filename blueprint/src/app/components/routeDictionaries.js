@@ -19,6 +19,12 @@ const pricing = {
     className: "nav-button"     //className included for the nav bar
 }
 
+const canvas = {
+    label: "Canvas", 
+    href: "/canvas", 
+    className: "nav-button"
+}
+
 const logo = {
 //    label: "Logo", //may be desired later, but currently text is larger than icon
     href: "/", 
