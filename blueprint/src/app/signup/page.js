@@ -130,7 +130,7 @@ export default function SignUpPage() {
             <button className="submit-button" type="submit" disabled={loading}>
               {loading ? "Creating..." : <>CREATE <br/> ACCOUNT</>}
             </button>
-            {message && <div>{message}</div>}
+            {message && <div className={styles.message}>{message}</div>}
           </form>
         </div>
         <div className={`${styles.bodySection} ${styles.reqsSection}`}>

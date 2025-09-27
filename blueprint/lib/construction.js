@@ -24,6 +24,7 @@ import { connection } from './connection.js';
 //XXX: CHANGE THIS AS NEEDED
 //TODO: MAKE SURE TO ADD THIS SCHEMA TO THE DOCUMENTATION
 
+//User question and user answer added 9/27, Question and answer for user security question
 export async function createUserTable() {    
     console.log("[DB] CREATING USER TABLE");
 
@@ -38,6 +39,8 @@ export async function createUserTable() {
                 userWpPassHash VARCHAR(255),
                 userEmail VARCHAR(255),
                 userPhone VARCHAR(255),
+                userQuestion VARCHAR(255),
+                userAnswer VARCHAR(255),
                 userWebsites INT(11),
                 userDateCreated TIMESTAMP,
                 userLastLogin TIMESTAMP,

@@ -5,7 +5,7 @@ import { validateConnection } from '@lib/utility';
 
 export async function POST(request) {//Handles sending user form data to database via user queries calls, is called in /signup/page.js
   try {
-    const { username, password, email, phone } = await request.json();
+    const { username, password, email, phone, securityQuestion, securityAnswer} = await request.json();
 
     let valid = await validateConnection(connection);
 
@@ -18,9 +18,9 @@ export async function POST(request) {//Handles sending user form data to databas
 
     let result;
     if (phone) {//insert account into database with or without phone #
-      result = await createAccountWithPhone(username, password, email, connection, phone);
+      result = await createAccountWithPhone(username, password, email, connection, phone, securityQuestion, securityAnswer);
     } else {
-      result = await createAccount(username, password, email, connection);
+      result = await createAccount(username, password, email, connection, securityQuestion, securityAnswer);
     }
 
     return NextResponse.json({ success: true, result });//return if successful
