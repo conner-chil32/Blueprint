@@ -10,6 +10,14 @@
 
 }
 
+.selectInput option {
+  text-align: center;
+}
+
+.selectInput {
+  text-align: center;
+}
+
 .body {
     margin: 30vh 50px 0px;
     display: grid;
