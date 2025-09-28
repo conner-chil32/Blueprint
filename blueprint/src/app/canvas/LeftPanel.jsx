@@ -16,6 +16,8 @@ export function LeftPanel({ createWidget }) {
           <button className={styles.categoryItem} onClick={() => createWidget('video')}>Video</button>
           <button className={styles.categoryItem} onClick={() => createWidget('dropdown')}>Dropdown</button>
           <button className={styles.categoryItem} onClick={() => createWidget('advert')}>Advertisement</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('hyperlink')}>Hyperlink</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('menuScroll')}>Menu Scroll</button>
 
           <div className={styles.divider}></div>
 
