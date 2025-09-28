@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import styles from './page.module.css';
-import { RenderPage } from "./HtmlConverter";
+import { renderToStaticMarkup, renderToString } from "react-dom/server";
+import PageRenderer from "./PageRenderer";
+import HTMLExport from "./HtmlExport";
 
 /** Christopher Parsons, 9/18/2025
  * Inputs:
@@ -19,112 +21,112 @@ import { RenderPage } from "./HtmlConverter";
  * for the manipulation of existing widgets and pages.
  */
 export function RightPanel({
-    changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
-    pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty
-   }) {
-    const [buttonSelected, setButtonSelected] = useState(false);
+  changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
+  pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty
+}) {
+  const [buttonSelected, setButtonSelected] = useState(false);
 
-    /** Christopher Parsons, 9/18/2025
-     * If a button is clicked, flip the buttonSelected boolean.
-     * The buttonSelected variable controls what the RightPanel
-     * is displaying.
-     */
-    const handleButtonClick = () => {
-      setButtonSelected(!buttonSelected);
-      console.log(`Canvas status: ${!buttonSelected}`);
-    }
-
-    /** Christopher Parsons, 9/18/2025
-     * Return a button to switch between the page controls and the widget controls.
-     * Also return the controls.
-     */
-    return (
-      <div>
-        {/* Button to switch, always rendered. When clicked, invert buttonSelected */}
-        <button className={styles.switchButton} onClick={handleButtonClick}>Switch</button>
-
-        {/* False = widget properties. True = page properties */}
-        {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} />
-          : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />}
-      </div>
-
-    );
+  /** Christopher Parsons, 9/18/2025
+   * If a button is clicked, flip the buttonSelected boolean.
+   * The buttonSelected variable controls what the RightPanel
+   * is displaying.
+   */
+  const handleButtonClick = () => {
+    setButtonSelected(!buttonSelected);
+    console.log(`Canvas status: ${!buttonSelected}`);
   }
 
   /** Christopher Parsons, 9/18/2025
-   * Inputs:
-   *  chagneWidgetProperty: function
-   *  selectedWidgets: array
-   *  widgets: array
-   *  deleteWidget: function
-   * 
-   * Returns a series of controls for the manipulation of
-   * widgets.
+   * Return a button to switch between the page controls and the widget controls.
+   * Also return the controls.
    */
-  function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget }) {
-    // Render the selected widgets panel
-    if (selectedWidgets && selectedWidgets.length > 0) {
+  return (
+    <div>
+      {/* Button to switch, always rendered. When clicked, invert buttonSelected */}
+      <button className={styles.switchButton} onClick={handleButtonClick}>Switch</button>
+
+      {/* False = widget properties. True = page properties */}
+      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} />
+        : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />}
+    </div>
+
+  );
+}
+
+/** Christopher Parsons, 9/18/2025
+ * Inputs:
+ *  chagneWidgetProperty: function
+ *  selectedWidgets: array
+ *  widgets: array
+ *  deleteWidget: function
+ * 
+ * Returns a series of controls for the manipulation of
+ * widgets.
+ */
+function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget }) {
+  // Render the selected widgets panel
+  if (selectedWidgets && selectedWidgets.length > 0) {
     // If something is selected
-      return (
+    return (
+      <div>
         <div>
-          <div>
-            {/* Button for deleting widgets */}
-            <button
-              className={styles.deleteButton}
-              onClick={() => {
-                selectedWidgets.forEach(widget => {
-                  console.log('Deleting ', widget)
-                  deleteWidget(widget.id);
-                })
-              }}
-            >Delete Selected Widget</button>
-          </div>
-  
-          {/* Menu to change widgets */}
-          {selectedWidgets.map((widget) => (
-            <div key={widget.id} className={styles.widgetOptions}>
-              {/* Inputs to change widget properties */}
-              <p>Color:</p>
-              <input
-                type="color"
-                value={widget.backgroundColor || "#cccccc"}
-                onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
-              />
-  
-              {/* Two rotation inputs, one as an editable display and the other as a slider */}
-              <p>Rotation: {widget.rotation}</p>
-              <input
-                type="number"
-                min="0"
-                max="360"
-                value={widget.rotation || 0}
-                onChange={e =>
-                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value, 10) })
-                }/>
-              <input
-                type="range"
-                min="0"
-                max="360"
-                value={widget.rotation || 0}
-                onChange={e =>
-                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) })
-                }
-              />
-  
-              {/* ===== Video controls ===== */}
-              {widget.type === 'video' && (
-                <>
-                  <p>Video URL:</p>
-                  <input
-                    type="text"
-                    placeholder="/videos/intro.mp4 or https://cdn.example.com/clip.mp4"
-                    value={widget.videoUrl || ""}
-                    onChange={e =>
-                      changeWidgetProperty(widget.id, { videoUrl: e.target.value || null })
-                    }
-                  />
-  
-                  <label
+          {/* Button for deleting widgets */}
+          <button
+            className={styles.deleteButton}
+            onClick={() => {
+              selectedWidgets.forEach(widget => {
+                console.log('Deleting ', widget)
+                deleteWidget(widget.id);
+              })
+            }}
+          >Delete Selected Widget</button>
+        </div>
+
+        {/* Menu to change widgets */}
+        {selectedWidgets.map((widget) => (
+          <div key={widget.id} className={styles.widgetOptions}>
+            {/* Inputs to change widget properties */}
+            <p>Color:</p>
+            <input
+              type="color"
+              value={widget.backgroundColor || "#cccccc"}
+              onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
+            />
+
+            {/* Two rotation inputs, one as an editable display and the other as a slider */}
+            <p>Rotation: {widget.rotation}</p>
+            <input
+              type="number"
+              min="0"
+              max="360"
+              value={widget.rotation || 0}
+              onChange={e =>
+                changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value, 10) })
+              } />
+            <input
+              type="range"
+              min="0"
+              max="360"
+              value={widget.rotation || 0}
+              onChange={e =>
+                changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) })
+              }
+            />
+
+            {/* ===== Video controls ===== */}
+            {widget.type === 'video' && (
+              <>
+                <p>Video URL:</p>
+                <input
+                  type="text"
+                  placeholder="/videos/intro.mp4 or https://cdn.example.com/clip.mp4"
+                  value={widget.videoUrl || ""}
+                  onChange={e =>
+                    changeWidgetProperty(widget.id, { videoUrl: e.target.value || null })
+                  }
+                />
+
+                <label
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -191,171 +193,200 @@ export function RightPanel({
                     }
                   />
                 </label>
-                </>
-              )}
-  
-              {/* ===== Dropdown controls ===== */}
-              {widget.type === 'dropdown' && (() => {
-                // Use a draft string while typing; default to current options joined with ", "
-                const draft = widget.optionsText ?? (widget.options || []).join(", ");
+              </>
+            )}
 
-                // Commit helper: turn the draft string into an options array and normalize it
-                const commitOptions = (raw) => {
-                  const arr = (raw || "")
-                    .split(",")
-                    .map(s => s.trim())
-                    .filter(Boolean); // drop empty tokens on commit only
+            {/* ===== Dropdown controls ===== */}
+            {widget.type === 'dropdown' && (() => {
+              // Use a draft string while typing; default to current options joined with ", "
+              const draft = widget.optionsText ?? (widget.options || []).join(", ");
 
-                  const nextValue = arr.includes(widget.value) ? widget.value : (arr[0] || "");
-                  // Save normalized text too so the input shows tidy commas + spaces
-                  const normalizedText = arr.join(", ");
+              // Commit helper: turn the draft string into an options array and normalize it
+              const commitOptions = (raw) => {
+                const arr = (raw || "")
+                  .split(",")
+                  .map(s => s.trim())
+                  .filter(Boolean); // drop empty tokens on commit only
 
-                  changeWidgetProperty(widget.id, {
-                    options: arr,
-                    value: nextValue,
-                    optionsText: normalizedText,
-                  });
-                };
+                const nextValue = arr.includes(widget.value) ? widget.value : (arr[0] || "");
+                // Save normalized text too so the input shows tidy commas + spaces
+                const normalizedText = arr.join(", ");
 
-                return (
-                  <>
-                    <p>Options (comma-separated):</p>
-                    <input
-                      type="text"
-                      value={draft}
-                      onChange={e => {
-                        // While typing, only update the draft string; don't parse/sanitize yet.
-                        changeWidgetProperty(widget.id, { optionsText: e.target.value });
-                      }}
-                      onKeyDown={e => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          commitOptions(e.currentTarget.value);
-                          // keep focus if you want: e.currentTarget.blur();
-                        }
-                      }}
-                      onBlur={e => commitOptions(e.currentTarget.value)}
-                    />
+                changeWidgetProperty(widget.id, {
+                  options: arr,
+                  value: nextValue,
+                  optionsText: normalizedText,
+                });
+              };
 
-                    <p>Selected Value:</p>
-                    <input
-                      type="text"
-                      value={widget.value || ""}
-                      onChange={e => changeWidgetProperty(widget.id, { value: e.target.value })}
-                    />
-
-                    <p>Font Size:</p>
-                    <input
-                      type="number"
-                      min="10"
-                      max="48"
-                      value={widget.fontSize || 14}
-                      onChange={e =>
-                        changeWidgetProperty(
-                          widget.id,
-                          { fontSize: parseInt(e.target.value || "14", 10) }
-                        )
-                      }
-                    />
-
-                    <p>Text Color:</p>
-                    <input
-                      type="color"
-                      value={widget.textColor || "#111111"}
-                      onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
-                    />
-                  </>
-                );
-              })()}
-
-  
-              {/* ===== Advertisement controls ===== */}
-              {widget.type === 'advert' && (
+              return (
                 <>
-                  <p>Image URL:</p>
+                  <p>Options (comma-separated):</p>
                   <input
                     type="text"
-                    placeholder="https://…/banner.jpg"
-                    value={widget.imageUrl || ""}
-                    onChange={e => changeWidgetProperty(widget.id, { imageUrl: e.target.value })}
+                    value={draft}
+                    onChange={e => {
+                      // While typing, only update the draft string; don't parse/sanitize yet.
+                      changeWidgetProperty(widget.id, { optionsText: e.target.value });
+                    }}
+                    onKeyDown={e => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        commitOptions(e.currentTarget.value);
+                        // keep focus if you want: e.currentTarget.blur();
+                      }
+                    }}
+                    onBlur={e => commitOptions(e.currentTarget.value)}
                   />
-  
-                  <p>Link URL:</p>
+
+                  <p>Selected Value:</p>
                   <input
                     type="text"
-                    placeholder="www.google.com"
-                    value={widget.linkUrl || ""}
-                    onChange={e => changeWidgetProperty(widget.id, { linkUrl: e.target.value })}
+                    value={widget.value || ""}
+                    onChange={e => changeWidgetProperty(widget.id, { value: e.target.value })}
                   />
-  
-                  <p>Object Fit:</p>
-                  <select
-                    value={widget.objectFit || "cover"}
-                    onChange={e => changeWidgetProperty(widget.id, { objectFit: e.target.value })}
-                  >
-                    <option value="contain">contain</option>
-                    <option value="cover">cover</option>
-                    <option value="fill">fill</option>
-                    <option value="none">none</option>
-                    <option value="scale-down">scale-down</option>
-                  </select>
-  
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={!!widget.showBorder}
-                      onChange={e => changeWidgetProperty(widget.id, { showBorder: e.target.checked })}
-                    />
-                    Show border
-                  </label>
-  
-                  <p>Border Color:</p>
+
+                  <p>Font Size:</p>
+                  <input
+                    type="number"
+                    min="10"
+                    max="48"
+                    value={widget.fontSize || 14}
+                    onChange={e =>
+                      changeWidgetProperty(
+                        widget.id,
+                        { fontSize: parseInt(e.target.value || "14", 10) }
+                      )
+                    }
+                  />
+
+                  <p>Text Color:</p>
                   <input
                     type="color"
-                    value={widget.borderColor || "#333333"}
-                    onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
+                    value={widget.textColor || "#111111"}
+                    onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
                   />
                 </>
-              )}
-            </div>
-          ))}
-        </div>
-      );
-    }
+              );
+            })()}
+
+
+            {/* ===== Advertisement controls ===== */}
+            {widget.type === 'advert' && (
+              <>
+                <p>Image URL:</p>
+                <input
+                  type="text"
+                  placeholder="https://…/banner.jpg"
+                  value={widget.imageUrl || ""}
+                  onChange={e => changeWidgetProperty(widget.id, { imageUrl: e.target.value })}
+                />
+
+                <p>Link URL:</p>
+                <input
+                  type="text"
+                  placeholder="www.google.com"
+                  value={widget.linkUrl || ""}
+                  onChange={e => changeWidgetProperty(widget.id, { linkUrl: e.target.value })}
+                />
+
+                <p>Object Fit:</p>
+                <select
+                  value={widget.objectFit || "cover"}
+                  onChange={e => changeWidgetProperty(widget.id, { objectFit: e.target.value })}
+                >
+                  <option value="contain">contain</option>
+                  <option value="cover">cover</option>
+                  <option value="fill">fill</option>
+                  <option value="none">none</option>
+                  <option value="scale-down">scale-down</option>
+                </select>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={!!widget.showBorder}
+                    onChange={e => changeWidgetProperty(widget.id, { showBorder: e.target.checked })}
+                  />
+                  Show border
+                </label>
+
+                <p>Border Color:</p>
+                <input
+                  type="color"
+                  value={widget.borderColor || "#333333"}
+                  onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
+                />
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
   else {
-      // If something is not selected
-      return (
+    // If something is not selected
+    return (
       <p>Select a widget to view its properties.</p>
     );
-    }
-  }  
+  }
+}
 
-  /** Christopher Parsons, 9/18/2025
-   * Inputs:
-   *  pages: array
-   *  selectedPageID: number
-   *  setSelectedID: number
-   *  currentPage: Page
-   *  createPage: function
-   *  changePageProperty: function
-   * 
-   * Returns an interface for creating and modifying pages.
-   */
+/** Christopher Parsons, 9/18/2025
+ * Inputs:
+ *  pages: array
+ *  selectedPageID: number
+ *  setSelectedID: number
+ *  currentPage: Page
+ *  createPage: function
+ *  changePageProperty: function
+ * 
+ * Returns an interface for creating and modifying pages.
+ */
 function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty }) {
 
-  const downloadHTMLPage = (currentPage) => {
-    console.log("Downloading page", currentPage);
+  /** Christopher Parsons, 9/20/2025
+   * Inputs:
+   *  fileBlob: Blob object
+   *  name: String
+   * 
+   * Downloads the inputted file to the user's computer.
+   */
+  function download(fileBlob, name) {
+    const link = document.createElement('a');
 
-    const file = new Blob([RenderPage(currentPage)], {type: 'text/html'});
+    link.href = URL.createObjectURL(fileBlob);
+    link.download = name;
 
-    const element = document.createElement("a");
-    element.href = URL.createObjectURL(file);
-    element.download = "Page" + Date.now() + ".html";
+    document.body.appendChild(link);
+    link.click();
 
-    document.body.appendChild(element);
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
   }
 
-  return(
+  /** Christopher Parsons, 9/20/2025
+   * 
+   * Takes the given variable and returns a JSON file.
+   */
+  const returnJSON = (page) => {
+    const jsonFile = JSON.stringify(page, null, 2);
+    //const blob = new Blob([jsonFile], { type: "application/json" });
+
+    return jsonFile;
+  }
+
+  /** Christopher Parsons, 9/22/2025
+   * 
+   * Takes the given page and returns an HTML file.
+   */
+  const returnHTML = (page) => {
+    const html = HTMLExport(page);
+
+    return html;
+  }
+
+  return (
     <div className={styles.widgetOptions}>
       {/* A view of all pages */}
       <select value={selectedPageID} onChange={e => setSelectedPageID(Number(e.target.value))}>
@@ -363,7 +394,7 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
           <option key={page.id} value={page.id}>{page.name}</option>
         ))}
       </select>
-      
+
       {/* Buttons for editing pages */}
       <button onClick={createPage}>+ New Page</button>
 
@@ -373,7 +404,7 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
        */}
       <div>
         <p>Width</p>
-        <input 
+        <input
           type="input"
           min="0"
           autoComplete="off"
@@ -384,10 +415,10 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
             } else {
               changePageProperty(selectedPageID, { width: parseInt(e.target.value, 10) })
             }
-          }}/>
+          }} />
 
         <p>Height</p>
-        <input 
+        <input
           type="input"
           min="0"
           autoComplete="off"
@@ -399,23 +430,38 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
               changePageProperty(selectedPageID, { height: parseInt(e.target.value, 10) })
             }
           }}
-          />
+        />
 
-          <p>Background Color</p>
-          <input 
-            type="color"
-            onChange={e => {
-              if (e?.target.value === "") {
-                changePageProperty(selectedPageID, { backgroundColor: '#ffffff' })
-              } else {
-                changePageProperty(selectedPageID, { backgroundColor: e.target.value })
-              }
-            }}
-          />
+        <p>Background Color</p>
+        <input
+          type="color"
+          onChange={e => {
+            if (e?.target.value === "") {
+              changePageProperty(selectedPageID, { backgroundColor: '#ffffff' })
+            } else {
+              changePageProperty(selectedPageID, { backgroundColor: e.target.value })
+            }
+          }}
+        />
       </div>
 
-      {/* Download current page as HTML. IN PROGRESS */}
-      <button >Download Page</button>
+      {/* Download current page as HTML or JSON */}
+      <p>Download as:</p>
+      <select>
+        {/* Download as HTML */}
+        <option onClick={() => {
+          const htmlFile = returnHTML(currentPage);
+          const blob = new Blob([htmlFile], { type: "text/html" });
+          download(blob, currentPage.name);
+        }}>HTML</option>
+
+        {/* Download as JSON */}
+        <option onClick={() => {
+          const jsonFile = returnJSON(currentPage);
+          const blob = new Blob([jsonFile], { type: "application/json" });
+          download(blob, currentPage.name)
+        }}>JSON</option>
+      </select>
     </div>
   );
 }

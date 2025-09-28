@@ -32,61 +32,63 @@ export function Canvas({ widgets, isPlacing, isDragging, widgetToPlace, selected
         /* The wrapper that applies react-zoom-pan-pinch's attributes to the draggable component */
         <TransformWrapper
             initialScale={1}
-            initialPositionX={0}
-            initialPositionY={0}
+            // initialPositionX={0}
+            // initialPositionY={0}
             disabled={isPlacing || isDragging}
             limitToBounds={false}
             panning={{ velocityDisabled: true }}
             minScale={0.05}
             // Keep track of zoom transform and scale
             onTransformed={({ state }) => {
-            setScale(state.scale);
-            setTransformCoords({posX: state.positionX, posY: state.positionY});
+                setScale(state.scale);
+                setTransformCoords({ posX: state.positionX, posY: state.positionY });
             }}
         >
             {/* Canvas area, a window to view the current page */}
             <div className={styles.canvasArea}>
 
                 {/* Contains the draggable component of reach-zoom-pan-pinch */}
-                <TransformComponent>
+                <TransformComponent
+                    wrapperStyle={{ width: '100%', height: '100%' }}
+                    contentStyle={{ width: '100%', height: '100%' }}>
 
                     {/* The component for moving/zooming the camera */}
                     <div className={styles.canvasView} ref={canvasRef} onClick={handleCanvasClick}>
-                        
+
                         {/* The page itself is its own component here */}
                         <div className={styles.pages}
-                        style={{
-                            width: currentPage?.width + "px",
-                            height: currentPage?.height + "px",
-                            backgroundColor: currentPage.backgroundColor,
-                        }}
+                            style={{
+                                width: currentPage?.width + "px",
+                                height: currentPage?.height + "px",
+                                backgroundColor: currentPage.backgroundColor,
+                            }}
                         >
-                        {/* Render new objects, only if widgets exists */}
-                        {Array.isArray(widgets) &&
-                            widgets.map((widget) => (
-                            <WidgetRenderer
-                                bounds="parent"
-                                key={widget.id}
-                                widget={widget}
-                                // selectedWidgets? means if selectedWidgets is not null
-                                // .some checks if any widgets in the array have the same id
-                                isSelected={selectedWidgets?.some((w) => w.id === widget.id)}
-                                onClick={() => {
-                                // Select the widget when clicked
-                                setSelectedWidgets([widget]);
-                                console.log("Selected widget: " + widget.id);
-                                }}
-                                onDragStart={() => setIsDragging(true)}
-                                onDragStop={() => setIsDragging(false)}
-                                alertDragStop={updateWidget}
-                                scale={scale}
-                            />
-                            ))}
+                            {/* Render new objects, only if widgets exists */}
+                            {Array.isArray(widgets) &&
+                                widgets.map((widget) => (
+                                    <WidgetRenderer
+                                        bounds="parent"
+                                        key={widget.id}
+                                        widget={widget}
+                                        // selectedWidgets? means if selectedWidgets is not null
+                                        // .some checks if any widgets in the array have the same id
+                                        isSelected={selectedWidgets?.some((w) => w.id === widget.id)}
+                                        onClick={() => {
+                                            // Select the widget when clicked
+                                            setSelectedWidgets([widget]);
+                                            console.log("Selected widget: " + widget.id);
+                                        }}
+                                        onDragStart={() => setIsDragging(true)}
+                                        onDragStop={() => setIsDragging(false)}
+                                        alertDragStop={updateWidget}
+                                        scale={scale}
+                                    />
+                                ))}
 
-                        {/* If placing a widget, render it at the mouse position */}
-                        {isPlacing && widgetToPlace && (
-                            <WidgetRenderer key={"placing-" + widgetToPlace.id} widget={widgetToPlace} scale={scale} />
-                        )}
+                            {/* If placing a widget, render it at the mouse position */}
+                            {isPlacing && widgetToPlace && (
+                                <WidgetRenderer key={"placing-" + widgetToPlace.id} widget={widgetToPlace} scale={scale} />
+                            )}
                         </div>
                     </div>
                 </TransformComponent>

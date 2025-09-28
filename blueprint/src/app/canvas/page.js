@@ -8,7 +8,6 @@ import { Canvas } from './Canvas';
 import { LeftPanel } from './LeftPanel';
 import { RightPanel } from './RightPanel';
 
-
 /** Christpher Parsons
  *  Angel Ramirez
  *  Jacob Francis
@@ -19,7 +18,7 @@ import { RightPanel } from './RightPanel';
  */
 export default function CanvasPage() {
   // Pages, each containing widgets
-  const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [], width: 800, height: 600, backgroundColor: '#ffffff' }]);
+  const [pages, setPages] = useState([{ id: 0, name: "Page 0", width: 800, height: 600, backgroundColor: '#ffffff', widgets: [] }]);
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
@@ -27,7 +26,7 @@ export default function CanvasPage() {
 
   // Creating widgets
   // If currentPage exists, widgets = currentPage.widgets : otherwise, empty array
-  const widgets = currentPage? currentPage.widgets : [];
+  const widgets = currentPage ? currentPage.widgets : [];
   const [nextWidgetId, setNextWidgetId] = useState(0);
 
   // Moving and placing widgets
@@ -58,7 +57,7 @@ export default function CanvasPage() {
    * of new widgets.
    */
   const setWidgets = (newWidgets) => {
-    setPages(prev => 
+    setPages(prev =>
       prev.map(page =>
         page.id === selectedPageID ? { ...page, widgets: newWidgets } : page
       )
@@ -79,7 +78,8 @@ export default function CanvasPage() {
   const createPage = () => {
     setPages([
       ...pages,
-      {id: nextPageID,
+      {
+        id: nextPageID,
         name: `Page ${nextPageID}`,
         widgets: [],
         width: 800,
@@ -89,7 +89,7 @@ export default function CanvasPage() {
 
     setSelectedPageID(nextPageID);
     console.log('Created page', nextPageID);
-    setNextPageID(nextPageID+1);
+    setNextPageID(nextPageID + 1);
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -153,7 +153,7 @@ export default function CanvasPage() {
         }));
       }
     };
-  
+
     /* 
     Old keyDown handles deleted widgets by pressing backspace or delete when typing in input fields.
     Now modified to prevent Backspace/Delete from navigating back or deleting widgets when typing in an input field.
@@ -168,25 +168,25 @@ export default function CanvasPage() {
         tag === "textarea" ||
         t?.isContentEditable ||
         t?.getAttribute?.("role") === "textbox";
-  
+
       if (isTyping) return;
-  
+
       // Do NOT delete widgets on Backspace/Delete anymore.
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
         e.preventDefault();
       }
     };
-  
+
     window.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("keydown", handleDocumentKeyDown);
-  
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
   }, [isPlacing, widgetToPlace]);
-  
+
 
   /** Christopher Parsons, 9/18/2025
    * Inputs:
@@ -376,7 +376,7 @@ export default function CanvasPage() {
     setIsPlacing(true);
     setWidgetToPlace(newWidget);
   };
-  
+
   /** Christopher Parsons, 9/18/2025
    * Inputs:
    *  id: number
@@ -417,8 +417,8 @@ export default function CanvasPage() {
   function changePageProperty(pageID, newProperties) {
     const changedPages = pages.map(page =>
       // If this is the correct widget, then update the object
-      page.id === pageID ? {...page, ...newProperties}
-      : page // Otherwise, leave it
+      page.id === pageID ? { ...page, ...newProperties }
+        : page // Otherwise, leave it
     );
 
     setPages(changedPages);
@@ -427,86 +427,93 @@ export default function CanvasPage() {
   return (
     <>
       <Navbar /> {/* <-- RENDERED NAVBAR */}
-    
-        {/* Page navigation bar above the canvas */}
-        <div className={styles.pageNavBar} style={{ top: '70px' }}>
-          <PageNavigation
-            pages={pages}
-            selectedPageID={selectedPageID}
-            setSelectedPageID={setSelectedPageID}
-            createPage={createPage}
-            updatePageName={updatePageName}
-            deletePage={deletePage}
+
+      <div className={styles.bodyContainer}>
+
+        {/** Christopher Parsons, 9/18/2025
+          * Inputs:
+          *  createWidget: function
+          * 
+          * Renders the LeftPanel section on the left side of the screen.
+          */}
+        <aside className={`${styles.leftPanel} ${styles.sidePanel}`}>
+          <LeftPanel createWidget={createWidget} />
+        </aside>
+
+        <main className={styles.centerColumn}>
+          {/* Page navigation bar above the canvas */}
+          <header className={styles.pageNavBar} style={{ top: '70px' }}>
+            <PageNavigation
+              pages={pages}
+              selectedPageID={selectedPageID}
+              setSelectedPageID={setSelectedPageID}
+              createPage={createPage}
+              updatePageName={updatePageName}
+              deletePage={deletePage}
+            />
+          </header>
+
+          {/** Christopher Parsons, 9/18/2025
+           * Inputs:
+           *  widgets: array
+           *  isPlacing: Boolean
+           *  isDragging: Boolean
+           *  widgetToPlace: Widget
+           *  selectedWidgets: array
+           *  setSelectedWidgets: function
+           *  setIsDragging: function
+           *  updateWidget: function
+           *  scale: number
+           *  setScale: function
+           *  setTransformCoords: function
+           *  currentPage: Page
+           *  canvasRef: React reference, type unknown
+           *  handleCanvasClick: function
+           * 
+           * Renders the central portion of the canvas page.
+           */}
+          <Canvas
+            widgets={widgets}
+            isPlacing={isPlacing}
+            isDragging={isDragging}
+            widgetToPlace={widgetToPlace}
+            selectedWidgets={selectedWidgets}
+            setSelectedWidgets={setSelectedWidgets}
+            setIsDragging={setIsDragging}
+            updateWidget={updateWidget}
+            scale={scale}
+            setScale={setScale}
+            setTransformCoords={setTransformCoords}
+            currentPage={currentPage}
+            canvasRef={canvasRef}
+            handleCanvasClick={handleCanvasClick}
           />
-        </div>
+        </main>
 
-      {/** Christopher Parsons, 9/18/2025
-       * Renders the LeftPanel section on the left side of the screen.
-       * @param {*} createWidget
-       */}
-      <div className={`${styles.leftPanel} ${styles.sidePanel}`}>
-        <LeftPanel createWidget={createWidget} />
-      </div>
-
-      {/** Christopher Parsons, 9/18/2025
-       * Inputs:
-       *  widgets: array
-       *  isPlacing: Boolean
-       *  isDragging: Boolean
-       *  widgetToPlace: Widget
-       *  selectedWidgets: array
-       *  setSelectedWidgets: function
-       *  setIsDragging: function
-       *  updateWidget: function
-       *  scale: number
-       *  setScale: function
-       *  setTransformCoords: function
-       *  currentPage: Page
-       *  canvasRef: React reference, type unknown
-       *  handleCanvasClick: function
-       * 
-       * Renders the central portion of the canvas page.
-       */}
-      <Canvas
-        widgets={widgets}
-        isPlacing={isPlacing}
-        isDragging={isDragging}
-        widgetToPlace={widgetToPlace}
-        selectedWidgets={selectedWidgets}
-        setSelectedWidgets={setSelectedWidgets}
-        setIsDragging={setIsDragging}
-        updateWidget={updateWidget}
-        scale={scale}
-        setScale={setScale}
-        setTransformCoords={setTransformCoords}
-        currentPage={currentPage}
-        canvasRef={canvasRef}
-        handleCanvasClick={handleCanvasClick}
-      />
-
-      {/** Christopher Parsons, 9/18/2025
-       * Inputs:
-       *  selectedWidgets: array
-       *  changePageProperty: function
-       *  widgets: array
-       *  deleteWidget: function
-       *  pages: array
-       *  selectedPageID: number
-       *  setSelectedPageID: function
-       *  currentPage: Page
-       *  createPage: function
-       *  changePageProperty: function
-       * 
-       * Renders the right panel for modifying the properties of selected
-       * widgets and pages.
-       */}
-      <div className={`${styles.rightPanel} ${styles.sidePanel}`}>
-        <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
-        pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />
+        {/** Christopher Parsons, 9/18/2025
+         * Inputs:
+         *  selectedWidgets: array
+         *  changePageProperty: function
+         *  widgets: array
+         *  deleteWidget: function
+         *  pages: array
+         *  selectedPageID: number
+         *  setSelectedPageID: function
+         *  currentPage: Page
+         *  createPage: function
+         *  changePageProperty: function
+         * 
+         * Renders the right panel for modifying the properties of selected
+         * widgets and pages.
+         */}
+        <aside className={`${styles.rightPanel} ${styles.sidePanel}`}>
+          <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
+            pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />
+        </aside>
       </div>
     </>
   );
-  
+
   /** Christopher Parsons, 9/18/2025
    * Inputs:
    *  widgetID: number
@@ -519,8 +526,8 @@ export default function CanvasPage() {
   function changeWidgetProperty(widgetID, newProperties) {
     const changedWidgets = widgets.map(widget =>
       // If this is the correct widget, then update the object
-      widget.id === widgetID ? {...widget, ...newProperties}
-      : widget // Otherwise, leave it
+      widget.id === widgetID ? { ...widget, ...newProperties }
+        : widget // Otherwise, leave it
     );
 
     setWidgets(changedWidgets);

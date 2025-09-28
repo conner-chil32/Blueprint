@@ -17,7 +17,7 @@ import { Advert } from "../components/widgets/Advert";
  * 
  * Updates the current state of the inputted widget in React.
  */
-export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty }) {
+export function WidgetRenderer({ staticRender=false, widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty, style }) {
 
   /**
    * Render the correct type of widget.
@@ -30,11 +30,12 @@ export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onD
     onClick,
     alertDragStop,
     isSelected,
+    staticRender,
   };
 
   switch (widget.type) {
     case 'box':
-      return <Box key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} scale={scale} />;
+      return <Box staticRender={staticRender} key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} scale={scale} style={style} />;
     case "video":
       return <Video {...common} />;
     case "dropdown":
