@@ -25,7 +25,7 @@ import React from "react";
  * Returns the central part of the page. An interface for manipulating the page itself
  * and positioning widgets.
  */
-export function Canvas({ widgets, isPlacing, isDragging, widgetToPlace, selectedWidgets, setSelectedWidgets,
+export function Canvas({ widgets, changeWidgetProperty, isPlacing, isDragging, widgetToPlace, selectedWidgets, setSelectedWidgets,
     setIsDragging, updateWidget, scale, setScale, setTransformCoords, currentPage, canvasRef, handleCanvasClick }) {
 
     return (
@@ -81,6 +81,7 @@ export function Canvas({ widgets, isPlacing, isDragging, widgetToPlace, selected
                                         onDragStart={() => setIsDragging(true)}
                                         onDragStop={() => setIsDragging(false)}
                                         alertDragStop={updateWidget}
+                                        changeWidgetProperty={changeWidgetProperty}
                                         scale={scale}
                                     />
                                 ))}

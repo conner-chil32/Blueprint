@@ -366,6 +366,50 @@ export default function CanvasPage() {
         };
         break;
 
+      case 'hyperlink':
+        newWidget = {
+          type: 'hyperlink',
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 150,
+          height: 40,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: 'transparent', // Links don't need a background
+          pointerEventsNone: true,
+          rotation: 0,
+          // custom props:
+          text: 'Click Here',
+          url: 'http://localhost:3000/features',
+          fontSize: 12,
+          textColor: '#0000ee',
+          openInNewTab: true,
+        };
+        break;
+
+      case 'menuScroll':
+        newWidget = {
+          type: 'menuScroll',
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 200,
+          height: 250,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: '#f0f0f0',
+          pointerEventsNone: true,
+          rotation: 0,
+          // custom props:
+          items: ['Menu Item 1', 'Menu Item 2', 'Menu Item 3', 'Menu Item 4', 'Menu Item 5'],
+          fontSize: 14,
+          textColor: '#333333',
+          itemPadding: 8,
+          selectedValue: 'Menu Item 1', // Default to the first item
+        };
+        break;
+
       default:
         console.warn('Warning: Unknown widget type: ' + typeToMake);
         return;
@@ -487,6 +531,7 @@ export default function CanvasPage() {
             currentPage={currentPage}
             canvasRef={canvasRef}
             handleCanvasClick={handleCanvasClick}
+            changeWidgetProperty={changeWidgetProperty}
           />
         </main>
 

@@ -2,6 +2,8 @@ import { Box } from '../components/widgets/Box';
 import { Video } from "../components/widgets/video";
 import { Dropdown } from "../components/widgets/Dropdown";
 import { Advert } from "../components/widgets/Advert";
+import { Hyperlink } from '../components/widgets/Hyperlink';
+import { MenuScroll } from "../components/widgets/MenuScroll";
 
 /** Christopher Parsons, 9/18/2025
  *  Angel Ramirez
@@ -46,6 +48,13 @@ export function WidgetRenderer({ staticRender=false, widget, onClick, alertDragS
             />;
     case "advert":
       return <Advert {...common} />;
+    
+    case "hyperlink":
+      return <Hyperlink {...common} />;
+
+    case "menuScroll":
+      return <MenuScroll {...common} changeWidgetProperty={changeWidgetProperty} />;
+  
     default:
       console.warn("Warning: Unknown widget type:", widget.type);
       return null;
