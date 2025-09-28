@@ -79,7 +79,6 @@ services:
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_ALLOW_MULTISITE', true);
         define('JWT_AUTH_SECRET_KEY', getenv_docker('JWT_AUTH_SECRET_KEY', 'secret'));
-
     depends_on: 
       - wordpress-db
     ports:
@@ -119,7 +118,7 @@ services:
       echo "SETUP DONE!";
       '
     networks:
-     - app-network
+      - app-network
 networks:
   app-network:
       
