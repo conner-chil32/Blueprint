@@ -2,6 +2,8 @@ import { Box } from '../components/widgets/Box';
 import { Video } from "../components/widgets/video";
 import { Dropdown } from "../components/widgets/Dropdown";
 import { Advert } from "../components/widgets/Advert";
+import { Hyperlink } from '../components/widgets/Hyperlink';
+import { MenuScroll } from "../components/widgets/MenuScroll";
 
 export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty }) {
 
@@ -32,6 +34,13 @@ export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onD
             />;
     case "advert":
       return <Advert {...common} />;
+    
+    case "hyperlink":
+      return <Hyperlink {...common} />;
+
+    case "menuScroll":
+      return <MenuScroll {...common} changeWidgetProperty={changeWidgetProperty} />;
+  
     default:
       console.warn("Warning: Unknown widget type:", widget.type);
       return null;

@@ -5,7 +5,7 @@ import { RenderPage } from "./HtmlConverter";
 export function RightPanel({
     changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
     pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty
-   }) {
+    }) {
     const [buttonSelected, setButtonSelected] = useState(false);
 
     const handleButtonClick = () => {
@@ -76,6 +76,96 @@ export function RightPanel({
                   changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) })
                 }
               />
+
+              {/* ===== Menu Scroll controls ===== */}
+              {widget.type === 'menuScroll' && (() => {
+                const draft = widget.itemsText ?? (widget.items || []).join(", ");
+                const commitItems = (raw) => {
+                  const arr = (raw || "").split(",").map(s => s.trim()).filter(Boolean);
+                  const normalizedText = arr.join(", ");
+                  changeWidgetProperty(widget.id, { items: arr, itemsText: normalizedText });
+                };
+
+                return (
+                  <>
+                    <p>Menu Items (comma-separated):</p>
+                    <textarea
+                      value={draft}
+                      onChange={e => changeWidgetProperty(widget.id, { itemsText: e.target.value })}
+                      onBlur={e => commitItems(e.currentTarget.value)}
+                      style={{ width: '100%', minHeight: '80px' }}
+                    />
+
+                    <p>Font Size:</p>
+                    <input
+                      type="number"
+                      min="8"
+                      value={widget.fontSize || 14}
+                      onChange={e => changeWidgetProperty(widget.id, { fontSize: parseInt(e.target.value, 10) })}
+                    />
+
+                    <p>Text Color:</p>
+                    <input
+                      type="color"
+                      value={widget.textColor || "#333333"}
+                      onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
+                    />
+
+                    <p>Item Padding:</p>
+                    <input
+                      type="number"
+                      min="0"
+                      value={widget.itemPadding || 8}
+                      onChange={e => changeWidgetProperty(widget.id, { itemPadding: parseInt(e.target.value, 10) })}
+                    />
+                  </>
+                );
+              })()}
+
+              {/* ===== Hyperlink controls ===== */}
+              {widget.type === 'hyperlink' && (
+            <>
+              <p>Display Text:</p>
+              <input
+                type="text"
+                value={widget.text || ""}
+                onChange={e => changeWidgetProperty(widget.id, { text: e.target.value })}
+              />
+
+              <p>URL:</p>
+              <input
+                type="text"
+                placeholder="https://example.com"
+                value={widget.url || ""}
+                onChange={e => changeWidgetProperty(widget.id, { url: e.target.value })}
+              />
+
+              <p>Font Size:</p>
+              <input
+                type="number"
+                min="1"
+                max="70"
+                value={widget.fontSize || 12}
+                onChange={e => changeWidgetProperty(widget.id, { fontSize: parseInt(e.target.value, 10) })}
+              />
+
+              <p>Text Color:</p>
+              <input
+                type="color"
+                value={widget.textColor || "#0000ee"}
+                onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
+              />
+
+              <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span>Open in new tab</span>
+                <input
+                  type="checkbox"
+                  checked={!!widget.openInNewTab}
+                  onChange={e => changeWidgetProperty(widget.id, { openInNewTab: e.target.checked })}
+                />
+              </label>
+            </>
+          )}
   
               {/* ===== Video controls ===== */}
               {widget.type === 'video' && (

@@ -5,7 +5,7 @@ import { WidgetRenderer } from "./WidgetRenderer";
 import styles from "./page.module.css";
 import React from "react";
 
-export function Canvas({ widgets, isPlacing, isDragging, widgetToPlace, selectedWidgets, setSelectedWidgets,
+export function Canvas({ widgets, changeWidgetProperty, isPlacing, isDragging, widgetToPlace, selectedWidgets, setSelectedWidgets,
     setIsDragging, updateWidget, scale, setScale, setTransformCoords, currentPage, canvasRef, handleCanvasClick }) {
 
     return (
@@ -57,6 +57,7 @@ export function Canvas({ widgets, isPlacing, isDragging, widgetToPlace, selected
                                 onDragStart={() => setIsDragging(true)}
                                 onDragStop={() => setIsDragging(false)}
                                 alertDragStop={updateWidget}
+                                changeWidgetProperty={changeWidgetProperty}
                                 scale={scale}
                             />
                             ))}
