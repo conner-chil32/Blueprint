@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS userAccounts (
     userEmail VARCHAR(255) NOT NULL,
     userPhone VARCHAR(255),
     userWebsites INT(11),
+    userQuestion VARCHAR(255),
+    userAnswer VARCHAR(255),
     userDateCreated TIMESTAMP,
     userLastLogin TIMESTAMP,
     isAdmin BOOLEAN DEFAULT FALSE,
