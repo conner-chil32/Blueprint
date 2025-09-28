@@ -51,10 +51,11 @@ export async function signIn(user, password, connection) {
  * Date: 4/14/2025
  * Author: Lydell Jones
  * Dependencies: mysql
+ * Edited to also contain security question and answer by Elijah white on 9/27/2025
  */
-export async function createAccount(user, password, email, connection) {
+export async function createAccount(user, password, email, connection, securityQuestion, securityAnswer) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail) VALUES (?, ?, ?)`, [user, password, email]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?)`, [user, password, email, securityQuestion, securityAnswer]);
     return result;
 }
 
@@ -65,10 +66,11 @@ export async function createAccount(user, password, email, connection) {
  * Date: 09/11/2025
  * Author: Elijah White
  * Dependencies: mysql
+ * Edited to also contain security question and answer by Elijah white on 9/27/2025
  */
-export async function createAccountWithPhone(user, password, email, connection, phone) {
+export async function createAccountWithPhone(user, password, email, connection, phone, securityQuestion, securityAnswer) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone) VALUES (?, ?, ?, ?)`, [user, password, email, phone]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?)`, [user, password, email, phone, securityQuestion, securityAnswer]);
     return result;
 }
 

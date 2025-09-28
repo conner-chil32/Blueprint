@@ -29,6 +29,8 @@ export class User {
         this.userLastLogin = null;
         this.isAdmin = false;
         this.loggedIn = false;
+        this.userQuestion = '';
+        this.userAnswer = '';
     }
 
     /**
