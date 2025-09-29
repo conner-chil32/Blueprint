@@ -2,7 +2,7 @@ import Navbar from "../components/navbar";
 import styles from "./page.module.css";
 
 async function getUserData() {
-  const res = await fetch("http://localhost:8000/wp-json/wp/v2/users")
+  const res = await fetch(`http://${process.env.ADDRESS}/wp-json/wp/v2/users`)
   return res.json()
 }
 
