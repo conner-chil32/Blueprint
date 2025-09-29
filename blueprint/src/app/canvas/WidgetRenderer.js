@@ -2,6 +2,9 @@ import { Box } from '../components/widgets/Box';
 import { Video } from "../components/widgets/video";
 import { Dropdown } from "../components/widgets/Dropdown";
 import { Advert } from "../components/widgets/Advert";
+import { Image as ImageWidget } from "../components/widgets/Image";
+import { Text } from "../components/widgets/Text";
+
 
 export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, changeWidgetProperty }) {
 
@@ -13,9 +16,11 @@ export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, cha
 
   const common = {
     ...widget,
+    ...w,
     onClick,
     alertDragStop,
     isSelected,
+    changeWidgetProperty,
   };
 
   switch (widget.type) {
@@ -30,7 +35,25 @@ export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, cha
                 changeWidgetProperty={changeWidgetProperty}
             />;
     case "advert":
-      return <Advert {...common} />;
+    return <Advert {...common} />;
+    case "text":
+      return (
+        <Text
+          {...common}
+          onTextChange={(t) => changeWidgetProperty(widget.id, { text: t })}
+          onDoubleClick={() => changeWidgetProperty(widget.id, { isEditing: true })}
+        />
+      );
+    
+    case "image":
+      return (
+        <ImageWidget
+          {...common}
+          onImageUrlChange={(u) =>
+            changeWidgetProperty(widget.id, { imageUrl: u })
+          }
+        />
+      );
     default:
       console.warn("Warning: Unknown widget type:", widget.type);
       return null;

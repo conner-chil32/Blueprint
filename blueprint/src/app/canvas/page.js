@@ -265,6 +265,55 @@ export default function CanvasPage() {
         borderColor: '#333333',
       };
       break;
+      case 'text': {
+        newWidget = {
+          type: 'text',
+          id: nextId,
+          x: mousePos.x,
+          y: mousePos.y,
+          width: 300,
+          height: 80,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: 'transparent',
+          pointerEventsNone: true,
+          rotation: 0,
+          text: 'Edit me',
+          fontSize: 18,
+          color: '#111111',
+          fontFamily: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif',
+          fontWeight: 400,
+          textAlign: 'left',
+          lineHeight: 1.35,
+          letterSpacing: 0,
+          padding: 8,
+        };
+        break;
+      }
+      
+      case 'image': {
+        newWidget = {
+          type: 'image',
+          id: nextId,
+          x: mousePos.x,
+          y: mousePos.y,
+          width: 320,
+          height: 200,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: '#ffffff',
+          pointerEventsNone: true,
+          rotation: 0,
+          imageUrl: '/images/pog_web_logo.png',
+          alt: 'Logo',
+          objectFit: 'contain',
+          showBorder: false,
+          borderRadius: 0,
+          showInlineUrlInput: false,
+        };
+        break;
+      }
+      
       default:
         console.warn('Warning: Unknown widget type: ' + typeToMake);
         return;
@@ -375,8 +424,8 @@ function LeftPanel({ createWidget }) {
     return (
       <div>
           <div className={styles.sectionTitle}>Objects</div>
-          <button className={styles.categoryItem}>Text Box</button>
-          <button className={styles.categoryItem}>Image</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('text')}>Text Box</button>
+<button className={styles.categoryItem} onClick={() => createWidget('image')}>Image</button>
 
           <div className={styles.divider}></div>
 
@@ -626,8 +675,182 @@ function LeftPanel({ createWidget }) {
                   </>
                 );
               })()}
+              {/* ===== Text controls ===== */}
+              {widget.type === 'text' && (
+                <>
+                  <p>Text:</p>
+                  <textarea
+                    rows={4}
+                    value={widget.text || ''}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, { text: e.target.value })
+                    }
+                    style={{ width: '100%', resize: 'vertical' }}
+                  />
 
-  
+                  <p>Font Size:</p>
+                  <input
+                    type="number"
+                    min="8"
+                    max="96"
+                    value={widget.fontSize ?? 18}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        fontSize: parseInt(e.target.value || '18', 10),
+                      })
+                    }
+                  />
+
+                  <p>Text Color:</p>
+                  <input
+                    type="color"
+                    value={widget.color || '#111111'}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, { color: e.target.value })
+                    }
+                  />
+
+                  <p>Font Weight:</p>
+                  <select
+                    value={widget.fontWeight ?? 400}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        fontWeight: parseInt(e.target.value, 10),
+                      })
+                    }
+                  >
+                    <option value={300}>300</option>
+                    <option value={400}>400</option>
+                    <option value={500}>500</option>
+                    <option value={600}>600</option>
+                    <option value={700}>700</option>
+                  </select>
+
+                  <p>Align:</p>
+                  <select
+                    value={widget.textAlign || 'left'}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, { textAlign: e.target.value })
+                    }
+                  >
+                    <option value="left">left</option>
+                    <option value="center">center</option>
+                    <option value="right">right</option>
+                  </select>
+
+                  <p>Line Height:</p>
+                  <input
+                    type="number"
+                    step="0.05"
+                    min="0.8"
+                    max="3"
+                    value={widget.lineHeight ?? 1.35}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        lineHeight: parseFloat(e.target.value || '1.35'),
+                      })
+                    }
+                  />
+
+                  <p>Letter Spacing (px):</p>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="-2"
+                    max="10"
+                    value={widget.letterSpacing ?? 0}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        letterSpacing: parseFloat(e.target.value || '0'),
+                      })
+                    }
+                  />
+
+                  <p>Padding (px):</p>
+                  <input
+                    type="number"
+                    min="0"
+                    max="64"
+                    value={widget.padding ?? 8}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        padding: parseInt(e.target.value || '8', 10),
+                      })
+                    }
+                  />
+                </>
+              )}
+              {/* ===== Image controls ===== */}
+              {widget.type === 'image' && (
+              <>
+                <p>Image URL:</p>
+                <input
+                  type="text"
+                  placeholder="/images/pog_web_logo.png"
+                  value={widget.imageUrl || ''}
+                  onChange={e =>
+                    changeWidgetProperty(widget.id, { imageUrl: e.target.value })
+                  }
+                />
+
+                <p>Alt Text:</p>
+                <input
+                  type="text"
+                  value={widget.alt || ''}
+                  onChange={e =>
+                    changeWidgetProperty(widget.id, { alt: e.target.value })
+                  }
+                />
+
+                <p>Object Fit:</p>
+                <select
+                  value={widget.objectFit || 'contain'}
+                  onChange={e =>
+                    changeWidgetProperty(widget.id, { objectFit: e.target.value })
+                  }
+                >
+                  <option value="contain">contain</option>
+                  <option value="cover">cover</option>
+                  <option value="fill">fill</option>
+                  <option value="none">none</option>
+                  <option value="scale-down">scale-down</option>
+                </select>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span>Show Border</span>
+                  <input
+                    type="checkbox"
+                    checked={!!widget.showBorder}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, { showBorder: e.target.checked })
+                    }
+                  />
+                </label>
+
+                <p>Border Color:</p>
+                <input
+                  type="color"
+                  value={widget.borderColor || '#cccccc'}
+                  onChange={e =>
+                    changeWidgetProperty(widget.id, { borderColor: e.target.value })
+                  }
+                />
+
+                <p>Corner Radius (px):</p>
+                <input
+                  type="number"
+                  min="0"
+                  max="64"
+                  value={widget.borderRadius ?? 0}
+                  onChange={e =>
+                    changeWidgetProperty(widget.id, {
+                      borderRadius: parseInt(e.target.value || '0', 10),
+                    })
+                  }
+                />
+              </>
+            )}
+
               {/* ===== Advertisement controls ===== */}
               {widget.type === 'advert' && (
                 <>
