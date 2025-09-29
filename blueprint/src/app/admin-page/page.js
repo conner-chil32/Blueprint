@@ -2,12 +2,13 @@ import Navbar from "../components/navbar";
 import styles from "./page.module.css";
 
 async function getUserData() {
-  const res = await fetch("http://localhost:8000/wp-json/wp/v2/users")
+  const res = await fetch(`http://${process.env.ADDRESS}:8000/wp-json/wp/v2/users`)
   return res.json()
 }
 
 export default async function RawHTMLPage() {
   const users = await getUserData()
+  console.log(users)
 
   return (
     <>
