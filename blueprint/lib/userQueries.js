@@ -1,5 +1,7 @@
 import { validateConnection } from "./db.js";
 import { encryptString } from "./utility.js";
+import { connection } from "./connection.js";
+import { registerWordpress } from "./user.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -9,8 +11,8 @@ import { encryptString } from "./utility.js";
  * Author: Lydell Jones
  * Dependencies: mysql2
  */
-export async function getUserByEmail(email, connection) {
-    if (!await validateConnection(connection)) return false;
+export async function getUserByEmail(email) {
+    if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userEmail = ?;`, [email]);
     return result;
 }
@@ -24,7 +26,7 @@ export async function getUserByEmail(email, connection) {
  * Dependencies: mysql
  */
 export async function getUserByID(id) {
-    if (!await validateConnection(connection)) return false;
+    if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE id = ?;`, [id]);
     return result;
 }
@@ -38,7 +40,7 @@ export async function getUserByID(id) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function signIn(user, password, connection) {
+export async function signIn(user, password) {
     if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, encryptString(password)]);
     return result;
@@ -56,7 +58,7 @@ export async function signIn(user, password, connection) {
  */
 export async function createAccount(user, password, email, connection, securityQuestion, securityAnswer) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?)`, [user, await encryptString(await encryptString(password)), email, securityQuestion, securityAnswer]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?)`, [user, await encryptString(password), email, securityQuestion, securityAnswer]);
     return result;
 }
 
@@ -71,7 +73,7 @@ export async function createAccount(user, password, email, connection, securityQ
  */
 export async function createAccountWithPhone(user, password, email, connection, phone, securityQuestion, securityAnswer) {
     if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?)`, [user, await encryptString(await encryptString(password)), email, phone, securityQuestion, securityAnswer]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?)`, [user, await encryptString(password), email, phone, securityQuestion, securityAnswer]);
     return result;
 }
 
@@ -83,8 +85,8 @@ export async function createAccountWithPhone(user, password, email, connection, 
  * Author: Elijah White
  * Dependencies: mysql
  */
-export async function getUserByUsername(username, connection) {
-    if (!await validateConnection(connection)) return false;
+export async function getUserByUsername(username) {
+    if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
     return result;
 }
