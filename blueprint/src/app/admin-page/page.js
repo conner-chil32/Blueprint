@@ -8,6 +8,7 @@ async function getUserData() {
 
 export default async function RawHTMLPage() {
   const users = await getUserData()
+  console.log(users)
 
   return (
     <>
