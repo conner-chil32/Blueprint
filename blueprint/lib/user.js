@@ -292,29 +292,31 @@ export async function encryptData(username, password) {
 }
 
 export async function registerWordpress(username, password, email) {
-    const requestOptions = {
+    console.log("[WP] Registering Wordpress");
+
+
+    await fetch(`http://${process.env.WORDPRESS_DOMAIN}:${process.env.WORDPRESS_PORT}/wp-json/jwt-auth/v1/token?username=${process.env.DB_USER}&password=${process.env.DB_PASSWORD}`, {
         method: "POST",
         redirect: "follow"
-    };
-
-fetch(`http://localhost:80/wp-json/jwt-auth/v1/token?username=${process.env.DB_USER}&password=${process.env.DB_PASSWORD}`, requestOptions)
-  .then((response) => response.json())
-  .then((result) => {
-    console.log(result["token"]);
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${result["token"]}`);
-    const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    redirect: "follow"
-    };
-    fetch(`http://localhost:80/wp-json/wp/v2/users?${username}=&password=${password}&email=${email}`, requestOptions)
-      .then((response) => {
-        console.log("root token successful, creating user.")
-      })
-      .catch((error) => console.error(error));
-  })
-  .catch((error) => console.log("Unable to log into Wordpress."));
+    })
+        .then((response) => response.json())
+        .then((result) => {
+            console.log(result["token"]);
+            const myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${result["token"]}`);
+            const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            redirect: "follow"
+            };
+            fetch(`http://${process.env.WORDPRESS_DOMAIN}:${process.env.WORDPRESS_PORT}/wp-json/wp/v2/users?${username}=&password=${password}&email=${email}`, requestOptions)
+            .then((response) => {
+                console.log(`root token successful, User Created.\n Response ${response}`);
+            })
+            .catch((error) => {throw false;});
+        })
+        .catch((error) => {throw false;});
+        
 }
 
 export async function loginWordpress(username, password) {
