@@ -9,9 +9,13 @@ export default function Navbar() {
             <CreateImage code="logo" />
             <CreateButton code="features" />
             <CreateButton code="pricing" />
+            <CreateButton code="canvas" />
+
         </div>
+        <CreateButton code='navtest' />
         <CreateButton code="login" />
         </div>
       </div>
     )
   }
+//remove line 13 when testing complete

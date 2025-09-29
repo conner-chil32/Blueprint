@@ -1,5 +1,5 @@
-import { commit, validateConnection } from "./utility";
-import { connection } from "@lib/connection"
+import { commit, validateConnection } from "./utility.js";
+import { connection } from "./connection.js"
 
 /**
     getSites() - Retrieves all sites from the database.
