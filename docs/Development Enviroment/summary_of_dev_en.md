@@ -107,6 +107,19 @@ However, because this project runs in Docker Containers, the specs required to r
 
 Please reach out to connerchilders@csus.edu to get added to the Tailnet, or reach out to me on discord `bling6906`
 
+#### If you are on the tailnet:
+
+Step 1. Make sure your system is on the correct tailnet 
+
+Step 2. ssh into the machine with the command `ssh blueprint@nevara`
+
+Step 3. CD into the `Blueprint` folder
+
+Step 4. Run the `start.sh` file with `sudo ./start.sh` with the sudo password
+
+Step 5. If you wish to access the NextJS frontend, click this link when its done running
+	 http://nevara.tailc102a8.ts.net:3000/features
+
 ## How to setup your own Dev Environment
 
 Requirements:
