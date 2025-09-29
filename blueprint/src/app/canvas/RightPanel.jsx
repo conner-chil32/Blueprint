@@ -399,6 +399,8 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
     element.download = "Page" + Date.now() + ".html";
 
     document.body.appendChild(element);
+    element.click();
+    element.remove();
   }
 
   const copyJSONPayload = (page) => {
