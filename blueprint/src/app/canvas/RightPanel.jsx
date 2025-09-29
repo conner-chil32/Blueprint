@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import styles from './page.module.css';
 import { RenderPage } from "./HtmlConverter";
+import { buildPagePayload, createPayloadString } from "./payload";
 
 export function RightPanel({
     changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
@@ -400,6 +401,23 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
     document.body.appendChild(element);
   }
 
+  const copyJSONPayload = (page) => {
+    const json = createPayloadString(page);
+    navigator.clipboard?.writeText(json).catch(() => {});
+    console.log("Payload copied:", json);
+  };
+
+  const downloadJSONPayload = (page) => {
+    const json = createPayloadString(page);
+    const blob = new Blob([json], { type: "application/json;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `page-${page?.id ?? 0}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
   return(
     <div className={styles.widgetOptions}>
       {/* A view of all pages */}
@@ -457,7 +475,7 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
       </div>
 
       {/* Download current page as HTML */}
-      <button >Download Page</button>
-    </div>
+      <button onClick={() => downloadHTMLPage(currentPage)}>Download Page (HTML)</button>
+      </div>
   );
 }
