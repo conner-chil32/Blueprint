@@ -7,9 +7,8 @@ export function LeftPanel({ createWidget }) {
     return (
         <div>
           <div className={styles.sectionTitle}>Objects</div>
-          <button className={styles.categoryItem}>Text Box</button>
-          <button className={styles.categoryItem}>Image</button>
-
+          <button className={styles.categoryItem} onClick={() => createWidget('text')}>Text Box</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('image')}>Image</button>
           <div className={styles.divider}></div>
 
           <div className={styles.sectionTitle}>Widgets</div>

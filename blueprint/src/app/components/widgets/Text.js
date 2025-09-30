@@ -20,6 +20,7 @@ export function Text(props) {
     onTextChange,
     changeWidgetProperty,
     style,
+    onDoubleClick, // may be provided by WidgetRenderer
     ...rest
   } = props;
 
@@ -47,54 +48,67 @@ export function Text(props) {
     }
   };
 
+  const enterEditing = (e) => {
+    e.stopPropagation();
+    if (typeof changeWidgetProperty === "function" && id != null) {
+      changeWidgetProperty(id, { isEditing: true });
+    }
+  };
+
   const justifyMap = { left: "flex-start", center: "center", right: "flex-end" };
 
   return (
     <Widget
-      {...props}
+      {...rest}
+      id={id}
+      // Forward any onDoubleClick passed by WidgetRenderer;
+      // if not provided, fall back to our own that toggles editing.
+      onDoubleClick={onDoubleClick ?? enterEditing}
       style={{
         backgroundColor,
         overflow: "hidden",
         ...(style || {}),
       }}
+      // Keep other Widget props (x,y,width,height, etc.) via {...rest}
     >
       {!isEditing && (
-  <div
-    style={{
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: justifyMap[textAlign] || "flex-start",
-      padding,
-      boxSizing: "border-box",
-      userSelect: "text",
-      pointerEvents: "none",
-    }}
-  >
-    <span
-      style={{
-        display: "block",
-        width: "100%",
-        fontSize,
-        color,
-        fontFamily,
-        fontWeight,
-        textAlign,
-        lineHeight,
-        letterSpacing,
-        wordBreak: "break-word",
-        whiteSpace: "pre-wrap",
-      }}
-    >
-      {text}
-    </span>
-  </div>
-)}
-
+        <div
+          // IMPORTANT: do NOT disable pointer events here,
+          // so the Widget container can receive clicks/double-clicks.
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: justifyMap[textAlign] || "flex-start",
+            padding,
+            boxSizing: "border-box",
+            userSelect: "text",
+          }}
+        >
+          <span
+            style={{
+              display: "block",
+              width: "100%",
+              fontSize,
+              color,
+              fontFamily,
+              fontWeight,
+              textAlign,
+              lineHeight,
+              letterSpacing,
+              wordBreak: "break-word",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {text}
+          </span>
+        </div>
+      )}
 
       {isEditing && (
         <div
+          // Prevent drag/move & selection changes while editing.
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
           style={{
@@ -112,7 +126,10 @@ export function Text(props) {
             onChange={(e) => commitText(e.target.value)}
             onBlur={exitEditing}
             onKeyDown={(e) => {
-              if ((e.key === "Enter" && (e.metaKey || e.ctrlKey)) || e.key === "Escape") {
+              if (
+                (e.key === "Enter" && (e.metaKey || e.ctrlKey)) ||
+                e.key === "Escape"
+              ) {
                 e.preventDefault();
                 exitEditing();
               }
