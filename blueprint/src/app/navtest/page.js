@@ -1,5 +1,5 @@
-import CreateButton from "blueprint\\src\\app\\components\\CreateRouteButton.js"
-import { library } from "blueprint\\src\\app\\components\\routeDictionaries.js";
+import CreateButton from "../components/CreateRouteButton.js";
+import { library } from "../components/routeDictionaries.js";
 import styles from "./page.module.css";
 
 //a series of buttons that map through routeDirectories.library

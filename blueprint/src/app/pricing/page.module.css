@@ -1,86 +1,121 @@
-.container {
-    font-family: 'OpenDyslexic', sans-serif;
-    background-color: #555;
-    color: white;
-    text-align: center;
-    display: inline;
+/* Main Body Styles */
+.body {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, var(--dark-blue), var(--bg-color)) fixed; /* Matches Features */
+    background-size: cover;
+    font-family: var(--global-font), sans-serif;
     margin: 0;
     padding: 0;
-}
-
-.logoStyle {
-    height: 40px;
-    cursor: pointer;
-}
-
-.nav-button {
-    background-color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    text-decoration: none;
-    color: black;
-    display: inline-block;
-}
-
-.title {
-    padding-top: 10vh;
-    font-size: 32px;
-    font-weight: 600;
-    margin: 30px 0;
-}
-
-.plans {
+    min-height: 100vh;
+    color: var(--text-color);
+  }
+  
+  /* Main Content Styles */
+  .mainContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 80px 20px 60px; /* Top padding for navbar */
+    min-height: calc(100vh - 70px);
+    justify-content: flex-start;
+  }
+  
+  .title {
+    font-size: 56px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: var(--text-color);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  
+  /* Plans Section */
+  .plans {
     display: flex;
     justify-content: center;
-    gap: 20px;
     flex-wrap: wrap;
-    padding: 20px;
-}
-
-.displayText {
-    font-size: 14px;
-    margin: 0; 
-    width: 100%;
-}
-
-.plan {
-    background-color: white;
-    color: black;
-    padding: 20px;
-    border-radius: 10px;
+    gap: 40px;
+    max-width: 1200px;
+    padding: 0 20px;
+    animation: fadeIn 1.2s ease-out forwards;
+    opacity: 0; /* For animation */
+  }
+  
+  .planCard {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    padding: 30px;
+    border-radius: 16px;
     width: 250px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    font-weight: 400;
-}
-
-.plan h2 {
-    margin: 10px 0;
+    min-height: 300px;
+    height: auto;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 1.2s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .planCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+  
+  .plan h2 {
+    margin: 15px 0 10px;
     font-weight: 600;
-}
-
-.plan ul {
+    font-size: 24px;
+  }
+  
+  .plan p {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .plan ul {
     list-style: none;
     padding: 0;
-}
-
-.plan ul li {
+    text-align: left;
+  }
+  
+  .plan ul li {
     margin-bottom: 15px;
-}
-
-
-/* Request this to go globals.css */
-.uppercase {
-  text-transform: uppercase;
-}
-
-.lowercase {
-  text-transform: lowercase;
-}
-
-.capitalize {
-  text-transform: capitalize;
-}
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .planIcon {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: var(--accent);
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .plans {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .planCard {
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+  
+    .title {
+      font-size: 36px;
+    }
+  }
