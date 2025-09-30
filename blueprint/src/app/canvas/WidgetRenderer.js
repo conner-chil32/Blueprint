@@ -5,7 +5,21 @@ import { Advert } from "../components/widgets/Advert";
 import { Hyperlink } from '../components/widgets/Hyperlink';
 import { MenuScroll } from "../components/widgets/MenuScroll";
 
-export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty }) {
+/** Christopher Parsons, 9/18/2025
+ *  Angel Ramirez
+ * Inputs:
+ *  widget: Widget
+ *  onClick: function
+ *  alertDragStop: function
+ *  isSelected: Boolean
+ *  onDragStart: function
+ *  onDragStop: function
+ *  scale: number
+ *  changeWidgetProperty: function
+ * 
+ * Updates the current state of the inputted widget in React.
+ */
+export function WidgetRenderer({ staticRender=false, widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty, style }) {
 
   /**
    * Render the correct type of widget.
@@ -18,12 +32,12 @@ export function WidgetRenderer({ widget, onClick, alertDragStop, isSelected, onD
     onClick,
     alertDragStop,
     isSelected,
+    staticRender,
   };
 
   switch (widget.type) {
     case 'box':
-      {/*console.log('Rendering box widget:', widget);*/}
-      return <Box key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} scale={scale} />;
+      return <Box staticRender={staticRender} key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} scale={scale} style={style} />;
     case "video":
       return <Video {...common} />;
     case "dropdown":
