@@ -46,7 +46,7 @@ const admin_page = {
 }
 
 const canvas = {
-    label: "canvas",
+    label: "Canvas",
     href: "/canvas", 
     className: "nav-button" 
 }
@@ -96,7 +96,7 @@ const wordpress_test = {
 
 
 const navtest = {
-    label: "navtest",
+    label: "Navtest",
     href: "/navtest",
     className: "nav-button"
 }
