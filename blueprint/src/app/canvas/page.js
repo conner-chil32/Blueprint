@@ -1,24 +1,26 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import styles from './page.module.css';
+import styles from "./page.module.css";
 
 import Navbar from "../components/navbar";
-import { Canvas } from './Canvas';
-import { LeftPanel } from './LeftPanel';
-import { RightPanel } from './RightPanel';
+import { Canvas } from "./Canvas";
+import { LeftPanel } from "./LeftPanel";
+import { RightPanel } from "./RightPanel";
 
 export default function CanvasPage() {
   // Pages, each containing widgets
-  const [pages, setPages] = useState([{ id: 0, name: "Page 0", widgets: [], width: 800, height: 600, backgroundColor: '#ffffff' }]);
+  const [pages, setPages] = useState([
+    { id: 0, name: "Page 0", widgets: [], width: 800, height: 600, backgroundColor: "#ffffff" },
+  ]);
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
-  const currentPage = pages.find(page => page.id === selectedPageID);
+  const currentPage = pages.find((page) => page.id === selectedPageID);
 
   // Creating widgets
   // If currentPage exists, widgets = currentPage.widgets : otherwise, empty array
-  const widgets = currentPage? currentPage.widgets : [];
+  const widgets = currentPage ? currentPage.widgets : [];
   const [nextWidgetId, setNextWidgetId] = useState(0);
 
   // Moving and placing widgets
@@ -40,8 +42,8 @@ export default function CanvasPage() {
 
   // Update the current page to include new widgets
   const setWidgets = (newWidgets) => {
-    setPages(prev => 
-      prev.map(page =>
+    setPages((prev) =>
+      prev.map((page) =>
         page.id === selectedPageID ? { ...page, widgets: newWidgets } : page
       )
     );
@@ -51,40 +53,45 @@ export default function CanvasPage() {
   const createPage = () => {
     setPages([
       ...pages,
-      {id: nextPageID,
+      {
+        id: nextPageID,
         name: `Page ${nextPageID}`,
         widgets: [],
         width: 800,
         height: 600,
-        backgroundColor: '#ffffff'
-      }])
+        backgroundColor: "#ffffff",
+      },
+    ]);
 
     setSelectedPageID(nextPageID);
-    console.log('Created page', nextPageID);
-    setNextPageID(nextPageID+1);
+    console.log("Created page", nextPageID);
+    setNextPageID(nextPageID + 1);
   };
 
   // Delete a page
   const deletePage = (pageId) => {
     if (pages.length <= 1) {
-      console.log('Cannot delete the last page');
+      console.log("Cannot delete the last page");
       return;
     }
-    setPages(prev => prev.filter(page => page.id !== pageId));
+    setPages((prev) => prev.filter((page) => page.id !== pageId));
     if (selectedPageID === pageId) {
-      setSelectedPageID(pages[0].id);
+      const first = pages.find((p) => p.id !== pageId);
+      if (first) setSelectedPageID(first.id);
     }
   };
 
   // Update page name
   const updatePageName = (pageId, newName) => {
-    setPages(prev => prev.map(page => page.id === pageId ? { ...page, name: newName } : page));
+    setPages((prev) =>
+      prev.map((page) => (page.id === pageId ? { ...page, name: newName } : page))
+    );
   };
 
   /**
    * When the mouse moves, keep track of its position.
    * useEffect is essentially a hook that keeps track of actions performed on the page.
-   * @param {*} e 
+   * @param {*} e
    */
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -105,16 +112,16 @@ export default function CanvasPage() {
       if (isPlacing && widgetToPlace) {
         setWidgetToPlace((prev) => ({
           ...prev,
-          x: canvasMousePos.x,
-          y: canvasMousePos.y,
+          x,
+          y,
         }));
       }
     };
-  
+
     /* 
-    Old keyDown handlen deleted widgets by pressing backspace or delete when typing in input fields.
-    Now modified to prevent Backspace/Delete from navigating back or deleting widgets when typing in an input field.
-    Can still delete widgets using the delete button in the right panel. 
+      Old keyDown handler deleted widgets by pressing backspace or delete when typing in input fields.
+      Now modified to prevent Backspace/Delete from navigating back or deleting widgets when typing in an input field.
+      Can still delete widgets using the delete button in the right panel. 
     */
     const handleDocumentKeyDown = (e) => {
       // Ignore when typing in any editable field
@@ -125,37 +132,36 @@ export default function CanvasPage() {
         tag === "textarea" ||
         t?.isContentEditable ||
         t?.getAttribute?.("role") === "textbox";
-  
+
       if (isTyping) return;
-  
+
       // Do NOT delete widgets on Backspace/Delete anymore.
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
         e.preventDefault();
       }
     };
-  
+
     window.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("keydown", handleDocumentKeyDown);
-  
+
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
-  }, [isPlacing, widgetToPlace]);
-  
+  }, [isPlacing, widgetToPlace, scale, transformCoords]);
 
   /**
-  * Ensure changes to the widgets updates the whole page
-  * @param {*} e 
-  */
+   * Ensure changes to the widgets updates the whole page
+   * @param {*} e
+   */
   useEffect(() => {
     if (!selectedWidgets || selectedWidgets.length === 0) return;
 
     // Re-select updated widget objects from the widgets array
-    const updatedSelection = selectedWidgets.map(sel =>
-      widgets.find(w => w.id === sel.id)
-    ).filter(Boolean); // Remove nulls in case of deletion
+    const updatedSelection = selectedWidgets
+      .map((sel) => widgets.find((w) => w.id === sel.id))
+      .filter(Boolean); // Remove nulls in case of deletion
 
     setSelectedWidgets(updatedSelection);
   }, [widgets]);
@@ -182,7 +188,7 @@ export default function CanvasPage() {
       widgetToPlace.isMoving = false;
       widgetToPlace.pointerEventsNone = false;
 
-      console.log('Added widget', widgetToPlace.id, 'to page', selectedPageID);
+      console.log("Added widget", widgetToPlace.id, "to page", selectedPageID);
     } else {
       // Deselect all widgets if not placing
       deselectAllWidgets();
@@ -190,25 +196,27 @@ export default function CanvasPage() {
   };
 
   const updateWidget = (widgetID, newX, newY, newSize = null) => {
-    const updatedWidgets = widgets.map(widget =>
-      widget.id === widgetID ? { ...widget, x: newX, y: newY, ...(newSize && { width: newSize.width, height: newSize.height }) } : widget
+    const updatedWidgets = widgets.map((widget) =>
+      widget.id === widgetID
+        ? { ...widget, x: newX, y: newY, ...(newSize && { width: newSize.width, height: newSize.height }) }
+        : widget
     );
     setWidgets(updatedWidgets);
   };
 
   /**
    * Create a new widget with default values.
-   * @param {*} typeToMake 
-   * @returns 
+   * @param {*} typeToMake
+   * @returns
    */
   const createWidget = (typeToMake) => {
     let newWidget = null;
     const nextId = nextWidgetId;
 
     switch (typeToMake) {
-      case 'box':
+      case "box":
         newWidget = {
-          type: 'box',
+          type: "box",
           id: nextId,
           x: canvasMousePos.x,
           y: canvasMousePos.y,
@@ -216,15 +224,15 @@ export default function CanvasPage() {
           height: 100,
           isSelected: false,
           isMoving: true,
-          backgroundColor: '#cccccc',
+          backgroundColor: "#cccccc",
           pointerEventsNone: true,
           rotation: 0,
         };
         break;
 
-      case 'video':
+      case "video":
         newWidget = {
-          type: 'video',
+          type: "video",
           id: nextId,
           x: canvasMousePos.x,
           y: canvasMousePos.y,
@@ -232,22 +240,22 @@ export default function CanvasPage() {
           height: 180,
           isSelected: false,
           isMoving: true,
-          backgroundColor: '#000000',
+          backgroundColor: "#000000",
           pointerEventsNone: true,
           rotation: 0,
           // custom props:
-          videoUrl: '/images/DemoVideo.mp4',
+          videoUrl: "/images/DemoVideo.mp4",
           loop: false,
           muted: true,
           autoplay: true,
           controls: true,
-          objectFit: 'contain',
+          objectFit: "contain",
         };
         break;
 
-      case 'dropdown':
+      case "dropdown":
         newWidget = {
-          type: 'dropdown',
+          type: "dropdown",
           id: nextId,
           x: canvasMousePos.x,
           y: canvasMousePos.y,
@@ -255,21 +263,21 @@ export default function CanvasPage() {
           height: 50,
           isSelected: false,
           isMoving: true,
-          backgroundColor: '#ffffff',
+          backgroundColor: "#ffffff",
           pointerEventsNone: true,
           rotation: 0,
           // custom props:
-          options: ['Option 1', 'Option 2', 'Option 3'],
-          value: 'Option 1',
+          options: ["Option 1", "Option 2", "Option 3"],
+          value: "Option 1",
           fontSize: 12,
-          textColor: '#111111',
-          bgColor: '#ffffff',
+          textColor: "#111111",
+          bgColor: "#ffffff",
         };
         break;
 
-      case 'advert':
+      case "advert":
         newWidget = {
-          type: 'advert',
+          type: "advert",
           id: nextId,
           x: canvasMousePos.x,
           y: canvasMousePos.y,
@@ -277,22 +285,69 @@ export default function CanvasPage() {
           height: 250, // standard MPU size
           isSelected: false,
           isMoving: true,
-          backgroundColor: '#ffffff',
+          backgroundColor: "#ffffff",
           pointerEventsNone: true,
           rotation: 0,
           // custom props:
-          imageUrl: '/images/Blueprint.png',
-          linkUrl: 'http://localhost:3000/features',
-          alt: 'Advertisement',
-          objectFit: 'cover',
+          imageUrl: "/images/Blueprint.png",
+          linkUrl: "http://localhost:3000/features",
+          alt: "Advertisement",
+          objectFit: "cover",
           showBorder: true,
-          borderColor: '#333333',
+          borderColor: "#333333",
         };
         break;
 
-      case 'hyperlink':
+      case "text":
         newWidget = {
-          type: 'hyperlink',
+          type: "text",
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 300,
+          height: 80,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: "transparent",
+          pointerEventsNone: true,
+          rotation: 0,
+          text: "Edit me",
+          fontSize: 18,
+          color: "#111111",
+          fontFamily: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif",
+          fontWeight: 400,
+          textAlign: "left",
+          lineHeight: 1.35,
+          letterSpacing: 0,
+          padding: 8,
+        };
+        break;
+
+      case "image":
+        newWidget = {
+          type: "image",
+          id: nextId,
+          x: canvasMousePos.x,
+          y: canvasMousePos.y,
+          width: 320,
+          height: 200,
+          isSelected: false,
+          isMoving: true,
+          backgroundColor: "#ffffff",
+          pointerEventsNone: true,
+          rotation: 0,
+          imageUrl: "/images/pog_web_logo.png",
+          alt: "Logo",
+          objectFit: "contain",
+          showBorder: false,
+          borderRadius: 0,
+          showInlineUrlInput: false,
+        };
+        break;
+
+      case "hyperlink":
+        newWidget = {
+          type: "hyperlink",
           id: nextId,
           x: canvasMousePos.x,
           y: canvasMousePos.y,
@@ -300,21 +355,21 @@ export default function CanvasPage() {
           height: 40,
           isSelected: false,
           isMoving: true,
-          backgroundColor: 'transparent', // Links don't need a background
+          backgroundColor: "transparent", // Links don't need a background
           pointerEventsNone: true,
           rotation: 0,
           // custom props:
-          text: 'Click Here',
-          url: 'http://localhost:3000/features',
+          text: "Click Here",
+          url: "http://localhost:3000/features",
           fontSize: 12,
-          textColor: '#0000ee',
+          textColor: "#0000ee",
           openInNewTab: true,
         };
         break;
 
-      case 'menuScroll':
+      case "menuScroll":
         newWidget = {
-          type: 'menuScroll',
+          type: "menuScroll",
           id: nextId,
           x: canvasMousePos.x,
           y: canvasMousePos.y,
@@ -322,45 +377,44 @@ export default function CanvasPage() {
           height: 250,
           isSelected: false,
           isMoving: true,
-          backgroundColor: '#f0f0f0',
+          backgroundColor: "#f0f0f0",
           pointerEventsNone: true,
           rotation: 0,
           // custom props:
-          items: ['Menu Item 1', 'Menu Item 2', 'Menu Item 3', 'Menu Item 4', 'Menu Item 5'],
+          items: ["Menu Item 1", "Menu Item 2", "Menu Item 3", "Menu Item 4", "Menu Item 5"],
           fontSize: 14,
-          textColor: '#333333',
+          textColor: "#333333",
           itemPadding: 8,
-          selectedValue: 'Menu Item 1', // Default to the first item
+          selectedValue: "Menu Item 1", // Default to the first item
         };
         break;
 
       default:
-        console.warn('Warning: Unknown widget type: ' + typeToMake);
+        console.warn("Warning: Unknown widget type: " + typeToMake);
         return;
     }
-    console.log('Created new widget: ', newWidget);
+    console.log("Created new widget: ", newWidget);
 
     setNextWidgetId((prevId) => prevId + 1);
     setIsPlacing(true);
     setWidgetToPlace(newWidget);
   };
-  
+
   function deleteWidget(id) {
-    console.log('Deleting widget', id);
-    setWidgets(widgets.filter(widget => widget.id !== id));
+    console.log("Deleting widget", id);
+    setWidgets(widgets.filter((widget) => widget.id !== id));
     deselectAllWidgets();
   }
 
   function deselectAllWidgets() {
     setSelectedWidgets(null);
-    console.log('Deselected all widgets');
+    console.log("Deselected all widgets");
   }
 
   function changePageProperty(pageID, newProperties) {
-    const changedPages = pages.map(page =>
+    const changedPages = pages.map((page) =>
       // If this is the correct widget, then update the object
-      page.id === pageID ? {...page, ...newProperties}
-      : page // Otherwise, leave it
+      page.id === pageID ? { ...page, ...newProperties } : page // Otherwise, leave it
     );
 
     setPages(changedPages);
@@ -369,18 +423,18 @@ export default function CanvasPage() {
   return (
     <>
       <Navbar /> {/* <-- RENDERED NAVBAR */}
-    
-        {/* Page navigation bar above the canvas */}
-        <div className={styles.pageNavBar} style={{ top: '70px' }}>
-          <PageNavigation
-            pages={pages}
-            selectedPageID={selectedPageID}
-            setSelectedPageID={setSelectedPageID}
-            createPage={createPage}
-            updatePageName={updatePageName}
-            deletePage={deletePage}
-          />
-        </div>
+
+      {/* Page navigation bar above the canvas */}
+      <div className={styles.pageNavBar} style={{ top: "70px" }}>
+        <PageNavigation
+          pages={pages}
+          selectedPageID={selectedPageID}
+          setSelectedPageID={setSelectedPageID}
+          createPage={createPage}
+          updatePageName={updatePageName}
+          deletePage={deletePage}
+        />
+      </div>
 
       {/* Panel on the left, showing options for adding widgets */}
       <div className={`${styles.leftPanel} ${styles.sidePanel}`}>
@@ -407,26 +461,42 @@ export default function CanvasPage() {
 
       {/* Panel on the right, showing options for the selected widgets and the canvas page */}
       <div className={`${styles.rightPanel} ${styles.sidePanel}`}>
-        <RightPanel selectedWidgets={selectedWidgets} changeWidgetProperty={changeWidgetProperty} widgets={widgets} deleteWidget={deleteWidget}
-        pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />
+        <RightPanel
+          selectedWidgets={selectedWidgets}
+          changeWidgetProperty={changeWidgetProperty}
+          widgets={widgets}
+          deleteWidget={deleteWidget}
+          pages={pages}
+          selectedPageID={selectedPageID}
+          setSelectedPageID={setSelectedPageID}
+          currentPage={currentPage}
+          createPage={createPage}
+          changePageProperty={changePageProperty}
+        />
       </div>
     </>
   );
-  
+
   function changeWidgetProperty(widgetID, newProperties) {
-    const changedWidgets = widgets.map(widget =>
+    const changedWidgets = widgets.map((widget) =>
       // If this is the correct widget, then update the object
-      widget.id === widgetID ? {...widget, ...newProperties}
-      : widget // Otherwise, leave it
+      widget.id === widgetID ? { ...widget, ...newProperties } : widget // Otherwise, leave it
     );
 
     setWidgets(changedWidgets);
   }
 }
 
-function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage }) {
+function PageNavigation({
+  pages,
+  selectedPageID,
+  setSelectedPageID,
+  createPage,
+  updatePageName,
+  deletePage,
+}) {
   const [editingId, setEditingId] = useState(null);
-  const [editName, setEditName] = useState('');
+  const [editName, setEditName] = useState("");
 
   const startEdit = (page) => {
     setEditingId(page.id);
@@ -447,19 +517,26 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '10px 0' }}>
-      {pages.map(page => (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        overflowX: "auto",
+        padding: "10px 0",
+      }}
+    >
+      {pages.map((page) => (
         <div
           key={page.id}
           style={{
-            margin: '0 10px',
-            padding: '5px 10px',
-            cursor: 'pointer',
-            backgroundColor: page.id === selectedPageID ? '#e2e8f0' : 'transparent',
-            borderRadius: '4px',
-            fontWeight: page.id === selectedPageID ? 'bold' : 'normal',
-            display: 'flex',
-            alignItems: 'center',
+            margin: "0 10px",
+            padding: "5px 10px",
+            cursor: "pointer",
+            backgroundColor: page.id === selectedPageID ? "#e2e8f0" : "transparent",
+            borderRadius: "4px",
+            fontWeight: page.id === selectedPageID ? "bold" : "normal",
+            display: "flex",
+            alignItems: "center",
           }}
           onClick={() => {
             if (editingId !== page.id) {
@@ -470,17 +547,17 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
           {editingId === page.id ? (
             <input
               value={editName}
-              onChange={e => setEditName(e.target.value)}
+              onChange={(e) => setEditName(e.target.value)}
               onBlur={() => saveEdit(page.id)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
                   saveEdit(page.id);
-                } else if (e.key === 'Escape') {
+                } else if (e.key === "Escape") {
                   setEditingId(null);
                 }
               }}
               autoFocus
-              style={{ width: '100px' }}
+              style={{ width: "100px" }}
             />
           ) : (
             <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
@@ -490,13 +567,15 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
               e.stopPropagation();
               handleDelete(page.id);
             }}
-            style={{ cursor: 'pointer', marginLeft: '5px' }}
+            style={{ cursor: "pointer", marginLeft: "5px" }}
           >
             🗑️
           </span>
         </div>
       ))}
-      <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+      <button onClick={createPage} style={{ marginLeft: "10px" }}>
+        + New Page
+      </button>
     </div>
   );
 }
