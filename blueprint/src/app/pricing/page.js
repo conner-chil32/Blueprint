@@ -7,40 +7,40 @@ export default function RawHTMLPage() {
       id: 1,
       name: "free",
       price: "$0",
-      perk1: "template perk",
+      /* perk1: "template perk",
       perk2: "template perk",
       perk3: "template perk",
-      perk4: "template perk",
+      perk4: "template perk", */
       icon: "🆓"
     },
     {
       id: 2,
       name: "personal",
       price: "$5",
-      perk1: "template perk",
+      /* perk1: "template perk",
       perk2: "template perk",
       perk3: "template perk",
-      perk4: "template perk",
+      perk4: "template perk", */
       icon: "👤"
     },
     {
       id: 3,
       name: "business",
       price: "$15",
-      perk1: "template perk",
+      /* perk1: "template perk",
       perk2: "template perk",
       perk3: "template perk",
-      perk4: "template perk",
+      perk4: "template perk", */
       icon: "🏢"
     },
     {
       id: 4,
       name: "enterprise",
       price: "custom pricing",
-      perk1: "template perk",
+      /* perk1: "template perk",
       perk2: "template perk",
       perk3: "template perk",
-      perk4: "template perk",
+      perk4: "template perk", */
       icon: "🏭"
     }
   ];

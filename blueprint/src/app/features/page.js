@@ -20,27 +20,27 @@ export default function BlueprintFeatures() {
   const featureCards = [
     {
       id: 1,
-      text: "Dozens of Templates!<br><br><br><br>For all of your website needs.",
+      text: "Dozens of Templates!",
       icon: "templates"
     },
     {
       id: 2,
-      text: "Edit your website at any time.<br><br><br>For maximum convenience and efficiency",
+      text: "Edit your website at any time",
       icon: "edit"
     },
     {
       id: 3,
-      text: "World class customer support<br><br><br><br>A service that you can count on.",
+      text: "World class customer support",
       icon: "support"
     },
     {
       id: 4,
-      text: "Choose your own domain...<br><br><br><br>Enter a world of possibilities.",
+      text: "Choose your own domain",
       icon: "domain"
     },
     {
       id: 5,
-      text: "And many more features...",
+      text: "And many more features",
       icon: "more"
     }
   ];
