@@ -295,7 +295,7 @@ export async function registerWordpress(username, password, email) {
     console.log("[WP] Registering Wordpress");
 
 
-    await fetch(`http://${process.env.WORDPRESS_DOMAIN}:${process.env.WORDPRESS_PORT}/wp-json/jwt-auth/v1/token?username=${process.env.DB_USER}&password=${process.env.DB_PASSWORD}`, {
+    await fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${process.env.DB_USER}&password=${process.env.DB_PASSWORD}`, {
         method: "POST",
         redirect: "follow"
     })
@@ -309,7 +309,7 @@ export async function registerWordpress(username, password, email) {
             headers: myHeaders,
             redirect: "follow"
             };
-            fetch(`http://${process.env.WORDPRESS_DOMAIN}:${process.env.WORDPRESS_PORT}/wp-json/wp/v2/users?${username}=&password=${password}&email=${email}`, requestOptions)
+            fetch(`http://wordpress:80/wp-json/wp/v2/users?${username}=&password=${password}&email=${email}`, requestOptions)
             .then((response) => {
                 console.log(`root token successful, User Created.\n Response ${response}`);
             })

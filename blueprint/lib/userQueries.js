@@ -1,7 +1,4 @@
-import { validateConnection } from "./db.js";
-import { encryptString } from "./utility.js";
-import { connection } from "./connection.js";
-import { registerWordpress } from "./user.js";
+import { validateConnection } from "./utility.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
