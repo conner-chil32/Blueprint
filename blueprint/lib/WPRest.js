@@ -8,33 +8,68 @@
 //Lydell suggested Fetch API
 
 class WPCalls{          //make the JSON and send it to wherever it's supposed to go. Might not need to be a class, could be a single function 
-    constructor(endpoint){ this.url = endpoint; }   //URI for server endpoint
+    
+    constructor(){ 
+        this.token = sessionStorage.getItem("WPTOKEN");
+    }
 /*    
     GET(data){ }//access resources at the URL
     POST(data){ }//send data to the URL
     PUT(data){ }//update data at the URL
     DELETE(data){ }//remove data at the URL
 */
-    sendData(method, data){ //originally const sendData = (method, url, data) => {
-        // fetch() returns a Promise object
-        return fetch(this.url, {
+    /**
+     * @return
+     */
+    async wpRequest(method, url, data){ //originally const sendData = (method, url, data) => {
+        
+        if (!this.token) { //if there's no token from the session variable, cant make a request
+            throw false;
+        }
+        
+        const response = await fetch(`http://${process.env.WP_DOMAIN}:${process.env.WP_PORT}${url}`, {
             method: method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        }).then((response) => {
-            console.log(response); // response is stream data
-            // Handle HTTP errors
-            if (!response.ok) { //status >= 400
-            // convert stream data to JSON
-                return response.json().then((errorResponseData) => {
-                    const error = new Error();
-                    error.message = "Something went wrong!";
-                    error.data = errorResponseData;
-                    throw error;
-                });
-            }
-            return response.json();
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Authorization ${this.token}`
+            },
+            body: JSON.stringify(data)
         });
+
+        if (!response) throw false;
+
+        switch (response.status) {
+            case 200:
+                console.log("[WP] Request Successful")
+                return {
+                    headers: response.headers,
+                    data: await response.json()
+                }
+            case 401:
+                console.log("[WP] Bad Credentials")
+                throw {
+                    headers: response.headers,
+                    data: await response.text()
+                }
+            case 405:
+                console.log("[WP] Serverside Error")
+                throw {
+                    headers: response.headers,
+                    data: await response.text()
+                }
+            default:
+                console.log("[WP] Error: Either undefined or unsupported status code");
+                //dangerous to print the result
+        }
+
+    }
+
+    clearToken() {
+        delete this.token;
+    }
+
+    setToken() {
+        this.token = sessionStorage.getItem("WPTOKEN");
     }
 
     test(){ //Test POST, GET, PUT, and DELETE with expected result
@@ -45,6 +80,7 @@ class WPCalls{          //make the JSON and send it to wherever it's supposed to
         //delete the value
         //get the value
     }
+
     testCheck(json, expectedResult){ //https://www.w3schools.com/nodejs/met_assert_equal.asp
         var assert = require('assert');
         

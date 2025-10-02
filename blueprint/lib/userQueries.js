@@ -1,4 +1,4 @@
-import { validateConnection } from "./db.js";
+import { validateConnection } from "./utility.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -8,8 +8,8 @@ import { validateConnection } from "./db.js";
  * Author: Lydell Jones
  * Dependencies: mysql2
  */
-export async function getUserByEmail(email, connection) {
-    if (!await validateConnection(connection)) return false;
+export async function getUserByEmail(email) {
+    if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userEmail = ?;`, [email]);
     return result;
 }
@@ -23,7 +23,7 @@ export async function getUserByEmail(email, connection) {
  * Dependencies: mysql
  */
 export async function getUserByID(id) {
-    if (!await validateConnection(connection)) return false;
+    if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE id = ?;`, [id]);
     return result;
 }
@@ -37,9 +37,9 @@ export async function getUserByID(id) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function signIn(user, password, connection) {
+export async function signIn(user, password) {
     if (!await validateConnection()) return false;
-    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, password]);
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ? AND userPassHash = ?`, [user, encryptString(password)]);
     return result;
 }
 
@@ -53,9 +53,12 @@ export async function signIn(user, password, connection) {
  * Dependencies: mysql
  * Edited to also contain security question and answer by Elijah white on 9/27/2025
  */
-export async function createAccount(user, password, email, connection, securityQuestion, securityAnswer) {
-    if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?)`, [user, password, email, securityQuestion, securityAnswer]);
+export async function createAccount(user, password, email) {
+    if (!await validateConnection()) return false;
+    const passwordHash = await encryptString(password);
+    const loginHash = await encryptString(user+passwordHash);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userWpName, userWpPassHash) VALUES (?, ?, ?, ?, ?)`, [user, passwordHash, email, user, loginHash]);
+    //registerWordpress(user, loginHash);
     return result;
 }
 
@@ -68,9 +71,12 @@ export async function createAccount(user, password, email, connection, securityQ
  * Dependencies: mysql
  * Edited to also contain security question and answer by Elijah white on 9/27/2025
  */
-export async function createAccountWithPhone(user, password, email, connection, phone, securityQuestion, securityAnswer) {
-    if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?)`, [user, password, email, phone, securityQuestion, securityAnswer]);
+export async function createAccountWithPhone(user, password, email, phone) {
+    if (!await validateConnection()) return false;
+    const passwordHash = await encryptString(password);
+    const loginHash = await encryptString(user+passwordHash);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userWpName, userWpPassHash) VALUES (?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, phone, user, loginHash]);
+    //registerWordpress(user, loginHash);
     return result;
 }
 
@@ -82,8 +88,8 @@ export async function createAccountWithPhone(user, password, email, connection, 
  * Author: Elijah White
  * Dependencies: mysql
  */
-export async function getUserByUsername(username, connection) {
-    if (!await validateConnection(connection)) return false;
+export async function getUserByUsername(username) {
+    if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
     return result;
 }
