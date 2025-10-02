@@ -9,6 +9,17 @@
     transform: translateX(125px) translateY(-25px); /* centering logo */
 
 }
+.message{
+    color: white;
+}
+
+.selectInput option {
+  text-align: center;
+}
+
+.selectInput {
+  text-align: center;
+}
 
 .loginContainer {
     margin-top: 30vh;

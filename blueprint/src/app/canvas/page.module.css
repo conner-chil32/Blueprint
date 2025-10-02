@@ -3,23 +3,20 @@
     --secondary: #1e40af;
     --background: #f8fafc;
     --surface: #ffffff;
-    --border: #e2e8f0;
+    --border: #000000;
 }
 
-.navbar {
-    background-color: var(--primary);
-    padding: 12px 24px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.htmlBody {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 
 .navItems {
     display: flex;
     gap: 32px;
-    max-width: 1200px;
+    /*max-width: 1200px;*/
     margin: 0 auto;
     justify-content: center;
 }
@@ -37,39 +34,33 @@
 }
 
 .mainContainer {
-    display: flex;
-    height: 100vh;
     padding-top: 60px;
 }
 
-.leftPanel {
-    width: 15%;
-    min-width: 300px;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+.switchButton {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
-.canvasArea {
-    width: 85%;
-    background-color: var(--surface);
-    padding: 24px;
-    position: relative;
+.panelToggleButton {
+    position: fixed;
+    top: 10px;
+    padding: 5px 10px;
+    z-index: 20
 }
 
-.canvasContent {
-    border: 2px dashed #cbd5e1;
-    border-radius: 12px;
-    height: calc(100vh - 108px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #94a3b8;
-    font-size: 1.125rem;
-    transition: border-color 0.2s ease;
+.deleteButton {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+
 }
 
 .controlMenu {
@@ -121,4 +112,85 @@
     height: 1px;
     background-color: var(--border);
     margin: 16px 0;
+}
+
+/* All below are for the positioning of the left panel, right panel, and canvas */
+.bodyContainer {
+    display: grid;
+    /* 15% width for the left, 1fr for the center, 15% for the right */
+    grid-template-columns: 15% 1fr 15%;
+    height: calc(100vh - 70px);
+    width: 100%;
+    margin-top: 70px;
+    column-gap: 0;
+}
+
+.sidePanel {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    border: 1px solid black;
+}
+
+.leftPanel {
+    grid-column: 1;
+}
+
+.rightPanel {
+    grid-column: 3;
+}
+
+.centerColumn {
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 0;
+    min-width: 0;
+}
+
+/* Outermost canvas */
+.canvasArea {
+    position: relative;
+    border: 2px dashed #cbd5e1;
+    background-color: rgb(80, 80, 80);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+}
+
+/* Container inside of the canvas for pages */
+.canvasView {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    place-items: center;
+    position: relative;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+
+    /* border: 2px dashed red; */
+}
+
+/* Container for the current page */
+.pages {
+    position: relative;
+
+    /* border: 2px dotted blue; */
+}
+
+.pageNavBar {
+    /* position: absolute;
+    left: 15%;
+    width: 70%; */
+    position: sticky;
+    top: 0;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
 }

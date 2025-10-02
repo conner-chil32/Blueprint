@@ -1,4 +1,6 @@
-import { openConnection } from "./connection.js";
+import { connection, closeConnection } from "./connection.js";
+import { getUserByID } from "./userQueries.js";
+import bcrypt from 'bcrypt';
 /*
     commit() - commits the current transaction to the database
     Input: none
@@ -6,20 +8,25 @@ import { openConnection } from "./connection.js";
     Date: 4/14/2025
     Author: Lydell Jones
 */
-export async function commit(connection) {
-    if (!connection) {
-        console.log("[DB] No connection to database. Cant commit.");
-        return false;
-    } else {
-        try {
-            const commitConnection = await connection.getConnection();
-            commitConnection.commit();
-        } catch (err) {
-            console.log("[DB] Couldn't Commit!")
-        }
-        return true;
+export async function commit() {
+    try{
+        await validateConnection()
+        await connection.commit()
+    } catch (error) {
+        console.error("[DB] error on commit", error);
     }
-    
+
+    // if (!connection && validateConnection()) {
+    //     console.log("[DB] No connection to database. Cant commit.");
+    //     return false;
+    // } else {
+    //     try {
+    //         await connection.commit();
+    //     } catch (err) {
+    //         console.log("[DB] Couldn't Commit!");
+    //     }
+    //     return true;
+    // }
 }
 
 /*
@@ -29,15 +36,15 @@ export async function commit(connection) {
     Date: 4/14/2025
     Author: Lydell Jones
 */
-export async function rollback(connection) {
+export async function rollback() {
     try {
-        const rollbackConnection = await connection.getConnection();
-        await rollbackConnection.rollback();
+        await connection.rollback();
         console.log("[DB] Database rolled back!");
     } catch (err) {
-        console.log("[DB] Error rolling back database!")
-        return false;
+        console.log("[DB] Error rolling back database!");
+        throw false;
     }
+    return true;
 }
 
 //TODO: add a function to make this work SCRUM-227
@@ -47,12 +54,31 @@ export function parse() {
     return true;
 }
 
-export async function validateConnection(connection) {
-    console.log("[DB] Validating connection to database...");
-    if (!connection) return false;
-    if (connection.state === "disconnected") {
-        return false;
-    } else {
-        return true;
+export async function validateConnection() {
+    try {
+        console.log("[DB] Validating connection to database...");
+        if (connection.state === "disconnected" || !connection) {
+            await closeConnection();
+            throw false;
+        } else {
+            return true;
+        }
+    } catch (err) {
+        throw false;
+    }
+}
+
+export async function encryptString(string) {
+    const saltRounds = Number(process.env.PASSWORD_SALT_ROUNDS);
+    
+    //encrypt the thing
+    const saltedString = await bcrypt.hash(string, saltRounds);
+   
+    //return false if encryption failed
+    if (string === saltedString) 
+    {
+        throw false;
+    } else { //return the encrypted string
+        return saltedString;
     }
 }
