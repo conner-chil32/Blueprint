@@ -57,7 +57,7 @@ export async function createAccount(user, password, email) {
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userWpName, userWpPassHash) VALUES (?, ?, ?, ?, ?)`, [user, passwordHash, email, user, loginHash]);
-    registerWordpress(user, loginHash);
+    //registerWordpress(user, loginHash);
     return result;
 }
 
@@ -74,7 +74,7 @@ export async function createAccountWithPhone(user, password, email, phone) {
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userWpName, userWpPassHash) VALUES (?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, phone, user, loginHash]);
-    registerWordpress(user, loginHash);
+    //registerWordpress(user, loginHash);
     return result;
 }
 
