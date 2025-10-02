@@ -53,9 +53,12 @@ export async function signIn(user, password) {
  * Dependencies: mysql
  * Edited to also contain security question and answer by Elijah white on 9/27/2025
  */
-export async function createAccount(user, password, email, connection, securityQuestion, securityAnswer) {
-    if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?)`, [user, await encryptString(password), email, securityQuestion, securityAnswer]);
+export async function createAccount(user, password, email) {
+    if (!await validateConnection()) return false;
+    const passwordHash = await encryptString(password);
+    const loginHash = await encryptString(user+passwordHash);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userWpName, userWpPassHash) VALUES (?, ?, ?, ?, ?)`, [user, passwordHash, email, user, loginHash]);
+    //registerWordpress(user, loginHash);
     return result;
 }
 
@@ -68,9 +71,12 @@ export async function createAccount(user, password, email, connection, securityQ
  * Dependencies: mysql
  * Edited to also contain security question and answer by Elijah white on 9/27/2025
  */
-export async function createAccountWithPhone(user, password, email, connection, phone, securityQuestion, securityAnswer) {
-    if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?)`, [user, await encryptString(password), email, phone, securityQuestion, securityAnswer]);
+export async function createAccountWithPhone(user, password, email, phone) {
+    if (!await validateConnection()) return false;
+    const passwordHash = await encryptString(password);
+    const loginHash = await encryptString(user+passwordHash);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userWpName, userWpPassHash) VALUES (?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, phone, user, loginHash]);
+    //registerWordpress(user, loginHash);
     return result;
 }
 
