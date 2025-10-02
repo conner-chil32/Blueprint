@@ -3,9 +3,7 @@ import { createAccount, createAccountWithPhone } from '@lib/userQueries';
 import { validateConnection } from '@lib/utility';
 import { registerWordpress } from '@lib/user';
 
-export async function POST(request) {//Handles sending user form data to database via user queries calls, is called in /signup/page.js
-  console.log("%s, %s, %s, %s", process.env.DATABASE_HOST, process.env.DATABASE_USER, process.env.DATABASE_NAME, process.env.DATABASE_PASSWORD)
-  
+export async function POST(request) {//Handles sending user form data to database via user queries calls, is called in /signup/page.js  
   try {
     const { username, password, email, phone, securityQuestion, securityAnswer} = await request.json();
 
@@ -28,7 +26,7 @@ export async function POST(request) {//Handles sending user form data to databas
     
 
     // User is assumed to have logged in by this point, store Wordpress session key.
-    await registerWordpress(username, password);
+    //await registerWordpress(username, password);
 
     return NextResponse.json({ success: true, result });//return if successful
   } catch (err) {
