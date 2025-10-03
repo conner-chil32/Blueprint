@@ -1,5 +1,6 @@
 import { validateConnection } from "./utility.js";
 import { encryptString } from "./utility.js";
+import { connection } from "./connection.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
