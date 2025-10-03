@@ -55,11 +55,11 @@ export async function signIn(user, password) {
  * Dependencies: mysql
  * Edited to also contain security question and answer by Elijah white on 9/27/2025
  */
-export async function createAccount(user, password, email) {
+export async function createAccount(user, password, email, securityQuestion, securityAnswer) {
     if (!await validateConnection()) return false;
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userWpName, userWpPassHash) VALUES (?, ?, ?, ?, ?)`, [user, passwordHash, email, user, loginHash]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userWpName, userWpPassHash, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, user, loginHash, securityQuestion, securityAnswer]);
     //registerWordpress(user, loginHash);
     return result;
 }
@@ -73,11 +73,11 @@ export async function createAccount(user, password, email) {
  * Dependencies: mysql
  * Edited to also contain security question and answer by Elijah white on 9/27/2025
  */
-export async function createAccountWithPhone(user, password, email, phone) {
+export async function createAccountWithPhone(user, password, email, phone, securityQuestion, securityAnswer) {
     if (!await validateConnection()) return false;
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
-    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userWpName, userWpPassHash) VALUES (?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, phone, user, loginHash]);
+    const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userWpName, userWpPassHash, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, phone, user, loginHash, securityQuestion, securityAnswer]);
     //registerWordpress(user, loginHash);
     return result;
 }
