@@ -1,5 +1,5 @@
-import { closeConnection } from "./connection";
-import { commit } from "./utility";
+import { commit, validateConnection } from "./utility.js";
+import { connection } from "./connection.js"
 
 /**
     getSites() - Retrieves all sites from the database.
@@ -9,9 +9,14 @@ import { commit } from "./utility";
     Author: Lydell Jones
     Dependencies: mysql
 */
-export async function getSites(connection) {
-    if (!validateConnection(connection)) return false;
-    const [result] = await connection.query(`SELECT * FROM userWebsites;`);
+export async function getSites() {
+    var result;
+    try {
+        await validateConnection();
+        [result] = await connection.query(`SELECT * FROM userWebsites;`);
+    } catch (err) {
+        throw undefined;
+    }
     return result;
 }
 
@@ -23,9 +28,17 @@ export async function getSites(connection) {
     Author: Lydell Jones
     Dependencies: mysql
 */
-export async function getSiteByID(id, connection) {
-    if (!await validateConnection(connection)) return false;
-    await connection.query(`SELECT * FROM userWebsites WHERE id = ?;`, [id])
+export async function getSiteByID(id) {
+    var result;
+    try {
+        await validateConnection();
+        [result] = await connection.query(`SELECT * FROM userWebsites WHERE id = ?;`, [id]);
+    } catch (err) {
+        throw undefined;
+    }
+    return result;
+    // if (!await validateConnection()) return false;
+    // return await connection.query(`SELECT * FROM userWebsites WHERE id = ?;`, [id])
 }
 
 /**
@@ -36,10 +49,18 @@ export async function getSiteByID(id, connection) {
     Author: Lydell Jones
     Dependencies: mysql
 */
-export async function getSiteByName(name, connection) {
-    if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`SELECT * FROM userWebsites WHERE websiteName = ?;`, [name]);
+export async function getSiteByName(name) {
+    var result;
+    try {
+        await validateConnection();
+        [result] = await connection.query(`SELECT * FROM userWebsites WHERE websiteName = ?;`, [name]);
+    } catch (err) {
+        throw undefined;
+    }
     return result;
+    // if (!await validateConnection()) return false;
+    // const [result] = await connection.query(`SELECT * FROM userWebsites WHERE websiteName = ?;`, [name]);
+    // return result;
 }
 
 /**
@@ -50,10 +71,18 @@ export async function getSiteByName(name, connection) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function getSiteCount(connection) {
-    if (!await validateConnection(connection)) return false;
-    const [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites;`)
-    return false;
+export async function getSiteCount() {
+    var result;
+    try {
+        await validateConnection();
+        [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites;`);
+    } catch (err) {
+        throw undefined;
+    }
+    return result;
+    // if (!await validateConnection()) return false;
+    // const [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites;`)
+    // return result;
 }
 
 /**
@@ -64,10 +93,18 @@ export async function getSiteCount(connection) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function createSite(name, connection, userId) {
-    if (!await validateConnection(connection)) return false;
-    await connection.query(`INSERT INTO userWebsites (websiteName, website_user_id) VALUES (?, ?);`, [name, userId]);
-    return await commit(connection);
+export async function createSite(name, userId) {
+    try {
+        await validateConnection()
+        await connection.query(`INSERT INTO userWebsites (websiteName, website_user_id) VALUES (?, ?);`, [name, userId]);
+        await commit(connection);
+    } catch (err) {
+        throw false;
+    }
+    return true;
+    // if (!await validateConnection()) return false;
+    // await connection.query(`INSERT INTO userWebsites (websiteName, website_user_id) VALUES (?, ?);`, [name, userId]);
+    // return await commit(connection);
 }
 
 /**
@@ -78,10 +115,18 @@ export async function createSite(name, connection, userId) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function deleteSite(siteId, connection) {
-    if (!validateConnection(connection)) return false;
-    await connection.query(`DELETE FROM userWebsites WHERE id = ?;`, [siteId]);
-    return await commit(connection);
+export async function deleteSite(siteId) {
+    try { 
+        await validateConnection();
+        await connection.query(`DELETE FROM userWebsites WHERE id = ?;`, [siteId]);
+        await commit();
+    } catch (err) {
+        throw false;
+    }
+    return true;
+    // if (!validateConnection()) return false;
+    // await connection.query(`DELETE FROM userWebsites WHERE id = ?;`, [siteId]);
+    // return await commit();
 }
 
 /**
@@ -93,8 +138,17 @@ export async function deleteSite(siteId, connection) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function updateSite(id, name, connection) {
-    if (!validateConnection(connection)) return false;
-    await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateLastModified=NOW()  WHERE id = ?;`, [data, id]);
-    return await commit(connection);
+export async function updateSite(id, name) {
+    try {
+        await validateConnection();
+        await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateLastModified=NOW()  WHERE id = ?;`, [name, id]);
+        await commit();
+    } catch (err) {
+        console.error(err);
+        throw false;
+    }
+    return true;
+    // if (!validateConnection()) return false;
+    // await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateLastModified=NOW()  WHERE id = ?;`, [name, id]);
+    // return await commit();
 }
