@@ -41,7 +41,7 @@
 }
 
 .infoText {
-   
+   color: #000000;
 }
 
 .infoText dt{
@@ -49,6 +49,7 @@
     background-color: var(--text-background);
     border-radius: var(--border-weight);
     padding: 10px;
+    color: #000000;
 }
 
 .leftSide {
@@ -56,6 +57,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    color: #000000;
 }
 
 .rightSide {
@@ -64,6 +66,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    color: #000000;
 }
 
 .accountList dt{
@@ -78,4 +81,29 @@
     background-color: var(--text-background);
     border-radius: var(--border-weight);
     padding: 15px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, var(--dark-blue), var(--bg-color)) fixed;
+  background-attachment: fixed;
+  background-size: cover;
+  text-align: center;
+  font-family: var(--global-font), sans-serif;
+  color: var(--text-color);
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 80px 20px 60px;
+  min-height: calc(100vh - 70px);
+  justify-content: flex-start;
 }

@@ -52,7 +52,8 @@ export default function RawHTMLPage() {
 
     return (
     <>
-       
+       <div className ={styles.body}>
+        <div className = {styles.mainContent}>
         <div className={styles.container}>
                 <div className={styles.titleRow}>
                     <h1 className={styles.title}>User's username</h1>
@@ -85,6 +86,8 @@ export default function RawHTMLPage() {
                         </div>
                     ))}
                 </div>
+        </div>
+        </div>
         </div>
     </>
     )

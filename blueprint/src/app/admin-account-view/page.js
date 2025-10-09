@@ -1,5 +1,5 @@
 import Navbar from "../components/navbar";  // Import the Navbar component
-import styles from './adminView.module.css'; // Import the CSS module for styling
+import styles from './page.module.css'; // Import the CSS module for styling
 import ActionButton from "../components/adminActions";
 
 
@@ -9,8 +9,9 @@ export default function admin_view() {
     return (
         <>
             <Navbar />
-            <div className={styles.quickView}>
-                <div className={styles.leftSide}>
+            <div className={styles.body}>
+                <div className = {styles.quickView}>
+                <div className = {styles.leftSide}>
                     <div className={styles.topRow}>
                         <div className={styles.cell}>
                             <h1><b>Server Status Summary:</b></h1>
@@ -23,10 +24,10 @@ export default function admin_view() {
                         <div className={styles.cell}>
                             <h1><b>Selected User Summary:</b></h1>
                             <dl className = {styles.infoText}>
-                                <dt>Username</dt>
-                                <dt>Email address</dt>
-                                <dt>Phone number</dt>
-                                <dt>Name</dt>
+                                <dt>Username: </dt>
+                                <dt>Email address: </dt>
+                                <dt>Phone number: </dt>
+                                <dt>Name: </dt>
                             </dl>
                         </div>
                         <div className={styles.cell}>
@@ -59,6 +60,7 @@ export default function admin_view() {
                         <ActionButton label="Add Account" />
                     </div>
                 </div>
+        </div>
         </div>
         </>
     );
