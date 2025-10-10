@@ -7,7 +7,7 @@ async function getUserData() {
 }
 
 export default async function RawHTMLPage() {
-  const users = await getUserData()
+  const users = await getUserData() //commented out for css changes
   console.log(users)
 
   return (

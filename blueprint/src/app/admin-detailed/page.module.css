@@ -52,7 +52,7 @@
     border-radius: var(--border-weight);
     width: 20vw;
     max-width: 350px;
-    min-height: 85vh;
+    min-height: 40vh;
     min-width: 250px;
 }
 

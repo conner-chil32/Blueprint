@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@root/components/navbar";
 import styles from "./page.module.css"; // Import the CSS module for styling
 
 export default function RawHTMLPage() {
@@ -52,6 +53,7 @@ export default function RawHTMLPage() {
 
     return (
     <>
+    <Navbar></Navbar>
        <div className ={styles.body}>
         <div className = {styles.mainContent}>
         <div className={styles.container}>

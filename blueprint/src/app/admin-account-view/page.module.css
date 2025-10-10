@@ -6,14 +6,13 @@
 
 .quickView {
     margin-top: 100px;
-    margin-left: var(--min-margin);
-    margin-right: var(--min-margin);
     color: var(--text-color);
     display: flex;
     flex-direction: row;
     align-items: stretch;
     /* ensures both sides match height */
     gap: 20px;
+    width: 80%;
 }
 
 .topRow {
@@ -61,7 +60,7 @@
 }
 
 .rightSide {
-    flex: 0 1 300px;
+    flex: 0 1 300px; /*when this is changed the right side user search box tends to take up too much real estate*/
     /* or however narrow you want */
     display: flex;
     flex-direction: column;
@@ -94,6 +93,7 @@
   background-attachment: fixed;
   background-size: cover;
   text-align: center;
+  align-items: center;
   font-family: var(--global-font), sans-serif;
   color: var(--text-color);
 }
