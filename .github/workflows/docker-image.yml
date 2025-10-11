@@ -1,0 +1,38 @@
+name: Full-site Docker Image Workflow
+
+on:
+  push:
+    branches: [ "SCRUM-308" ]
+  pull_request:
+    branches: [ "SCRUM-308" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup Docker Compose
+      uses: docker/setup-compose-action@v2
+      with:
+        version: 'latest'
+    
+    - name: Build Docker Images
+      run: docker compose build
+    
+    - name: Run Docker Containers
+      run: docker compose up -d
+
+    - name: Run Site Tests
+      run: |
+        # Add your test commands here
+        echo "Running tests..."
+        # Example: docker exec -it wordpress-site npm run test
+
+    - name: Teardown Docker Containers
+      if: always() # Ensures cleanup even if previous steps fail
+      run: docker compose down
