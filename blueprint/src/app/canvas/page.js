@@ -7,6 +7,7 @@ import Navbar from "../components/navbar";
 import { Canvas } from './Canvas';
 import { LeftPanel } from './LeftPanel';
 import { RightPanel } from './RightPanel';
+import History from "./HistoryManager";
 
 /** Christpher Parsons
  *  Angel Ramirez
@@ -30,21 +31,19 @@ export default function CanvasPage() {
   const [nextWidgetId, setNextWidgetId] = useState(0);
 
   // Moving and placing widgets
-  const [canvasMousePos, setCanvasMousePos] = useState({ x: 0, y: 0 });
-  const [pageMousePos, setPageMousePos] = useState({ x: 0, y: 0 });
-  const [isPlacing, setIsPlacing] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [widgetToPlace, setWidgetToPlace] = useState(null);
 
   // Selected widget container
-  const [selectedWidgets, setSelectedWidgets] = useState(null);
+  const [selectedWidgets, setSelectedWidgets] = useState([]);
 
   // Keep track of where the canvas page is
   const canvasRef = useRef(null);
 
   // Scaling managment
   const [scale, setScale] = useState(1);
-  const [transformCoords, setTransformCoords] = useState({ posX: 0, posY: 0 });
+
+  // History
+  //const history = History(this);
 
   /** Christopher Parsons, 9/18/2025
    * Inputs:
@@ -92,7 +91,7 @@ export default function CanvasPage() {
     setNextPageID(nextPageID + 1);
   };
 
-  /** Christopher Parsons, 9/18/2025
+  /** 
    * Inputs:
    *  pageId: string
    * Outputs:
@@ -124,35 +123,11 @@ export default function CanvasPage() {
    * Outputs:
    *  pageMousePos: { x: number, y: number }
    *  canvasMousePos: { x: number, y: number }
-   *  widgetToPlace (updated if in placement mode)
    * 
    * When the mouse moves, keep track of its position.
    * useEffect is essentially a hook that keeps track of actions performed on the page.
    */
   useEffect(() => {
-    const handleMouseMove = (e) => {
-      setPageMousePos({ x: e.clientX, y: e.clientY });
-      const canvas = canvasRef.current;
-
-      // If the canvas does not exist, return
-      if (!canvas) return;
-
-      // Calculate the position of the canvas, taking scale into account
-      const rect = canvas.getBoundingClientRect();
-      const x = (e.clientX - rect.left - transformCoords.posX) / scale;
-      const y = (e.clientY - rect.top - transformCoords.posY) / scale;
-
-      setCanvasMousePos({ x, y });
-
-      // If in placement mode, move the widget with the mouse
-      if (isPlacing && widgetToPlace) {
-        setWidgetToPlace((prev) => ({
-          ...prev,
-          x: canvasMousePos.x,
-          y: canvasMousePos.y,
-        }));
-      }
-    };
 
     /* 
     Old keyDown handles deleted widgets by pressing backspace or delete when typing in input fields.
@@ -178,14 +153,12 @@ export default function CanvasPage() {
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("keydown", handleDocumentKeyDown);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
-  }, [isPlacing, widgetToPlace]);
+  }, []);
 
 
   /** Christopher Parsons, 9/18/2025
@@ -195,10 +168,9 @@ export default function CanvasPage() {
    * Outputs:
    *  selectedWidgets: array
    * 
-  * Ensure changes to the widgets updates the whole page. Whenever
-  * a widget is changed, update React's state.
-  * @param {*} e 
-  */
+   * Ensure changes to the widgets updates the whole page. Whenever
+   * a widget is changed, update React's state.
+   */
   useEffect(() => {
     if (!selectedWidgets || selectedWidgets.length === 0) return;
 
@@ -211,39 +183,12 @@ export default function CanvasPage() {
   }, [widgets]);
 
   /** Christopher Parsons, 9/18/2025
-   * Inputs:
-   *  none
-   * Outputs:
-   *  widgets: array
-   *  isPlacing: boolean
    * 
-   * Triggers when the canvas page itself is clicked.
-   * Handles the placement of widgets and deselection of all widgets.
-   * If in placement mode, it will drop the current widget.
-   * Otherwise, it deselects all widgets on the page.
+   * Triggers when the canvas page itself is clicked. If nothing
+   * is clicked on aside from the canvas, deselects all widgets.
    */
   const handleCanvasClick = () => {
-    // If in placement mode, drop the current widget.
-    if (isPlacing && widgetToPlace) {
-      const placedWidget = {
-        ...widgetToPlace,
-        isSelected: false,
-        isMoving: false,
-        pointerEventsNone: false,
-      };
-
-      // Set the widgets to the old widgets array plus the new widget
-      setWidgets([...widgets, placedWidget]);
-      setIsPlacing(false);
-      widgetToPlace.isSelected = false;
-      widgetToPlace.isMoving = false;
-      widgetToPlace.pointerEventsNone = false;
-
-      console.log('Added widget', widgetToPlace.id, 'to page', selectedPageID);
-    } else {
-      // Deselect all widgets if not placing
-      deselectAllWidgets();
-    }
+    deselectAllWidgets();
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -269,9 +214,7 @@ export default function CanvasPage() {
    * Inputs:
    *  typeToMake: string
    * Outputs:
-   *  widgetToPlace: Widget object
    *  nextWidgetId: number
-   *  isPlacing: boolean
    * 
    * Create a new widget with default values. Determines
    * what type of widget to create depending on the
@@ -286,14 +229,14 @@ export default function CanvasPage() {
         newWidget = {
           type: 'box',
           id: nextId,
-          x: canvasMousePos.x,
-          y: canvasMousePos.y,
+          x: currentPage.width/2,
+          y: currentPage.height/2,
           width: 100,
           height: 100,
           isSelected: false,
-          isMoving: true,
+          isMoving: false,
           backgroundColor: '#cccccc',
-          pointerEventsNone: true,
+          pointerEventsNone: false,
           rotation: 0,
         };
         break;
@@ -302,14 +245,14 @@ export default function CanvasPage() {
         newWidget = {
           type: 'video',
           id: nextId,
-          x: canvasMousePos.x,
-          y: canvasMousePos.y,
+          x: currentPage.width/2,
+          y: currentPage.height/2,
           width: 320,
           height: 180,
           isSelected: false,
-          isMoving: true,
+          isMoving: false,
           backgroundColor: '#000000',
-          pointerEventsNone: true,
+          pointerEventsNone: false,
           rotation: 0,
           // custom props:
           videoUrl: '/images/DemoVideo.mp4',
@@ -325,14 +268,14 @@ export default function CanvasPage() {
         newWidget = {
           type: 'dropdown',
           id: nextId,
-          x: canvasMousePos.x,
-          y: canvasMousePos.y,
+          x: currentPage.width/2,
+          y: currentPage.height/2,
           width: 220,
           height: 50,
           isSelected: false,
-          isMoving: true,
+          isMoving: false,
           backgroundColor: '#ffffff',
-          pointerEventsNone: true,
+          pointerEventsNone: false,
           rotation: 0,
           // custom props:
           options: ['Option 1', 'Option 2', 'Option 3'],
@@ -347,14 +290,14 @@ export default function CanvasPage() {
         newWidget = {
           type: 'advert',
           id: nextId,
-          x: canvasMousePos.x,
-          y: canvasMousePos.y,
+          x: currentPage.width/2,
+          y: currentPage.height/2,
           width: 300,
           height: 250, // standard MPU size
           isSelected: false,
-          isMoving: true,
+          isMoving: false,
           backgroundColor: '#ffffff',
-          pointerEventsNone: true,
+          pointerEventsNone: false,
           rotation: 0,
           // custom props:
           imageUrl: '/images/Blueprint.png',
@@ -370,14 +313,14 @@ export default function CanvasPage() {
         newWidget = {
           type: 'hyperlink',
           id: nextId,
-          x: canvasMousePos.x,
-          y: canvasMousePos.y,
+          x: currentPage.width/2,
+          y: currentPage.height/2,
           width: 150,
           height: 40,
           isSelected: false,
-          isMoving: true,
+          isMoving: false,
           backgroundColor: 'transparent', // Links don't need a background
-          pointerEventsNone: true,
+          pointerEventsNone: false,
           rotation: 0,
           // custom props:
           text: 'Click Here',
@@ -392,14 +335,14 @@ export default function CanvasPage() {
         newWidget = {
           type: 'menuScroll',
           id: nextId,
-          x: canvasMousePos.x,
-          y: canvasMousePos.y,
+          x: currentPage.width/2,
+          y: currentPage.height/2,
           width: 200,
           height: 250,
           isSelected: false,
-          isMoving: true,
+          isMoving: false,
           backgroundColor: '#f0f0f0',
-          pointerEventsNone: true,
+          pointerEventsNone: false,
           rotation: 0,
           // custom props:
           items: ['Menu Item 1', 'Menu Item 2', 'Menu Item 3', 'Menu Item 4', 'Menu Item 5'],
@@ -417,8 +360,7 @@ export default function CanvasPage() {
     console.log('Created new widget: ', newWidget);
 
     setNextWidgetId((prevId) => prevId + 1);
-    setIsPlacing(true);
-    setWidgetToPlace(newWidget);
+    setWidgets([...widgets, newWidget]);
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -444,7 +386,7 @@ export default function CanvasPage() {
    * Removes all widgets from selection.
    */
   function deselectAllWidgets() {
-    setSelectedWidgets(null);
+    setSelectedWidgets([]);
     console.log('Deselected all widgets');
   }
 
@@ -500,16 +442,13 @@ export default function CanvasPage() {
           {/** Christopher Parsons, 9/18/2025
            * Inputs:
            *  widgets: array
-           *  isPlacing: Boolean
            *  isDragging: Boolean
-           *  widgetToPlace: Widget
            *  selectedWidgets: array
            *  setSelectedWidgets: function
            *  setIsDragging: function
            *  updateWidget: function
            *  scale: number
            *  setScale: function
-           *  setTransformCoords: function
            *  currentPage: Page
            *  canvasRef: React reference, type unknown
            *  handleCanvasClick: function
@@ -518,16 +457,13 @@ export default function CanvasPage() {
            */}
           <Canvas
             widgets={widgets}
-            isPlacing={isPlacing}
             isDragging={isDragging}
-            widgetToPlace={widgetToPlace}
             selectedWidgets={selectedWidgets}
             setSelectedWidgets={setSelectedWidgets}
             setIsDragging={setIsDragging}
             updateWidget={updateWidget}
             scale={scale}
             setScale={setScale}
-            setTransformCoords={setTransformCoords}
             currentPage={currentPage}
             canvasRef={canvasRef}
             handleCanvasClick={handleCanvasClick}
