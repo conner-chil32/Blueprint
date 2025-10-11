@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS userAccounts (
-    userId INT NOT NULL AUTO_INCREMENT,
+    userID INT NOT NULL AUTO_INCREMENT,
     userName VARCHAR(255) NOT NULL,
     userPassHash VARCHAR(255) NOT NULL,
     userWpName VARCHAR(255),
@@ -9,26 +9,26 @@ CREATE TABLE IF NOT EXISTS userAccounts (
     userWebsites INT(11),
     userQuestion VARCHAR(255),
     userAnswer VARCHAR(255),
-    userDateCreated TIMESTAMP,
+    userDateCreated TIMESTAMP DEFAULT NOW(),
     userLastLogin TIMESTAMP,
     isAdmin BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY (userId)
+    PRIMARY KEY (userID)
 );
 
 CREATE TABLE IF NOT EXISTS userWebsites (
     siteID INT NOT NULL AUTO_INCREMENT,
-    userId INT NOT NULL,
+    userID INT NOT NULL,
     websiteName VARCHAR(255) NOT NULL,
     websiteDateCreated TIMESTAMP NOT NULL DEFAULT NOW(),
     websiteDateLastModified TIMESTAMP DEFAULT NOW(),
-    websitePageCount INT NOT NULL,
-    webisteStatus ENUM('active', 'inactive',) NOT NULL DEFAULT 'inactive';
+    websitePageCount INT NOT NULL DEFAULT 0,
+    websiteStatus ENUM('active', 'inactive') NOT NULL DEFAULT 'inactive',
     isAdmin BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (userId) REFERENCES userAccounts(userId),
+    FOREIGN KEY (userID) REFERENCES userAccounts(userID) ON DELETE CASCADE,
     PRIMARY KEY (siteID)
 );
 
-CREATE TABLE IF NOT EXISTS websitePages (
+CREATE TABLE IF NOT EXISTS sitePages (
     pageID INT NOT NULL AUTO_INCREMENT,
     siteID INT NOT NULL,
     pagePath VARCHAR(255) NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS websitePages (
     PRIMARY KEY (pageID)
 );
 
-CREATE TABLE IF NOT EXISTS websiteMedia (
+CREATE TABLE IF NOT EXISTS siteMedia (
     mediaID INT NOT NULL AUTO_INCREMENT,
     siteID INT NOT NULL,
     mediaLastAccessed TIMESTAMP DEFAULT NOW(),
@@ -49,3 +49,50 @@ CREATE TABLE IF NOT EXISTS websiteMedia (
     FOREIGN KEY (siteID) REFERENCES userWebsites(siteID) ON DELETE CASCADE,
     PRIMARY KEY (mediaID)
 );
+
+DELIMITER //
+
+CREATE TRIGGER trig_website_modified
+BEFORE UPDATE ON userWebsites
+FOR EACH ROW
+BEGIN
+    SET NEW.websiteDateLastModified = NOW();
+END //
+
+CREATE TRIGGER trig_media_insert
+AFTER INSERT ON siteMedia
+FOR EACH ROW
+BEGIN
+    UPDATE userWebsites
+    SET websiteDateLastModified = NOW()
+    WHERE siteID = NEW.siteID;
+END //
+
+CREATE TRIGGER trig_media_deletion
+AFTER DELETE ON siteMedia
+FOR EACH ROW
+BEGIN
+    UPDATE userWebsites
+    SET websiteDateLastModified = NOW()
+    WHERE siteID = OLD.siteID;
+END //
+
+CREATE TRIGGER trig_page_insert
+AFTER INSERT ON sitePages
+FOR EACH ROW
+BEGIN
+    UPDATE userWebsites
+    SET websiteDateLastModified = NOW()
+    WHERE siteID = NEW.siteID;
+END //
+
+CREATE TRIGGER trig_page_deletion
+AFTER DELETE ON sitePages
+FOR EACH ROW
+BEGIN
+    UPDATE userWebsites
+    SET websiteDateLastModified = NOW()
+    WHERE siteID = OLD.siteID;
+END //
+
+DELIMITER ;
