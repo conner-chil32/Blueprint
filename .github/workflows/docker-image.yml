@@ -21,6 +21,9 @@ jobs:
       with:
         version: 'latest'
     
+    - name: Copy Environment File
+      run: cp .env_example .env
+    
     - name: Build Docker Images
       run: docker compose build
     
