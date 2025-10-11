@@ -31,7 +31,7 @@ jobs:
       run: |
         # Add your test commands here
         echo "Running tests..."
-        # Example: docker exec -it wordpress-site npm run test
+        # Example: docker exec -it blueprint-site npm run test
 
     - name: Teardown Docker Containers
       if: always() # Ensures cleanup even if previous steps fail
