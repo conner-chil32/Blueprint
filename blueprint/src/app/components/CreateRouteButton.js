@@ -19,7 +19,7 @@ export default function CreateButton({code = ""}){
 //    console.log(path["href"])
     
     return(
-        <div className = "routingButton">
+        <div className = "capitalize">
             <Link href={path.href} className={path.className}>
                 {path.label} 
             </Link>
