@@ -31,7 +31,7 @@ export default function History(parent) {
 
         // If this state is equivelent to the last one, return.
         if (previous && previous === current) {
-            console.log("Current state is equal to the previous.");
+            console.log("Current state is equal to the previous, no state stored.");
             return;
         } else {
             // Otherwise, reset redoStack and add this state to undoStack.
