@@ -154,7 +154,7 @@ export async function deleteSite(siteId) {
 export async function updateSite(id, name) {
     try {
         await validateConnection();
-        await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateLastModified=NOW()  WHERE siteID = ?;`, [name, id]);
+        await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateUpdated=NOW()  WHERE siteID = ?;`, [name, id]);
         await commit();
     } catch (err) {
         console.error(err);
@@ -162,7 +162,7 @@ export async function updateSite(id, name) {
     }
     return true;
     // if (!validateConnection()) return false;
-    // await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateLastModified=NOW()  WHERE id = ?;`, [name, id]);
+    // await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateUpdated=NOW()  WHERE id = ?;`, [name, id]);
     // return await commit();
 }
 
