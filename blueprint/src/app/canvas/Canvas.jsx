@@ -22,7 +22,7 @@ import React from "react";
  * Returns the central part of the page. An interface for manipulating the page itself
  * and positioning widgets.
  */
-export function Canvas({ widgets, changeWidgetProperty, isDragging, selectedWidgets, setSelectedWidgets,
+export function Canvas({ widgets, recordState, changeWidgetProperty, isDragging, selectedWidgets, setSelectedWidgets,
     setIsDragging, updateWidget, scale, setScale, currentPage, canvasRef, handleCanvasClick }) {
 
     return (
@@ -72,11 +72,16 @@ export function Canvas({ widgets, changeWidgetProperty, isDragging, selectedWidg
                                             setSelectedWidgets([widget]);
                                             console.log("Selected widget: " + widget.id);
                                         }}
-                                        onDragStart={() => setIsDragging(true)}
-                                        onDragStop={() => setIsDragging(false)}
+                                        onDragStart={() => {
+                                            setIsDragging(true);
+                                        }}
+                                        onDragStop={() => {
+                                            setIsDragging(false);
+                                        }}
                                         alertDragStop={updateWidget}
                                         changeWidgetProperty={changeWidgetProperty}
                                         scale={scale}
+                                        recordState={recordState}
                                     />
                                 ))}
                         </div>

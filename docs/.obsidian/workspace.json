@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Development Enviroment/summary_of_dev_en.md",
+                "file": "Canvas-Page/History.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "summary_of_dev_en"
+              "title": "History"
             }
           }
         ]
@@ -172,8 +172,9 @@
   "active": "657ff28b9a9e96e8",
   "lastOpenFiles": [
     "Canvas-Page/Canvas-Structure.md",
-    "Canvas-Page/HTML-JSON-Conversion.md",
+    "Canvas-Page/History.md",
     "Canvas-Page/Pages-and-Widgets.md",
+    "Canvas-Page/HTML-JSON-Conversion.md",
     "Development Enviroment/summary_of_dev_en.md",
     "Documentation/mysql-database.md",
     "makedocs.md",

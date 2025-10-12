@@ -22,7 +22,8 @@ import HTMLExport from "./HtmlExport";
  */
 export function RightPanel({
     changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
-    pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty}) {
+    pages, selectedPageID, setSelectedPageID, currentPage, createPage,
+    changePageProperty, recordState }) {
     const [buttonSelected, setButtonSelected] = useState(false);
 
   /** Christopher Parsons, 9/18/2025
@@ -45,7 +46,7 @@ export function RightPanel({
       <button className={styles.switchButton} onClick={handleButtonClick}>Switch</button>
 
       {/* False = widget properties. True = page properties */}
-      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} />
+      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} recordState={recordState} />
         : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />}
     </div>
 
@@ -62,7 +63,7 @@ export function RightPanel({
  * Returns a series of controls for the manipulation of
  * widgets.
  */
-function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget }) {
+function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget, recordState }) {
   // Render the selected widgets panel
   if (selectedWidgets && selectedWidgets.length > 0) {
     // If something is selected
@@ -107,8 +108,12 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 min="0"
                 max="360"
                 value={widget.rotation || 0}
+                onMouseDown={e => 
+                  recordState()
+                }
                 onChange={e =>
-                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) })
+                  // Change the rotation without updating history
+                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) }, true)
                 }
               />
 
