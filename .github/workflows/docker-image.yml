@@ -32,14 +32,6 @@ jobs:
       run: |
         $(docker save $(docker images -q) -o docker-images.tar)
     
-    - name: Upload Docker Images
-      uses: actions/upload-artifact@v4
-      with:
-        name: docker-images
-        path: docker-images.tar
-        retention-days: 30
-
-      
   test-frontend:
     runs-on: ubuntu-latest
     needs: build-images
@@ -74,7 +66,7 @@ jobs:
         # Add your test commands here
         echo "Running tests..."
         # Example: docker exec -it blueprint-site npm run test
-    
+  
   test-backend:
     runs-on: ubuntu-latest
     needs: build-images
