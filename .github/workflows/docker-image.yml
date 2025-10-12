@@ -58,6 +58,9 @@ jobs:
     - name: Load Docker Images
       run: |
         docker load -i docker-images.tar
+    
+    - name: Copy Environment File
+      run: cp .env_example .env
 
     - name: Start Docker Containers
       run: docker compose up -d
