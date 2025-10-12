@@ -27,7 +27,12 @@ jobs:
     
     - name: Save Docker Images as Artifacts
       run: |
-        docker images -q
+        $(docker save $(docker images -q) -o docker-images.tar)
+    
+    - name: Upload Docker Images
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-images
 
       
   test-frontend:
@@ -42,6 +47,18 @@ jobs:
       uses: docker/setup-compose-action@v1
       with:
         version: 'latest'
+
+    - name: Download Docker Images
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-images
+    
+    - name: Load Docker Images
+      run: |
+        docker load -i docker-images.tar
+
+    - name: Start Docker Containers
+      run: docker compose up -d
     
     - name: Run Site Tests
       run: |
