@@ -8,7 +8,10 @@
     "start": "next start",
     "local": "next dev -H localhost",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:frontend": "jest --testPathPatterns=lib/tests/front-end",
+    "test:backend": "jest --testPathPatterns=lib/tests/back-end"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
