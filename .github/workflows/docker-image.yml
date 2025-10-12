@@ -44,16 +44,6 @@ jobs:
       uses: docker/setup-compose-action@v1
       with:
         version: 'latest'
-
-    - name: Download Docker Images
-      uses: actions/download-artifact@v4
-      with:
-        name: docker-images
-        path: .
-    
-    - name: Load Docker Images
-      run: |
-        docker load -i docker-images.tar
     
     - name: Copy Environment File
       run: cp .env_example .env
@@ -79,16 +69,6 @@ jobs:
       uses: docker/setup-compose-action@v1
       with:
         version: 'latest'
-
-    - name: Download Docker Images
-      uses: actions/download-artifact@v4
-      with:
-        name: docker-images
-        path: .
-    
-    - name: Load Docker Images
-      run: |
-        docker load -i docker-images.tar
     
     - name: Copy Environment File
       run: cp .env_example .env
