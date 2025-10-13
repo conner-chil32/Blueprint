@@ -5,6 +5,17 @@ on:
     branches: [ "SCRUM-308" ]
   pull_request:
     branches: [ "SCRUM-308" ]
+  workflow_dispatch:
+        inputs:
+          run_frontend:
+            description: "run the frontend tests"
+            type: boolean
+            default: false
+          run_backend:
+            description: "run the backend tests"
+            type: boolean
+            default: false
+  
 
 jobs:
   build-images:
@@ -35,6 +46,7 @@ jobs:
   test-frontend:
     runs-on: ubuntu-latest
     needs: build-images
+    if: ${{ inputs.run_frontend }}
 
     steps:
     - name: Checkout Code
@@ -60,6 +72,7 @@ jobs:
   test-backend:
     runs-on: ubuntu-latest
     needs: build-images
+    if: ${{ inputs.run_backend }}
 
     steps:
     - name: Checkout Code

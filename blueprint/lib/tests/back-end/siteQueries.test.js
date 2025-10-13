@@ -6,7 +6,7 @@ import {
     createSite, 
     updateSite, 
     deleteSite 
-} from "../siteQueries";
+} from "../../siteQueries";
 
 test('getSites returns false if no connection', () => {
     const connection = null;
