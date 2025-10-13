@@ -4,10 +4,10 @@ docker compose up -d
 node /path/to/run-parser-tests.js
 */
 import assert from 'assert';
-import { User } from '../user.js';
-import { Website } from '../website.js';
-import { validateConnection, commit } from '../utility.js';
-import * as userQueries from '../userQueries.js';
+import { User } from '../../user.js';
+import { Website } from '../../website.js';
+import { validateConnection, commit } from '../../utility.js';
+import * as userQueries from '../../userQueries.js';
 import bcrypt from 'bcrypt';
 export class TestRunner {
   constructor(name) {
