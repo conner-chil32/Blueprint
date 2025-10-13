@@ -2,9 +2,9 @@ name: Full-site Docker Image Workflow
 
 on:
   push:
-    branches: [ "SCRUM-308" ]
+    branches: [ "development" ]
   pull_request:
-    branches: [ "SCRUM-308" ]
+    branches: [ "development" ]
   workflow_dispatch:
         inputs:
           run_frontend:
