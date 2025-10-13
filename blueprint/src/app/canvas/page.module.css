@@ -1,8 +1,4 @@
-/* --------------------------------------------
-   Canvas Page — Full Global Gradient Version
-   -------------------------------------------- */
-
-/* 🌌 Body Container */
+/* Body Container */
 .bodyContainer {
     display: grid;
     /* 15% width for the left, 1fr for the center, 15% for the right */
@@ -10,12 +6,11 @@
     height: calc(100vh - 70px);
     width: 100%;
     margin-top: 70px;
-    background: transparent; /* ✅ Let global gradient show through */
+    background: transparent; /*  Let global gradient show through */
     position: relative;
     overflow: hidden;
   }
   
-  /* ✨ Stars Layer — Use same as global theme */
   .bodyContainer::before {
     content: "";
     position: absolute;
