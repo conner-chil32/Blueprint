@@ -61,7 +61,7 @@ export default function RawHTMLPage() {
                     <h1 className={styles.title}>User's username</h1>
                     <button
                         className={styles.backButton}
-                        onClick={() => (window.location.href = "/admin-account-view")}
+                        onClick={() => (window.location.href = "/admin-page")}
                     >
                         Back
                     </button>
