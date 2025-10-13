@@ -1,6 +1,7 @@
 import { validateConnection } from "./utility.js";
 import { encryptString } from "./utility.js";
 import { connection } from "./connection.js";
+import { User } from "./user.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -93,5 +94,5 @@ export async function createAccountWithPhone(user, password, email, phone, secur
 export async function getUserByUsername(username) {
     if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
-    return result;
+    return new User (result[0]);
 }
