@@ -39,9 +39,16 @@ jobs:
     - name: Teardown Docker Containers
       run: docker compose down
 
-    - name: Save Docker Images as Artifacts
+    - name: Save Docker Images as a Tarball
       run: |
         $(docker save $(docker images -q) -o docker-images.tar)
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+          name: docker-images
+          path: docker-images.tar 
+          retention-days: 30
     
   test-frontend:
     runs-on: ubuntu-latest
