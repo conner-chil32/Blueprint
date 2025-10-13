@@ -68,4 +68,3 @@ Where recordState is used:
 		- When a widget starts being resized, record its state. This is done before resizing as doing so afterward causes the state to be taken after the resize is complete, which means it will not be stored in the previous state.
 	- onDragStop
 		- Only triggers if the widget has moved more than one pixel in any direction. This triggers whenever the widget is clicked, so checking prevents a state from being taken if the widget is only being selected.
-		- 

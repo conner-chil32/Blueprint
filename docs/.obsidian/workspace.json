@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Canvas-Page/Pages-and-Widgets.md",
+                "file": "Canvas-Page/History.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Pages-and-Widgets"
+              "title": "History"
             }
           }
         ]
@@ -171,21 +171,22 @@
   },
   "active": "657ff28b9a9e96e8",
   "lastOpenFiles": [
+    "Untitled.base",
+    "Development Enviroment/summary_of_dev_en.md",
+    "Development Enviroment",
     "Canvas-Page/HTML-JSON-Conversion.md",
+    "Canvas-Page/Pages-and-Widgets.md",
     "Canvas-Page/History.md",
     "Canvas-Page/Canvas-Structure.md",
+    "Canvas-Page",
     "makedocs.md",
     "index.md",
-    "Untitled.base",
-    "Canvas-Page/Pages-and-Widgets.md",
-    "Development Enviroment/summary_of_dev_en.md",
     "Documentation/mysql-database.md",
     "Documentation/protocol.md",
     "imgs/new-note-button-img.png",
     "imgs/insert-template-button-img.png",
     "imgs/finder-img.png",
     "templates/document.md",
-    "Canvas-Page",
     "Program-Structure/CSS Organization.md"
   ]
 }
