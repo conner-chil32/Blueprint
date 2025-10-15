@@ -381,6 +381,7 @@ export default function CanvasPage() {
           objectFit: 'cover',
           showBorder: true,
           borderColor: '#333333',
+          adSnippet: '',
         };
         break;
 

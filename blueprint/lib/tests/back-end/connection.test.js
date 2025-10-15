@@ -1,4 +1,4 @@
-import { openConnection } from "../connection";
+import { openConnection } from "../../connection";
 
 test('failed opening connection will be empty', () => {
     openConnection().then((connection) => {

@@ -219,6 +219,19 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                       changeWidgetProperty(widget.id, { videoUrl: e.target.value || null })
                     }
                   />
+
+                  <p>Or upload a local video:</p>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={e => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const objectUrl = URL.createObjectURL(file);
+                        changeWidgetProperty(widget.id, { videoUrl: objectUrl });
+                      }
+                    }}
+                  />
   
                   <label
                   style={{
@@ -411,6 +424,18 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                   value={widget.borderColor || "#333333"}
                   onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
                 />
+
+                <div style={{marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #555'}}>
+                  <p><b>Advanced (Placeholder)</b></p>
+                  <p>Ad Service Code Snippet:</p>
+                    <textarea
+                      placeholder="Paste ad code snippet here (e.g., from Google AdSense)"
+                      value={widget.adSnippet || ""}
+                      onChange={e => changeWidgetProperty(widget.id, { adSnippet: e.target.value })}
+                      style={{ width: '100%', minHeight: '100px', fontFamily: 'monospace', fontSize: '12px' }}
+                    />
+                </div>
+
               </>
             )}
           </div>
