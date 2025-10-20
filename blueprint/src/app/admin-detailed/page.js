@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@root/components/navbar";
 import styles from "./page.module.css"; // Import the CSS module for styling
 
 export default function RawHTMLPage() {
@@ -52,13 +53,15 @@ export default function RawHTMLPage() {
 
     return (
     <>
-       
+    <Navbar></Navbar>
+       <div className ={styles.body}>
+        <div className = {styles.mainContent}>
         <div className={styles.container}>
                 <div className={styles.titleRow}>
                     <h1 className={styles.title}>User's username</h1>
                     <button
                         className={styles.backButton}
-                        onClick={() => (window.location.href = "/admin-account-view")}
+                        onClick={() => (window.location.href = "/admin-page")}
                     >
                         Back
                     </button>
@@ -85,6 +88,8 @@ export default function RawHTMLPage() {
                         </div>
                     ))}
                 </div>
+        </div>
+        </div>
         </div>
     </>
     )
