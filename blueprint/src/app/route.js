@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCookie } from './api/CookieController';
 import { hasCookie } from './api/CookieController';
+import { getSiteCount } from '@lib/siteQueries';
 
 /** Chris Parsons
  * Going to '/' sends you to the features page.
@@ -12,18 +13,32 @@ import { hasCookie } from './api/CookieController';
  * @returns 
  */
 export async function GET(req) {
-    const cookieValue = getCookie(req, 'TempCookie');
+    try {
+        const cookieValue = getCookie(req, 'TempCookie');
+        const user = getCookie(req, 'UserCookie');
+        const count = await getSiteCount(user);
+        console.log(count);
+        // For testing
+        console.log('Cookie value: ' + cookieValue);
 
-    // For testing
-    //console.log('Cookie value: ' + cookieValue);
-
-    if (cookieValue === 'LoggedIn') {
-        return NextResponse.redirect(new URL('/ftu-main', req.url));
-
-    } else if (cookieValue === 'LoggedAgain') {
-        return NextResponse.redirect(new URL('/portal', req.url));
-
-    } else {
+        if (cookieValue === 'LoggedIn' || cookieValue === 'LoggedAgain') {
+            if (count > 0) {
+                return NextResponse.redirect(new URL('/portal', req.url));
+            } else {
+                return NextResponse.redirect(new URL('/ftu-main', req.url));
+            }
+        } else {
+            return NextResponse.redirect(new URL('/features', req.url));
+        }
+    }
+    catch (err) {
+        console.log(err);
         return NextResponse.redirect(new URL('/features', req.url));
     }
+        
+
+
+
+
+
 }

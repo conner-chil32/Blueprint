@@ -84,11 +84,11 @@ export async function getSitesByUser(userId) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function getSiteCount() {
+export async function getSiteCount(id) {
     var result;
     try {
         await validateConnection();
-        [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites;`);
+        [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites WHERE userID=?;`, [id]);
     } catch (err) {
         throw undefined;
     }
@@ -145,16 +145,21 @@ export async function deleteSite(siteId) {
 /**
  * updateSite(id, data) - Updates a site in the database by its ID.
  * Input: id - The ID of the site to update.
+ * siteName - The you want to change the site to
  * data - The data to update the site with.
  * Output: boolean - true if the site was updated successfully, false otherwise.
  * Date: 4/14/2025
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function updateSite(id, name) {
+export async function updateSite(id, siteName, json = {}) {
     try {
         await validateConnection();
-        await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateUpdated=NOW()  WHERE siteID = ?;`, [name, id]);
+        if ( siteName == undefined || siteName == "" || json == {}) {
+            throw "Site Unchanged";
+        }
+        await connection.query(`UPDATE userWebsites SET websiteName=? WHERE siteID = ?;`, 
+            [siteName, id]);
         await commit();
     } catch (err) {
         console.error(err);

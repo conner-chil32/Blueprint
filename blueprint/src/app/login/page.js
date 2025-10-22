@@ -63,6 +63,7 @@ export default function SignUpPage() {
       if (data.success) {//debug messages can remove later or simplify for end user
         setMessage("Logged in successfully!");
         setTimeout(5000); //in this time, cookies are set to denote user has signed in
+        window.location.href = "/";
         //redirect to set cookie
       } else {
         setMessage("Failed: " + (data.error || "Unknown error"));

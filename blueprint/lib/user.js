@@ -14,6 +14,7 @@ import {
 import { Website } from './website.js';
 
 import bcrypt from 'bcrypt'; 
+import { setCookie } from '@root/api/CookieController.js';
 
 export class User {
     constructor(result) {
@@ -313,16 +314,16 @@ export async function registerWordpress(username, password, email) {
         
 }
 
-export async function loginWordpress(username, password) {
+export async function loginWordpress(res, username, password) {
     const requestOptions = {
         method: "POST",
         redirect: "follow"
     };
 
-    fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
+    fetch(`http://${address}:80/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
-        sessionStorage.setItem("WP_TOKEN", result["token"])
+        sessionStorage.setItem('WPToken',result)
         console.log("token set")
     })
     .catch((error) => console.error(error));
