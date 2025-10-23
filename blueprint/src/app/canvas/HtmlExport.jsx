@@ -1,5 +1,5 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import PageRenderer from "./PageRenderer";
+import { WidgetRenderer } from "./WidgetRenderer";
 
 /** Christopher Parsons 9/26/2025
  * Inputs:
@@ -11,7 +11,7 @@ import PageRenderer from "./PageRenderer";
 export default function HTMLExport(page) {
     console.log('Rendering page to HTML:', page);
 
-    if (!page) return null;
+    if (!page) return "";
 
     const pageToExport = {
         ...page,
@@ -20,13 +20,27 @@ export default function HTMLExport(page) {
     return renderToStaticMarkup(
         <html>
             <head>
-                <title>{page.name}</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+                <meta charSet="utf-8" />
+                <title>{pageToExport.name || "Page"}</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"></meta>
+                <style>{`
+                    html, body {
+                        margin: 0;
+                        padding: 0;
+                        height: 100%;
+                    }
+                    #exporting-page {
+                        position: relative;
+                    }
+                    a {
+                        text-decoration: none;
+                    }
+                `}</style>
             </head>
 
             <body style={{
-                width: "100vw",
-                height: "100vh",
+                width: "100dvw",
+                height: "100dvh",
                 backgroundColor: pageToExport.backgroundColor,
                 position: "relative",
                 overflow: "hidden",
@@ -35,13 +49,33 @@ export default function HTMLExport(page) {
                 alignItems: "center",
                 margin: "0",
             }}>
-                <div style={{
-                    position: "relative",
-                    width: pageToExport.width + "px",
-                    height: pageToExport.height + "px",
-                }}>
+                <div
+                    id="exporting-page"
+                    style={{
+                        position: "relative",
+                        width: pageToExport.width + "px",
+                        height: pageToExport.height + "px",
+                    }}>
                     {/* Render the page */}
-                    <PageRenderer page={pageToExport} />
+                    <div>
+                        {/* Render each widget as a static object */}
+                        {page.widgets?.map((widget) => (
+                            <WidgetRenderer
+                                bounds="parent"
+                                staticRender={true}
+                                key={widget.id}
+                                widget={widget}
+                                isSelected={false}
+                                onClick={() => { undefined }}
+                                onDragStart={undefined}
+                                onDragStop={undefined}
+                                alertDragStop={undefined}
+                                scale={1}
+                                changeWidgetProperty={() => { }}
+                                style={widget.style}
+                            />
+                        ))}
+                    </div>
                 </div>
             </body>
         </html>

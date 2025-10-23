@@ -1,7 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import styles from './page.module.css';
-import { renderToStaticMarkup, renderToString } from "react-dom/server";
-import PageRenderer from "./PageRenderer";
 import HTMLExport from "./HtmlExport";
 
 /** Christopher Parsons, 9/18/2025

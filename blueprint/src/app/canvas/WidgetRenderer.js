@@ -8,6 +8,7 @@ import { MenuScroll } from "../components/widgets/MenuScroll";
 /** Christopher Parsons, 9/18/2025
  *  Angel Ramirez
  * Inputs:
+ *  staticRender: Boolean
  *  widget: Widget
  *  onClick: function
  *  alertDragStop: function
