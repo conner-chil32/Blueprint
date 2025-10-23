@@ -95,3 +95,24 @@ export async function getUserByUsername(username) {
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
     return result;
 }
+
+/**
+ * getAllUsers - Retrieves all users in database
+ * Input:   limit_val - The total amount of records to retrieve
+ *          offset_val - What row the list should start at.  
+ * Output:  object - The users currently in the database up to limit_val count. 
+ * Date: 10/22/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function getAllUsers(limit_val = 10, offset_val = 0, ) {
+
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query(`SELECT userID, userName, userEmail, userPhone, userTier, isAdmin, userDateCreated
+                                            FROM userAccounts
+                                            ORDER BY userID
+                                            LIMIT ? OFFSET ?;`,
+                                            [limit_val, offset_val] 
+                                            );
+    return result;
+}
