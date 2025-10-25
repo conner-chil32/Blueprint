@@ -315,7 +315,37 @@ export default function CanvasPage() {
           rotation: 0,
         };
         break;
-
+      case 'circle':
+          newWidget = {
+          type: 'circle',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          pointerEventsNone: false,
+          rotation: 0,
+        };
+        break;
+      case 'triangle':
+          newWidget = {
+          type: 'triangle',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          pointerEventsNone: false,
+          rotation: 0,
+        };
+        break;
+      
       case 'video':
         newWidget = {
           type: 'video',
