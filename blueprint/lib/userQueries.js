@@ -105,10 +105,10 @@ export async function getUserByUsername(username) {
  * Author: David Vigil
  * Dependencies: mysql
  */
-export async function getAllUsers(limit_val = 10, offset_val = 0, ) {
+export async function getAllUsers(limit_val = 10, offset_val = 0) {
 
     if (!await validateConnection()) return false;
-    const [result] = await connection.query(`SELECT userID, userName, userEmail, userPhone, userTier, isAdmin, userDateCreated
+    const [result] = await connection.query(`SELECT userID, userName, userEmail, userPhone, userLastLogin, adminNote
                                             FROM userAccounts
                                             ORDER BY userID
                                             LIMIT ? OFFSET ?;`,
@@ -116,3 +116,26 @@ export async function getAllUsers(limit_val = 10, offset_val = 0, ) {
                                             );
     return result;
 }
+
+
+/**
+ * getAllUsers - Updates the note attached to a user account.
+ * Input:   userId - ID of the user you want to attach a note to.
+ *          note - The text content of the note.
+ * Output:  boolean - True if note has been updated.
+ * Date: 10/22/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function updateUserNote(userId, note) {
+
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query(`UPDATE userAccounts
+                                            SET adminNote = ?
+                                            where userID = ?;`,
+                                            [note, userId]
+                                            
+    );
+    return result;
+}
+

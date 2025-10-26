@@ -1,4 +1,4 @@
-import { getAllUsers } from '@lib/userQueries';
+import { getAllUsers, updateUserNote } from '@lib/userQueries';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -14,6 +14,19 @@ export async function GET() {
     }
 
     return NextResponse.json({ success: true, userList });//return if successful
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  }
+}
+
+export async function POST(request) {
+  try {
+    const { userID, adminNote } = await request.json();
+
+    const result = await updateUserNote(userID, adminNote);
+
+    return NextResponse.json({ success: true, result });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
