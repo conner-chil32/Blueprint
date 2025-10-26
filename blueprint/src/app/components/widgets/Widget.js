@@ -17,6 +17,7 @@ import { useState } from 'react';
  *  children: JSX elements
  *  pointerEventsNone: Boolean
  *  onDragStart: function
+ *  onDrag: function
  *  onDragStop: function
  *  scale: number
  *  recordState: function
@@ -26,7 +27,7 @@ import { useState } from 'react';
  * the widget's size and position. The div contains all fields needed for React to render 
  * the widget itself.
  */
-export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDragStop, scale, recordState }) {
+export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDrag, onDragStop, scale, recordState }) {
   const [previousPosition, setPreviousPosition] = useState({ x: 0, y: 0 });
   const handleResize = (e, direction, refToElement, delta, position) => {
     alertDragStop && alertDragStop(id, position.x, position.y, { width: parseInt(refToElement.style.width, 10), height: parseInt(refToElement.style.height, 10) });
@@ -37,6 +38,8 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
       position={{ x, y }}
       size={{ width: width, height: height }}
       bounds="parent"
+      enableResizing={isSelected ? undefined : false}
+      disableDragging={!isSelected}
       // Update live
       onResize={(e, direction, refToElement, delta, position) => {
         handleResize(e, direction, refToElement, delta, position);
@@ -55,10 +58,13 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
       }}
       onDragStart={(e, data) => {
         // When drag is started, note the widget's position
-        setPreviousPosition({ x: data.x, y: data.y});
+        setPreviousPosition({ x: data.x, y: data.y });
 
         // Alert the canvas page when dragging starts
         onDragStart && onDragStart(id);
+      }}
+      onDrag={(e, data) => {
+        onDrag && onDrag(data.x, data.y);
       }}
       onDragStop={(e, data) => {
         alertDragStop && alertDragStop(id, data.x, data.y);
@@ -72,13 +78,14 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
       }}
       scale={scale}
     >
+      {/* Widget container */}
       <div
         key={id}
         style={{
+          position: 'relative',
           transform: `rotate(${rotation || 0}deg)`,
           width: width,
           height: height,
-          border: isSelected ? '2px solid blue' : '1px solid black',
           cursor: 'grab',
           isMoving: isMoving,
           pointerEvents: pointerEventsNone ? 'none' : 'auto',
@@ -90,6 +97,18 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
           onClick && onClick(e);
         }}
       >
+        {/* Selection wireframe */}
+        {isSelected && (
+          <div style={{
+            position: 'absolute',
+            inset: -2 + 'px',
+            border: '2px solid #3b82f6',
+            pointerEvents: 'none',
+            zIndex: 99999, /* Keep the wireframe on top */
+          }} />
+        )}
+
+        {/* Actual widget */}
         {children}
       </div>
     </Rnd>

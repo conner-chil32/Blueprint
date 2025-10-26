@@ -42,6 +42,9 @@ export default function CanvasPage() {
   // Scaling managment
   const [scale, setScale] = useState(1);
 
+  // Clipboard
+  let clipboard = useRef([]);
+
   // History
   const history = useRef(null);
   const varState = useRef({
@@ -105,19 +108,22 @@ export default function CanvasPage() {
 
   /** Christopher Parsons, 9/18/2025
    * Inputs:
-   *  newWidgets: Widget object
+   *  newWidgets: Widget object or function
    * Outputs:
    *  widgets: array
    * 
    * Replaces the widgets within the current selected page with
    * a new set of widgets. Allows for the manipulation/creation
-   * of new widgets.
+   * of new widgets. Also accepts functions, allowing for more
+   * dynamic updating of widgets.
    */
   const setWidgets = (newWidgets) => {
     setPages(prev =>
-      prev.map(page =>
-        page.id === selectedPageID ? { ...page, widgets: newWidgets } : page
-      )
+      prev.map(page => {
+        if (page.id !== selectedPageID) return page;
+        const nextWidgets = typeof newWidgets === 'function' ? newWidgets(page.widgets) : newWidgets;
+        return { ...page, widgets: nextWidgets };
+      })
     );
   };
 
@@ -189,6 +195,8 @@ export default function CanvasPage() {
    * 
    * useEffect is essentially a hook that keeps track of actions performed on the page.
    * handleDocumentKeyDown keeps track of when something is clicked.
+   * If the user hits undo, trigger .undo in HistoryManager. If they hit redo, trigger .redo in PageManager.
+   * If the user hits copy, save all selected widgets. If they hit paste, place currently copied things on the page.
    */
   useEffect(() => {
     const handleDocumentKeyDown = (e) => {
@@ -217,6 +225,38 @@ export default function CanvasPage() {
         history.current?.redo();
       }
 
+      // If the user hits copy, save selected widgets ONLY if something is selected
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "c") {
+        e.preventDefault();
+        if (selectedWidgets && selectedWidgets.length > 0) {
+          clipboard.current = selectedWidgets.map(w => ({ ...w }));
+          console.log("Copied:", clipboard.current);
+        } else {
+          console.log("Nothing selected to copy.");
+        }
+      }
+
+      // If the user hits paste, place clipboard on the canvas and set them as selected
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "v") {
+        e.preventDefault();
+        if (clipboard.current) {
+          console.log("Pasting:", clipboard.current);
+          deselectAllWidgets();
+
+          const widgetsToPaste = clipboard.current.map((widget, i) => ({
+            ...widget,
+            isSelected: false,
+            isMoving: false,
+            id: nextWidgetId + i,
+          }));
+          setNextWidgetId(ids => ids + widgetsToPaste.length);
+
+          setWidgets([...widgets, ...widgetsToPaste]);
+          setSelectedWidgets(widgetsToPaste);
+          recordState();
+        }
+      }
+
       // Do NOT delete widgets on Backspace/Delete anymore.
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
@@ -229,7 +269,7 @@ export default function CanvasPage() {
     return () => {
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
-  }, []);
+  }, [selectedWidgets]);
 
 
   /** Christopher Parsons, 9/18/2025
@@ -591,15 +631,12 @@ export default function CanvasPage() {
    * 
    * Replaces a widget with itself but with a new attribute.
    */
-  function changeWidgetProperty(widgetID, newProperties, preventUpdate) {
-    const changedWidgets = widgets.map(widget =>
-      // If this is the correct widget, then update the object
-      widget.id === widgetID ? { ...widget, ...newProperties }
-        : widget // Otherwise, leave it
-    );
-    setWidgets(changedWidgets);
+  function changeWidgetProperty(widgetID, newProperties, dontUpdate) {
+    setWidgets(prev =>
+      prev.map(current => (current.id === widgetID ? { ...current, ...newProperties } : current))
+    )
 
-    if (!preventUpdate) recordState();
+    if (!dontUpdate) recordState();
   }
 }
 
@@ -643,7 +680,7 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
             display: 'flex',
             alignItems: 'center',
           }}
-          onClick={() => {
+          onMouseDown={() => {
             if (editingId !== page.id) {
               setSelectedPageID(page.id);
             }
@@ -668,7 +705,7 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
             <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
           )}
           <span
-            onClick={(e) => {
+            onMouseDown={(e) => {
               e.stopPropagation();
               handleDelete(page.id);
             }}
@@ -678,7 +715,7 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
           </span>
         </div>
       ))}
-      <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+      <button onMouseDown={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
     </div>
   );
 }
