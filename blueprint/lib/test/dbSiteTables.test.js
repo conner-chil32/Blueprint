@@ -1,9 +1,8 @@
-// use this command 'docker-compose exec web-app node ./lib/test/testing.js'
+// use this command 'docker-compose exec web-app node ./lib/test/databaseSiteTables.test.js'
 // At least 3 users should exist in DB
-import { connection, closeConnection } from '../connection.js';
+import { closeConnection } from '../connection.js';
 import * as SQ from '../siteQueries.js';
 
-import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
