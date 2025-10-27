@@ -52,6 +52,9 @@ export default function CanvasPage() {
     nextWidgetId,
   });
 
+  // Save status tracking
+  const [isSaved, setIsSaved] = useState(true);
+
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
    */
@@ -101,6 +104,7 @@ export default function CanvasPage() {
   function recordState() {
     console.log("Pushing history:", history.current);
     history.current?.pushHistory();
+    setIsSaved(false); // Mark as unsaved when state changes
   }
 
   /** Christopher Parsons, 9/18/2025
@@ -180,6 +184,48 @@ export default function CanvasPage() {
     setPages(prev => prev.map(page => page.id === pageId ? { ...page, name: newName } : page));
   };
 
+  /** Conner Childers, 10/27/2025
+   * Inputs:
+   *  userId: string (optional) - User identifier for the directory
+   *  filename: string (optional) - Custom filename for the JSON file
+   *  pages: pages variable
+   * Outputs:
+   *  none
+   * 
+   * Saves the pages variable to a JSON file on the server in the users directory.
+   * The file will be saved to: users/{userId}/{filename}.json.
+   * This will be used to store the temp file for active editing.
+   */
+  const savePagesToJSON = async (userId = "user", filename = "canvas_pages") => {
+    try {
+      const response = await fetch('/api/save-canvas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pages,
+          userId,
+          filename
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(`Saved pages to server: ${result.path}`);
+        setIsSaved(true); // Mark as saved
+        alert(`Pages saved successfully to ${result.path}`);
+      } else {
+        console.error('Error saving pages:', result.error);
+        alert(`Failed to save pages: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error saving pages to JSON:', error);
+      alert(`Error saving pages: ${error.message}`);
+    }
+  };
+
   /** Christopher Parsons, 9/18/2025
    * Inputs:
    *  e: MouseEvent
@@ -217,6 +263,14 @@ export default function CanvasPage() {
         history.current?.redo();
       }
 
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        console.log("Saving");
+        e.preventDefault();
+        // UserID will be determined by the cookie
+        // Hardcoding currently for testing purposes
+        savePagesToJSON("1", "temp");
+      }
+
       // Do NOT delete widgets on Backspace/Delete anymore.
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
@@ -229,7 +283,7 @@ export default function CanvasPage() {
     return () => {
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
-  }, []);
+  }, [pages, savePagesToJSON]);
 
 
   /** Christopher Parsons, 9/18/2025
@@ -520,6 +574,7 @@ export default function CanvasPage() {
               createPage={createPage}
               updatePageName={updatePageName}
               deletePage={deletePage}
+              isSaved={isSaved}
             />
           </header>
 
@@ -606,7 +661,7 @@ export default function CanvasPage() {
 /** 
  * 
  */
-function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage }) {
+function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage, isSaved }) {
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
 
@@ -629,8 +684,9 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '10px 0' }}>
-      {pages.map(page => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflowX: 'auto', padding: '10px 0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto' }}>
+        {pages.map(page => (
         <div
           key={page.id}
           style={{
@@ -677,8 +733,18 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
             🗑️
           </span>
         </div>
-      ))}
-      <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+        ))}
+        <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+      </div>
+      <div style={{ 
+        marginLeft: 'auto', 
+        paddingRight: '20px', 
+        fontSize: '14px',
+        color: isSaved ? '#10b981' : '#f59e0b',
+        fontWeight: '500'
+      }}>
+        {isSaved ? '✓ Saved' : '● Unsaved changes'}
+      </div>
     </div>
   );
 }
