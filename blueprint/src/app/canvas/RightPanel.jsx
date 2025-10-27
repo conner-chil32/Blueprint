@@ -53,6 +53,10 @@ export function RightPanel({
   );
 }
 
+function downloadMediaToDisk(url, filepath) {
+
+}
+
 /** Christopher Parsons, 9/18/2025
  * Inputs:
  *  chagneWidgetProperty: function
@@ -64,6 +68,7 @@ export function RightPanel({
  * widgets.
  */
 function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget, recordState }) {
+
   // Render the selected widgets panel
   if (selectedWidgets && selectedWidgets.length > 0) {
     // If something is selected
@@ -224,14 +229,56 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                   <input
                     type="file"
                     accept="video/*"
-                    onChange={e => {
+                    onChange={async (e) => {
                       const file = e.target.files[0];
                       if (file) {
-                        const objectUrl = URL.createObjectURL(file);
-                        changeWidgetProperty(widget.id, { videoUrl: objectUrl });
+                        // Show loading state with temporary object URL
+                        const tempUrl = URL.createObjectURL(file);
+                        changeWidgetProperty(widget.id, { videoUrl: tempUrl, uploading: true });
+
+                        try {
+                          // Upload to server
+                          const formData = new FormData();
+                          formData.append('video', file);
+                          
+                          // Hardcoded subdirectory
+                          formData.append('subdirectory', '1'); // subdirectory ID = userID
+                                                                // hardcoded for now
+
+                          const response = await fetch('/api/upload-video', {
+                            method: 'POST',
+                            body: formData,
+                          });
+
+                          if (!response.ok) {
+                            throw new Error('Upload failed');
+                          }
+
+                          const data = await response.json();
+                          
+                          // Update with server URL and clear loading state
+                          URL.revokeObjectURL(tempUrl);
+                          changeWidgetProperty(widget.id, { 
+                            videoUrl: data.videoUrl,
+                            uploading: false 
+                          });
+
+                          console.log('[Video Upload] Success:', data.filename);
+                        } catch (error) {
+                          console.error('[Video Upload] Error:', error);
+                          alert('Failed to upload video. Please try again.');
+                          URL.revokeObjectURL(tempUrl);
+                          changeWidgetProperty(widget.id, { 
+                            videoUrl: widget.videoUrl || null,
+                            uploading: false 
+                          });
+                        }
                       }
+                      // Reset file input
+                      e.target.value = '';
                     }}
                   />
+                  {widget.uploading && <p style={{color: '#4CAF50'}}>Uploading...</p>}
   
                   <label
                   style={{
