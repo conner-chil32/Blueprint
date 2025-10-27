@@ -105,7 +105,7 @@ export async function getUserByUsername(username) {
  * Author: David Vigil
  * Dependencies: mysql
  */
-export async function getAllUsers(limit_val = 10, offset_val = 0) {
+export async function getAllUsers(limit_val = 4, offset_val = 0) {
 
     if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT userID, userName, userEmail, userPhone, userLastLogin, adminNote
