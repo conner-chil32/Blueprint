@@ -94,7 +94,7 @@ const wordpress_test = {
 }
 
 const payment = {
-    label: "buy now",
+    label: "payment",
     href: "/payment",
     className: "nav-button"
 }
