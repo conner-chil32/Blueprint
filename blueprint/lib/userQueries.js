@@ -64,6 +64,21 @@ export async function createAccount(user, password, email, securityQuestion, sec
     return result;
 }
 
+
+/**
+ * deleteAccount - Deletes a user account
+ * Input: userId - The id of the user to delete
+ * Output: boolean - true if the account was deleted successfully, false otherwise.
+ * Date: 10/26/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function deleteAccount(userId) {
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query('DELETE FROM userAccounts WHERE userID = ?;', [userId]);
+    return result;
+}
+
 /**
  * createAccountWithPhone - Creates a user with all required information and its optional phone number.
  * Input: user - The username of the user to create, password - password of user, emaile - email of user, connection - connection to DB, phone - the phone number of the user. 
@@ -138,4 +153,3 @@ export async function updateUserNote(userId, note) {
     );
     return result;
 }
-

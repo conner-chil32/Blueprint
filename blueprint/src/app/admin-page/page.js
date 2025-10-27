@@ -86,6 +86,32 @@ export default function admin_view() {
         }
     };
 
+    const deleteUser = async (e) => {
+        e.preventDefault();
+        if (!selectedUser) return;
+
+        try {
+            const res = await fetch("/api/users", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userID: selectedUser.userID }),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                setUsers((prevUsers) =>
+                    prevUsers.filter((u) => u.userID !== selectedUser.userID)
+                );
+                setSelectedUserID(null);
+                fetchUsers()
+            } else {
+                console.error("Failed to delete user:", data.error);
+            }
+        } catch (err) {
+            console.error("Error deleting user:", err);
+        }
+    };
 
     return (
         <>
@@ -123,7 +149,7 @@ export default function admin_view() {
                         <div className={styles.cell}>
                             <h1><b>Admin Actions:</b></h1>
                             <div className={styles.ActionButtonsList}>
-                                <ActionButton label="Delete account" />
+                                <ActionButton label="Delete account" onClick={(e) => deleteUser(e)} />
                                 <ActionButton label="Temporarily ban user" />
                                 <ActionButton label="Permanently ban user" />
                                 <ActionButton label="Add note" onClick={openModal} />
