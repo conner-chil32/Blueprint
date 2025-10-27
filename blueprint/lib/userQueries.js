@@ -95,3 +95,21 @@ export async function getUserByUsername(username) {
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
     return result;
 }
+
+/**
+ * updateUserPassword - Updates a user's password in the database.
+ * Input: id - The ID of the user to update.
+ * passwordHash - The new, pre-hashed password.
+ * Output: object - The result of the query.
+ * Date: 10/26/2025
+ * Author: Angel Ramirez
+ * Dependencies: mysql
+ */
+export async function updateUserPassword(userID, passwordHash) {
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query(
+        `UPDATE userAccounts SET userPassHash = ? WHERE userID = ?;`,
+        [passwordHash, userID]
+    );
+    return result;
+}
