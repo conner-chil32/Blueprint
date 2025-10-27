@@ -20,7 +20,7 @@ import { MenuScroll } from "../components/widgets/MenuScroll";
  * 
  * Updates the current state of the inputted widget in React.
  */
-export function WidgetRenderer({ staticRender=false, widget, onClick, recordState, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty, style }) {
+export function WidgetRenderer({ staticRender=false, widget, onClick, recordState, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty, style, pageWidth, pageHeight }) {
 
   /**
    * Render the correct type of widget.
@@ -39,6 +39,8 @@ export function WidgetRenderer({ staticRender=false, widget, onClick, recordStat
     recordState,
     scale,
     style,
+    pageWidth,
+    pageHeight,
   };
 
   switch (widget.type) {

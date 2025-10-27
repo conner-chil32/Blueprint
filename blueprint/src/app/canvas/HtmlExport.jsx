@@ -17,7 +17,7 @@ export default function HTMLExport(page) {
         ...page,
     }
 
-    return renderToStaticMarkup(
+    return '<!doctype html>' + renderToStaticMarkup(
         <html>
             <head>
                 <meta charSet="utf-8" />
@@ -29,9 +29,6 @@ export default function HTMLExport(page) {
                         padding: 0;
                         height: 100%;
                     }
-                    #exporting-page {
-                        position: relative;
-                    }
                     a {
                         text-decoration: none;
                     }
@@ -41,40 +38,46 @@ export default function HTMLExport(page) {
             <body style={{
                 width: "100dvw",
                 height: "100dvh",
+                display: "grid",
+                placeItems: "center",
                 backgroundColor: pageToExport.backgroundColor,
-                position: "relative",
-                overflow: "hidden",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                margin: "0",
             }}>
                 <div
                     id="exporting-page"
                     style={{
                         position: "relative",
-                        width: pageToExport.width + "px",
-                        height: pageToExport.height + "px",
+                        aspectRatio: pageToExport.width / pageToExport.height,
+                        width: `min(100vw, calc(100vh * ${pageToExport.width / pageToExport.height}))`,
+                        height: "auto",
                     }}>
-                    {/* Render the page */}
-                    <div>
-                        {/* Render each widget as a static object */}
-                        {page.widgets?.map((widget) => (
-                            <WidgetRenderer
-                                bounds="parent"
-                                staticRender={true}
-                                key={widget.id}
-                                widget={widget}
-                                isSelected={false}
-                                onClick={() => { undefined }}
-                                onDragStart={undefined}
-                                onDragStop={undefined}
-                                alertDragStop={undefined}
-                                scale={1}
-                                changeWidgetProperty={() => { }}
-                                style={widget.style}
-                            />
-                        ))}
+                    <div style={{
+                        position: "absolute",
+                        inset: 0,
+                        boxSizing: "border-box",
+                        transformOrigin: "top left",
+                    }}>
+                        {/* Render the page */}
+                        <div>
+                            {/* Render each widget as a static object */}
+                            {pageToExport.widgets?.map((widget) => (
+                                <WidgetRenderer
+                                    bounds="parent"
+                                    staticRender={true}
+                                    key={widget.id}
+                                    widget={widget}
+                                    isSelected={false}
+                                    onClick={() => { undefined }}
+                                    onDragStart={undefined}
+                                    onDragStop={undefined}
+                                    alertDragStop={undefined}
+                                    scale={1}
+                                    changeWidgetProperty={() => { }}
+                                    style={widget.style}
+                                    pageWidth={pageToExport.width}
+                                    pageHeight={pageToExport.height}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </body>

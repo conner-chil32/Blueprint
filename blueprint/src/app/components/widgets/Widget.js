@@ -26,7 +26,7 @@ import { useState } from 'react';
  * the widget's size and position. The div contains all fields needed for React to render 
  * the widget itself.
  */
-export function Widget({ staticRender = false, id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDragStop, scale, recordState }) {
+export function Widget({ staticRender = false, id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDragStop, scale, recordState, pageWidth, pageHeight }) {
   const [previousPosition, setPreviousPosition] = useState({ x: 0, y: 0 });
   const handleResize = (e, direction, refToElement, delta, position) => {
     alertDragStop && alertDragStop(id, position.x, position.y, { width: parseInt(refToElement.style.width, 10), height: parseInt(refToElement.style.height, 10) });
@@ -98,18 +98,24 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
     );
 
   } else {
+    const fromLeft = (x / pageWidth) * 100;
+    const fromTop = (y / pageHeight) * 100;
+    const sizeWidth = (width / pageWidth) * 100;
+    const sizeHeight = (height / pageHeight) * 100;
+
     return (
       <div
         key={id}
         style={{
           position: "absolute",
-          left: x,
-          top: y,
+          left: `${fromLeft}%`,
+          top: `${fromTop}%`,
           transform: `rotate(${rotation || 0}deg)`,
-          width: width,
-          height: height,
+          width: `${sizeWidth}%`,
+          height: `${sizeHeight}%`,
           ...style,
         }}>
+          {children}
       </div>
     );
   }

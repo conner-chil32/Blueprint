@@ -225,8 +225,9 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                     onChange={e => {
                       const file = e.target.files[0];
                       if (file) {
-                        const objectUrl = URL.createObjectURL(file);
-                        changeWidgetProperty(widget.id, { videoUrl: objectUrl });
+                        const fileReader = new FileReader();
+                        fileReader.onload = () => changeWidgetProperty(widget.id, { videoUrl: fileReader.result });
+                        fileReader.readAsDataURL(file);
                       }
                     }}
                   />
