@@ -54,6 +54,9 @@ export default function CanvasPage() {
 
   // Save status tracking
   const [isSaved, setIsSaved] = useState(true);
+  
+  // Track if component has mounted to avoid saving on initial render
+  const hasMounted = useRef(false);
 
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
@@ -67,6 +70,20 @@ export default function CanvasPage() {
       nextWidgetId,
     }
   })
+
+  /** Conner Childers 10/28/2025
+   * Save to temp.json whenever pages state changes.
+   * This ensures temp.json is always up-to-date with the latest changes.
+   */
+  useEffect(() => {
+    // Skip saving on initial mount
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    saveToTemp();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pages])
 
   /** Christopher Parsons 10/11/2025
    * Builds the instance of history only once. Used to
@@ -105,6 +122,16 @@ export default function CanvasPage() {
     console.log("Pushing history:", history.current);
     history.current?.pushHistory();
     setIsSaved(false); // Mark as unsaved when state changes
+  }
+
+  /**
+   * Saves the current state to temp.json after changes are applied.
+   * This is called after state updates to ensure temp.json has the latest changes.
+   */
+  function saveToTemp() {
+    // UserID will be determined by the cookie
+    // Hardcoding currently for testing purposes
+    savePagesToJSON("1", "temp");
   }
 
   /** Christopher Parsons, 9/18/2025
@@ -214,16 +241,19 @@ export default function CanvasPage() {
 
       if (response.ok) {
         console.log(`Saved pages to server: ${result.path}`);
-        setIsSaved(true); // Mark as saved
-        alert(`Pages saved successfully to ${result.path}`);
+        //alert(`Pages saved successfully to ${result.path}`);
       } else {
         console.error('Error saving pages:', result.error);
-        alert(`Failed to save pages: ${result.error}`);
+        //alert(`Failed to save pages: ${result.error}`);
       }
     } catch (error) {
       console.error('Error saving pages to JSON:', error);
-      alert(`Error saving pages: ${error.message}`);
+      //alert(`Error saving pages: ${error.message}`);
     }
+  };
+
+  const saveWorkToDatabase = (userID, websiteName) => {
+
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -266,9 +296,10 @@ export default function CanvasPage() {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         console.log("Saving");
         e.preventDefault();
-        // UserID will be determined by the cookie
-        // Hardcoding currently for testing purposes
-        savePagesToJSON("1", "temp");
+
+        // Save temp.json to database
+        // saveWorkToDatabase(userID, websiteName)
+        setIsSaved(true);
       }
 
       // Do NOT delete widgets on Backspace/Delete anymore.
