@@ -252,8 +252,8 @@ export default function CanvasPage() {
     }
   };
 
-  const saveWorkToDatabase = (userID, websiteName) => {
-
+  const saveCurrentWorkToDatabase = (userID, websiteName) => {
+    
   };
 
   /** Christopher Parsons, 9/18/2025
