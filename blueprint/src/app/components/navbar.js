@@ -19,13 +19,13 @@ export default function Navbar() {
     <div className="topBarBackground">
       <div className="navbar">
         <div className="nav-left">
-          <CreateImage code="logo" />
-          <CreateButton code="features" />
+          <CreateImage code="logo" type="set" />
+          <CreateButton code="features" /> 
           <CreateButton code="pricing" />
           <CreateButton code="canvas" />
         </div>
         <div className="nav-right">
-          <CreateButton code='navtest' />
+          <CreateButton code='navtest' type="navtest-button" />
           <CreateButton code="login" />
           <div className="theme-toggle">
             <input 
