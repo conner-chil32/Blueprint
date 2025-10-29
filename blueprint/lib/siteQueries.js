@@ -107,14 +107,17 @@ export async function getSiteCount(id) {
  * Dependencies: mysql
  */
 export async function createSite(name, userId) {
+    var validateSiteCreated;
     try {
-        await validateConnection()
+        await validateConnection();
         await connection.query(`INSERT INTO userWebsites (websiteName, userID) VALUES (?, ?);`, [name, userId]);
-        await commit(connection);
+        await commit();
+        validateSiteCreated = await getSiteByName(name);
     } catch (err) {
+        console.log(err)
         throw false;
     }
-    return true;
+    return validateSiteCreated;
     // if (!await validateConnection()) return false;
     // await connection.query(`INSERT INTO userWebsites (websiteName, website_user_id) VALUES (?, ?);`, [name, userId]);
     // return await commit(connection);

@@ -323,8 +323,8 @@ export async function loginWordpress(res, username, password) {
     fetch(`http://${address}:80/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
-        sessionStorage.setItem('WPToken',result)
-        console.log("token set")
+        sessionStorage.setItem('WPToken',result);
+        console.log("token set");
     })
     .catch((error) => console.error(error));
 }

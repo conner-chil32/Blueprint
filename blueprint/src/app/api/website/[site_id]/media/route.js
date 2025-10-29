@@ -1,27 +1,15 @@
 'use server'
 
 import { createMedia } from "@lib/siteQueries";
+import { validateUser, validateSite } from "@lib/userQueries";
 import { useRouter } from "next/router";
+import { NextResponse  } from "next/server";
 
-export async function POST(request) {
+export async function POST(request, {site_id}) {
+    const params = new URLSearchParams(request.url); //get the parameter name (user)
+    const jsonpage = params.get('media_data');
 
-    //
+    if (((pages_name !== undefined && jsonpage !== undefined && site_id !== undefined) && await validateUser(request) && await validateSite(site_id))) return NextResponse({message: "Unauthorized User"}, 401); 
 
-    const router = useRouter();
 
-    const {site_id, media_id} = router.query;
-
-    if(validateUser() && validateSite(site_id)) {
-        createMedia(site_id, "test/test", )
-    }
-    
-
-    /**
-     * PLAN - NOT DONE
-     * create a media object
-     * 1. validate the object
-     * 2. create an entry into the database
-     * 3. send the object
-     * 4. send a response depending if the transfer was successful or not
-     */
 }

@@ -1,8 +1,10 @@
+import { getSitesByUser } from "@lib/siteQueries";
 import Navbar from "../components/navbar";  
 import styles from "./page.module.css";
 import Link from "next/link"
 
 export default function RawHTMLPage() {
+
     return (
         <div>
 			<Navbar /> 
@@ -14,7 +16,9 @@ export default function RawHTMLPage() {
             <div id="websites">
                 <div className={styles.tableContainer}>
                     <table className={styles.table}>
-                        <tbody>
+                        {
+
+                            <tbody>
                             <tr>
                                 <th rowSpan="3" align="center" className={styles.tableHeader}>Website Preview image</th>
                                 <td className={styles.tableData}>Statistics</td>
@@ -47,6 +51,7 @@ export default function RawHTMLPage() {
                                 </td>
                             </tr>
                         </tbody>
+                        }
                     </table>
                 </div>
             </div>

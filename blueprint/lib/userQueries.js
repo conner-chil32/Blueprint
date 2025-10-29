@@ -29,7 +29,7 @@ export async function getUserByEmail(email) {
  */
 export async function getUserByID(id) {
     if (!await validateConnection()) return false;
-    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE id = ?;`, [id]);
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userID = ?;`, [id]);
     return result;
 }
 
@@ -100,19 +100,20 @@ export async function getUserByUsername(username) {
 }
 
 export async function validateUser(req) {
-    const user = getCookie(req, 'TempCookie');
-
-    if (await getUserByID(user).length != 0){
-        return true;
+    const user = getCookie(req, 'UserCookie');
+    if (user === null) throw "Could not validate user";
+    const validationCheck = ((await getUserByID(user)).length != 0);
+    if (validationCheck){
+        return user;
     } else {
-        throw false;
+        throw "Could not validate user";
     }
 }
 
 export async function validateSite(site_id) {
-    if ((await getSiteByID(site_id)).length == 0) {
+    if ((await getSiteByID(site_id)).length != 0) {
         return true;
     } else {
-        throw false;
+        throw "Could not validate site";
     }
 }

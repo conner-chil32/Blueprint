@@ -16,7 +16,8 @@ export async function GET(req) {
     try {
         const cookieValue = getCookie(req, 'TempCookie');
         const user = getCookie(req, 'UserCookie');
-        const count = await getSiteCount(user);
+        //I'm sorry I got desperate
+        const count = Object.values(await getSiteCount(use
         console.log(count);
         // For testing
         console.log('Cookie value: ' + cookieValue);
