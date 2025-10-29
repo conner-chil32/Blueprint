@@ -89,6 +89,7 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
               onClick={() => {
                 const ids = selectedWidgets.map(widget => widget.id);
                 console.log('Deleting ', ids);
+                deleteWidget(ids);
               }}
             >Delete Selected Widgets</button>
           </div>
