@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS userAccounts (
     userLastLogin TIMESTAMP,
     userTier ENUM('free', 'personal', 'business', 'enterprise') NOT NULL DEFAULT 'free',
     isAdmin BOOLEAN DEFAULT FALSE,
+    adminNote VARCHAR(255),
     PRIMARY KEY (userID)
 );
 
