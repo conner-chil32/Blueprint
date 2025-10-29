@@ -108,7 +108,7 @@ export default function CanvasPage() {
       // Pass savePagesToJSON via ref so it can save automatically
       savePagesToJSON: () => {
         const userId = getCookieValue('UserCookie');
-        savePagesToJSONRef.current?.(userId);
+        savePagesToJSONRef.current?.(userId, "temp");
       }
     })
   }, []);
@@ -218,10 +218,10 @@ export default function CanvasPage() {
    * The file will be saved to: users/{userId}/{filename}.json.
    * This will be used to store the temp file for active editing.
    */
-  const savePagesToJSON = async (filename = "temp") => {
+  const savePagesToJSON = async (userId = null, filename = "canvas_pages") => {
     try {
       // Get userId from UserCookie if not provided
-      const effectiveUserId = getCookieValue('UserCookie') || '1';
+      const effectiveUserId = userId || getCookieValue('UserCookie') || 'user';
       
       const response = await fetch('/api/save-canvas', {
         method: 'POST',
