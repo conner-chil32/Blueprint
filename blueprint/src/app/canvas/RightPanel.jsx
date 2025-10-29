@@ -4,6 +4,14 @@ import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import PageRenderer from "./PageRenderer";
 import HTMLExport from "./HtmlExport";
 
+// Helper function to get cookie value by name
+const getCookieValue = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+};
+
 /** Christopher Parsons, 9/18/2025
  * Inputs:
  *  selectedWidgets: array
@@ -241,9 +249,9 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                           const formData = new FormData();
                           formData.append('video', file);
                           
-                          // Hardcoded subdirectory
-                          formData.append('subdirectory', '1'); // subdirectory ID = userID
-                                                                // hardcoded for now
+                          // Get userId from UserCookie
+                          const userId = getCookieValue('UserCookie') || 'user';
+                          formData.append('subdirectory', userId); // subdirectory ID = userID
 
                           const response = await fetch('/api/upload-video', {
                             method: 'POST',
