@@ -317,7 +317,7 @@ export default function CanvasPage() {
       const userId = getCookieValue('UserCookie') || '1';
       
       // TODO: Replace '%SITEID%' with actual site ID
-      const response = await fetch('api/website?site_id=%SITEID%', {
+      const response = await fetch(`api/website?site_id=%SITEID%`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
