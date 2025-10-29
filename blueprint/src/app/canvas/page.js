@@ -285,6 +285,9 @@ export default function CanvasPage() {
         },
         body: JSON.stringify({
           pages,
+          selectedPageID,
+          nextPageID,
+          nextWidgetId,
           userId: effectiveUserId,
           filename
         })

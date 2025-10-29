@@ -45,7 +45,7 @@ export async function GET(request) {
 
     return NextResponse.json({ 
       success: true,
-      pages,
+      ...pages,
       path: `users/${sanitizedUserId}/${fullFilename}`
     });
 
