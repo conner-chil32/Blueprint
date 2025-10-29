@@ -54,6 +54,9 @@ export default function CanvasPage() {
 
   // Save status tracking
   const [isSaved, setIsSaved] = useState(true);
+  
+  // Ref to hold the savePagesToJSON function
+  const savePagesToJSONRef = useRef(null);
 
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
@@ -92,7 +95,10 @@ export default function CanvasPage() {
         setSelectedPageID(recordedState.selectedPageID);
         setNextPageID(recordedState.nextPageID);
         setNextWidgetId(recordedState.nextWidgetId);
-      }
+      },
+      
+      // Pass savePagesToJSON via ref so it can save automatically
+      savePagesToJSON: () => savePagesToJSONRef.current?.("1", "temp")
     })
   }, []);
 
@@ -137,8 +143,6 @@ export default function CanvasPage() {
    * it was before, but with a new page added.
    */
   const createPage = () => {
-    recordState();
-
     setPages([
       ...pages,
       {
@@ -153,6 +157,9 @@ export default function CanvasPage() {
     setSelectedPageID(nextPageID);
     console.log('Created page', nextPageID);
     setNextPageID(nextPageID + 1);
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   /** 
@@ -170,18 +177,22 @@ export default function CanvasPage() {
       console.log('Cannot delete the last page');
       return;
     }
-    recordState();
 
     setPages(prev => prev.filter(page => page.id !== pageId));
     if (selectedPageID === pageId) {
       setSelectedPageID(pages[0].id);
     }
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   // Update page name
   const updatePageName = (pageId, newName) => {
-    recordState();
     setPages(prev => prev.map(page => page.id === pageId ? { ...page, name: newName } : page));
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   /** Conner Childers, 10/27/2025
@@ -214,17 +225,26 @@ export default function CanvasPage() {
 
       if (response.ok) {
         console.log(`Saved pages to server: ${result.path}`);
-        setIsSaved(true); // Mark as saved
-        alert(`Pages saved successfully to ${result.path}`);
+        // Only show alert on manual save (not auto-save)
+        if (filename !== "temp") {
+          alert(`Pages saved successfully to ${result.path}`);
+        }
       } else {
         console.error('Error saving pages:', result.error);
-        alert(`Failed to save pages: ${result.error}`);
+        if (filename !== "temp") {
+          alert(`Failed to save pages: ${result.error}`);
+        }
       }
     } catch (error) {
       console.error('Error saving pages to JSON:', error);
-      alert(`Error saving pages: ${error.message}`);
+      if (filename !== "temp") {
+        alert(`Error saving pages: ${error.message}`);
+      }
     }
   };
+  
+  // Update the ref whenever savePagesToJSON changes
+  savePagesToJSONRef.current = savePagesToJSON;
 
   /** Christopher Parsons, 9/18/2025
    * Inputs:
@@ -266,9 +286,7 @@ export default function CanvasPage() {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         console.log("Saving");
         e.preventDefault();
-        // UserID will be determined by the cookie
-        // Hardcoding currently for testing purposes
-        savePagesToJSON("1", "temp");
+        setIsSaved(true); // Mark as saved
       }
 
       // Do NOT delete widgets on Backspace/Delete anymore.
@@ -349,7 +367,6 @@ export default function CanvasPage() {
    * string fed in. Advances nextWidgetID + 1.
    */
   const createWidget = (typeToMake) => {
-    recordState();
     let newWidget = null;
     const nextId = nextWidgetId;
 
@@ -497,6 +514,9 @@ export default function CanvasPage() {
     setNextWidgetId((prevId) => prevId + 1);
     setWidgets([...widgets, newWidget]);
     setSelectedWidgets([newWidget]);
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -508,10 +528,12 @@ export default function CanvasPage() {
    * but without the designated widget.
    */
   function deleteWidget(id) {
-    recordState();
     console.log('Deleting widget', id);
     setWidgets(widgets.filter(widget => widget.id !== id));
     deselectAllWidgets();
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   }
 
   /** Christopher Parsons, 9/18/2025
@@ -538,7 +560,6 @@ export default function CanvasPage() {
    * with a modified attribute.
    */
   function changePageProperty(pageID, newProperties) {
-    recordState();
     const changedPages = pages.map(page =>
       // If this is the correct widget, then update the object
       page.id === pageID ? { ...page, ...newProperties }
@@ -546,6 +567,9 @@ export default function CanvasPage() {
     );
 
     setPages(changedPages);
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   }
 
   return (
