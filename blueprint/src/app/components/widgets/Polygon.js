@@ -14,8 +14,10 @@ export function Polygon({ scale, ...props }) {
     numSides = 5, // default sides
   } = props;
 
-  const strokeColor = isSelected ? 'blue' : (borderColor ?? '#000');
-  const strokeWidth = isSelected ? 2 : (borderWidth ?? 1);
+  //const strokeColor = isSelected ? 'blue' : (borderColor ?? '#000');
+  //const strokeWidth = isSelected ? 2 : (borderWidth ?? 1);
+  const strokeColor = (borderColor ?? '#000');
+  const strokeWidth = (borderWidth ?? 1);
 
   const inset = strokeWidth / 2;
   const cx = width / 2;
@@ -46,19 +48,38 @@ export function Polygon({ scale, ...props }) {
       useOuterBorderFrame={false} // disable Widget’s external border (errant square)
       style={{
         // fill shape with clip path so it fills properly
-        clipPath: `polygon(${pts
-          .map(p => {
-            const [x, y] = p.split(',').map(Number);
-            return `${(x / width) * 100}% ${(y / height) * 100}%`;
-          })
-          .join(',')})`,
+        // clipPath: `polygon(${pts
+        //   .map(p => {
+        //     const [x, y] = p.split(',').map(Number);
+        //     return `${(x / width) * 100}% ${(y / height) * 100}%`;
+        //   })
+        //   .join(',')})`,
+        // aspectRatio: '1 / 1',
+        // backgroundColor: backgroundColor || '#cccccc',
+        // width,
+        // height,
+        // position: 'relative',
         aspectRatio: '1 / 1',
-        backgroundColor: backgroundColor || '#cccccc',
         width,
         height,
         position: 'relative',
       }}
     >
+      {/* Polygon clip path independent of selection */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: backgroundColor || '#cccccc',
+          clipPath: `polygon(${pts
+          .map(p => {
+            const [x, y] = p.split(',').map(Number);
+            return `${(x / width) * 100}% ${(y / height) * 100}%`;
+          })
+          .join(',')})`,
+          pointerEvents: 'none',
+        }}
+        />
       {/* Code for border outline */}
       <svg
         width={width}
@@ -69,7 +90,7 @@ export function Polygon({ scale, ...props }) {
           top: 0,
           width: '100%',
           height: '100%',
-          transform: `rotate(${rotation || 0}deg)`,
+          //transform: `rotate(${rotation || 0}deg)`,
           opacity: opacity ?? 1,
           pointerEvents: 'none',
           overflow: 'visible',
