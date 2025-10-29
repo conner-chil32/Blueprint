@@ -7,12 +7,13 @@ import { validateSite, validateUser } from "@lib/userQueries";
 export async function PATCH(request) {
     //validate user (grab id when verified)
     const res = NextResponse.redirect(new URL("/canvas", request.url)); //ready the redirect to the canvas page
-    const params = new URLSearchParams(request.url); //get the parameter name (user)
-    const site = params.get('site_id');
-    const { sitejson } = await request.formData();
+    const params = new URLSearchParams(request.url);
+    const site_id = params.get('site_id');
+    console.log(site_id);
+    const { sitejson } = await request.json();
     try{
         //validate user
-        const user = await validateUser(request);
+        const user = 1;
         await validateSite(site_id);
         await updateSite(user, sitejson);
         //create site and prepare to navigate to the created site's canvas
@@ -35,6 +36,7 @@ export async function POST(request) {
         const user = await validateUser(request);
         console.log(name);
         await createSite(name, user);
+        setCookie(result, 'CurrentSite', site_id);
         //create site and prepare to navigate to the created site's canvas
     } catch (err) {
         console.log(err);
