@@ -88,19 +88,19 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
         style={{
           position: 'relative',
           transform: `rotate(${rotation || 0}deg)`,
+          transformOrigin: '50% 50%',
           width: width,
           height: height,
           border: useOuterBorderFrame === false//user outerborderframe is set to false for non rectangular objects to prevent border rendering errors.
-          ? 'none'
-          : (
-              isSelected
-                ? '2px solid blue'
-                : `${borderWidth ?? 1}px ${borderStyle ?? 'solid'} ${borderColor ?? '#000'}`
-            ),
+            ? 'none'
+            : `${borderWidth ?? 1}px ${borderStyle ?? 'solid'} ${borderColor ?? '#000'}`,
+          boxSizing: 'border-box',
           cursor: 'grab',
           isMoving: isMoving,
           pointerEvents: pointerEventsNone ? 'none' : 'auto',
           opacity: opacity !== undefined ? opacity : 1,
+          // Selection outline
+          ...(isSelected ? { outline: '2px solid #3b82f6', outlineOffset: 0 } : {}),
           ...style,
         }}
         onClick={e => {
@@ -109,17 +109,6 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
           onClick && onClick(e);
         }}
       >
-        {/* Selection wireframe */}
-        {isSelected && (
-          <div style={{
-            position: 'absolute',
-            inset: -2 + 'px',
-            border: '2px solid #3b82f6',
-            pointerEvents: 'none',
-            zIndex: 99999, /* Keep the wireframe on top */
-          }} />
-        )}
-
         {/* Actual widget */}
         {children}
       </div>

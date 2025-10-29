@@ -14,14 +14,16 @@ export function Triangle({ scale, ...props }) {
     opacity,
   } = props;
 
-  const strokeColor = isSelected ? 'blue' : (borderColor ?? '#000');
-  const strokeWidth = isSelected ? 2 : (borderWidth ?? 1);
+  // const strokeColor = isSelected ? 'blue' : (borderColor ?? '#000');
+  //const strokeWidth = isSelected ? 2 : (borderWidth ?? 1);
+  const strokeColor = (borderColor ?? '#000');
+  const strokeWidth = (borderWidth ?? 1);
 
   let strokeDasharray;
-  if (!isSelected) {
+  //if (!isSelected) {
     if (borderStyle === 'dashed') strokeDasharray = '6,4';
     else if (borderStyle === 'dotted') strokeDasharray = '2,4';
-  }
+  //}
 
   return (
     <Widget
@@ -45,7 +47,7 @@ export function Triangle({ scale, ...props }) {
           left: 0,
           width: '100%',
           height: '100%',
-          transform: `rotate(${rotation || 0}deg)`,
+          //transform: `rotate(${rotation || 0}deg)`,
           opacity: opacity ?? 1,
           pointerEvents: 'none',
         }}

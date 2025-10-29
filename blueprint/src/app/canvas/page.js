@@ -553,11 +553,12 @@ export default function CanvasPage() {
    * Replaces the widgets of the current page with a clone
    * but without the designated widget.
    */
-  function deleteWidget(id) {
+  function deleteWidget(ids) {
+    const idSet = new Set(Array.isArray(ids) ? ids : [ids]);
     recordState();
-    console.log('Deleting widget', id);
-    setWidgets(widgets.filter(widget => widget.id !== id));
-    deselectAllWidgets();
+    setWidgets(prev => prev.filter(widget => !idSet.has(widget.id)));
+    
+    setSelectedWidgets(prev => prev.filter(widget => !idSet.has(widget.id)));
   }
 
   /** Christopher Parsons, 9/18/2025
