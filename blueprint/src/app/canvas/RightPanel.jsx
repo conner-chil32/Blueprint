@@ -79,9 +79,14 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
               }}
             >Delete Selected Widget</button>
           </div>
-  
           {/* Menu to change widgets */}
-          {selectedWidgets.map((widget) => (
+          {selectedWidgets.map((widget) =>{
+            const isShape =
+              widget.type === 'box' ||
+              widget.type === 'circle' ||
+              widget.type === 'triangle' ||
+              widget.type === 'polygon';
+            return (
             <div key={widget.id} className={styles.widgetOptions}>
               {/* Inputs to change widget properties */}
               <p>Color:</p>
@@ -90,7 +95,48 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 value={widget.backgroundColor || "#cccccc"}
                 onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
               />
-  
+              {isShape && (
+                <>
+                  <p>Border Color:</p>
+                  <input
+                    type="color"
+                    value={widget.borderColor || "#000000"}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        borderColor: e.target.value
+                      })
+                    }
+                  />
+
+                  <p>Border Width (px):</p>
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    value={widget.borderWidth ?? 1}
+                    onChange={e => {
+                      const val = parseInt(e.target.value || "0", 10);
+                      changeWidgetProperty(widget.id, { borderWidth: val });
+                    }}
+                  />
+
+                  <p>Border Style:</p>
+                  <select
+                    value={widget.borderStyle || "solid"}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        borderStyle: e.target.value
+                      })
+                    }
+                  >
+                    <option value="solid">Solid</option>
+                    <option value="dashed">Dashed</option>
+                    <option value="dotted">Dotted</option>
+                    <option value="double">Double</option>
+                    <option value="none">None</option>
+                  </select>
+                </>
+              )}
               {/* Two rotation inputs, one as an editable display and the other as a slider */}
               <p>Rotation: {widget.rotation}</p>
               <input
@@ -114,7 +160,40 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                   changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) }, true)
                 }
               />
-
+              <p>Opacity: {(widget.opacity ?? 1).toFixed(2)}</p>
+                <input
+                  type="number"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={widget.opacity ?? 1}
+                  onChange={e => {
+                    const raw = e.target.value
+                    if (raw === "") {
+                      changeWidgetProperty(widget.id, { opacity: 0 })
+                      return
+                    }
+                    let val = parseFloat(raw)
+                    if (isNaN(val)) val = 0
+                    if (val < 0) val = 0
+                    if (val > 1) val = 1
+                    changeWidgetProperty(widget.id, { opacity: val })
+                  }}
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={widget.opacity ?? 1}
+                  onMouseDown={() => {
+                    recordState()
+                  }}
+                  onChange={e => {
+                    const val = parseFloat(e.target.value)
+                    changeWidgetProperty(widget.id, { opacity: val }, true)
+                  }}
+              />
               {/* ===== Menu Scroll controls ===== */}
               {widget.type === 'menuScroll' && (() => {
                 const draft = widget.itemsText ?? (widget.items || []).join(", ");
@@ -375,8 +454,36 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 </>
               );
             })()}
+            {/* Customizable polygon controls */}
+            {widget.type === 'polygon' && (
+              <>
+                <p>Sides: {widget.numSides || 5}</p>
+                <input
+                  type="range"
+                  min="3"
+                  max="12"
+                  value={widget.numSides || 5}
+                  onChange={e => {
+                    const sides = parseInt(e.target.value, 10);
+                    changeWidgetProperty(widget.id, { numSides: sides });
+                  }}
+                />
 
-
+                <input
+                  type="number"
+                  min="3"
+                  max="12"
+                  value={widget.numSides || 5}
+                  onChange={e => {
+                    let sides = parseInt(e.target.value || "3", 10);
+                    if (isNaN(sides)) sides = 3;
+                    if (sides < 3) sides = 3;
+                    if (sides > 12) sides = 12;
+                    changeWidgetProperty(widget.id, { numSides: sides });
+                  }}
+                />
+              </>
+            )}
             {/* ===== Advertisement controls ===== */}
             {widget.type === 'advert' && (
               <>
@@ -438,7 +545,8 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
               </>
             )}
           </div>
-        ))}
+        );
+      })}
       </div>
     );
   }

@@ -1,4 +1,7 @@
 import { Box } from '../components/widgets/Box';
+import { Circle } from '../components/widgets/Circle';
+import { Polygon } from '../components/widgets/Polygon';
+import { Triangle } from '../components/widgets/Triangle';
 import { Video } from "../components/widgets/video";
 import { Dropdown } from "../components/widgets/Dropdown";
 import { Advert } from "../components/widgets/Advert";
@@ -46,6 +49,12 @@ export function WidgetRenderer({ staticRender=false, widget, onClick, recordStat
   switch (widget.type) {
     case 'box':
       return <Box key={widget.id} {...common} />;
+    case 'circle':
+      return <Circle key={widget.id} {...common} />;
+    case 'triangle':
+      return <Triangle key={widget.id} {...common} />;
+    case 'polygon':
+      return <Polygon key={widget.id} {...common} />;
     case "video":
       return <Video key={widget.id} {...common} />;
     case "dropdown":

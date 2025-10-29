@@ -94,12 +94,22 @@ const wordpress_test = {
 }
 
 const payment = {
-    label: "buy now",
+    label: "payment",
     href: "/payment",
     className: "nav-button"
 }
 
+const account_recovery = {
+    label: "account-recovery",
+    href: "/account-recovery",
+    className: "nav-button"
+}
 
+const admin_details = {
+    label: "admin-details",
+    href: "/admin-detailed",
+    className: "nav-button"
+}
 
 const navtest = {
     label: "navtest",
@@ -122,6 +132,8 @@ const library = {
     signup:signup,
     userwebbackend:userwebbackend,
     payment:payment,
+    account_recovery:account_recovery,
+    admin_details:admin_details,
 
     navtest:navtest
 }
