@@ -12,6 +12,7 @@
 package-lock.json
 blueprint/node_modules
 /node_modules
+blueprint/users
 
 # testing
 /coverage

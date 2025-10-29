@@ -4,6 +4,14 @@ import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import PageRenderer from "./PageRenderer";
 import HTMLExport from "./HtmlExport";
 
+// Helper function to get cookie value by name
+const getCookieValue = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+};
+
 /** Christopher Parsons, 9/18/2025
  * Inputs:
  *  selectedWidgets: array
@@ -53,6 +61,10 @@ export function RightPanel({
   );
 }
 
+function downloadMediaToDisk(url, filepath) {
+
+}
+
 /** Christopher Parsons, 9/18/2025
  * Inputs:
  *  chagneWidgetProperty: function
@@ -64,6 +76,7 @@ export function RightPanel({
  * widgets.
  */
 function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget, recordState }) {
+
   // Render the selected widgets panel
   if (selectedWidgets && selectedWidgets.length > 0) {
     // If something is selected
@@ -303,14 +316,56 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                   <input
                     type="file"
                     accept="video/*"
-                    onChange={e => {
+                    onChange={async (e) => {
                       const file = e.target.files[0];
                       if (file) {
-                        const objectUrl = URL.createObjectURL(file);
-                        changeWidgetProperty(widget.id, { videoUrl: objectUrl });
+                        // Show loading state with temporary object URL
+                        const tempUrl = URL.createObjectURL(file);
+                        changeWidgetProperty(widget.id, { videoUrl: tempUrl, uploading: true });
+
+                        try {
+                          // Upload to server
+                          const formData = new FormData();
+                          formData.append('video', file);
+                          
+                          // Get userId from UserCookie
+                          const userId = getCookieValue('UserCookie') || 'user';
+                          formData.append('subdirectory', userId); // subdirectory ID = userID
+
+                          const response = await fetch('/api/upload-video', {
+                            method: 'POST',
+                            body: formData,
+                          });
+
+                          if (!response.ok) {
+                            throw new Error('Upload failed');
+                          }
+
+                          const data = await response.json();
+                          
+                          // Update with server URL and clear loading state
+                          URL.revokeObjectURL(tempUrl);
+                          changeWidgetProperty(widget.id, { 
+                            videoUrl: data.videoUrl,
+                            uploading: false 
+                          });
+
+                          console.log('[Video Upload] Success:', data.filename);
+                        } catch (error) {
+                          console.error('[Video Upload] Error:', error);
+                          alert('Failed to upload video. Please try again.');
+                          URL.revokeObjectURL(tempUrl);
+                          changeWidgetProperty(widget.id, { 
+                            videoUrl: widget.videoUrl || null,
+                            uploading: false 
+                          });
+                        }
                       }
+                      // Reset file input
+                      e.target.value = '';
                     }}
                   />
+                  {widget.uploading && <p style={{color: '#4CAF50'}}>Uploading...</p>}
   
                   <label
                   style={{
