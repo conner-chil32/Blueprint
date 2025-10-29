@@ -334,7 +334,7 @@ export default function CanvasPage() {
         console.log("Manual save triggered");
         e.preventDefault();
         // Save pages data to database
-        saveToDatabase();
+        // saveToDatabase();
       }
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
