@@ -9,6 +9,17 @@ https://developers.google.com/standard-payments/codelabs/nodejs-connectivity-cod
 https://medium.com/@chodvadiyasaurabh/building-a-payment-gateway-with-node-js-and-stripe-a-step-by-step-guide-fa097a743bf2
 */
 
+/*Aaron Goodlund, 10/12/25
+
+function: validateURL()
+inputs: 
+    dest: string
+	
+outputs:
+    true/false
+
+This function verifies the supplied url has a valid protocol to prevent direct attacks
+*/
 /*
 function validateURL(dest){
     try {
@@ -20,8 +31,24 @@ function validateURL(dest){
 }
 */
 
-function routeProcessPayment(paymentProcessLocation = "payment", api){
+/*Aaron Goodlund, 10/12/25
+
+function: routeProcessPayment()
+inputs: 
+    paymentProcessLocation: the route for processing payments
+    api: the pointer to the api object that is used for creating/sending the api request
+    app: an express() used to post to the payment processor
+	
+outputs:
+    n/a
+
+This function is a template to connect with a chosen api
+*/
+function routeProcessPayment(paymentProcessLocation = "payment", api, app){
     // Define a route for processing payments
+//    const express = require('express');
+//    const app = express();
+
     app.post('/'+paymentProcessLocation, async (req, res) => {
     const { amount, currency, token } = req.body;
 
@@ -46,17 +73,17 @@ function routeProcessPayment(paymentProcessLocation = "payment", api){
 export default function Payment(){
     const dest = "/login"; //the destination of the link with a query for the plan's type
                                 // ".../<dest>?plan=<plan name>"
+/*
+    let url = require('url');
 
-//    let url = require('url');
-
-//  let address = '<url>';
-//  let <testing object> = url.parse(address, true);
+  let address = '<url>';
+  let <testing object> = url.parse(address, true);
         //then all of the 'url' below are instead <testing object>
 
-//    validateURL(url.href);
+    validateURL(url.href);
 
-//    console.log(url.href, url.host, url.pathname, url.search);
-
+    console.log(url.href, url.host, url.pathname, url.search);
+*/
     return(
         <>
             <Navbar />

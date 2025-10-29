@@ -58,8 +58,8 @@ export default function RawHTMLPage() {
         <div className = {styles.mainContent}>
         <div className={styles.container}>
                 <div className={styles.titleRow}>
-                    <h1 className={styles.title}>User's username</h1>
-                    <button
+                    <h1 className={styles.title} data-testid="user's username">User's username</h1>
+                    <button data-testid='BackButton'
                         className={styles.backButton}
                         onClick={() => (window.location.href = "/admin-page")}
                     >
@@ -73,7 +73,7 @@ export default function RawHTMLPage() {
                             <ul className = "capitalize">
                             <li>
                                 {card.id === 2 ? (
-                                    <span
+                                    <span data-testid='project button'
                                         className={styles.projectsText}
                                         style={{ cursor: "pointer" }}
                                         onClick={() => alert("Imagine: A page with details from this user's project")}

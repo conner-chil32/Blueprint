@@ -12,7 +12,7 @@ async function getUserData() {
 const placeholder = "00";
 const placeholdertext = "placeholder";
 
-export default function admin_view() {
+export default function AdminView() {
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -72,7 +72,7 @@ export default function admin_view() {
                     <div className={styles.bottomRow}>
                         <div className={styles.cell}>
                             <h1><b>Server Status:</b></h1>
-                            <img src="images/usage_demo.png"></img>
+                            <img src="images/usage_demo.png" alt="demo graph of server usage"></img>
                         </div>
                     </div>
                 </div>

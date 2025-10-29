@@ -7,6 +7,16 @@ export async function POST(request) {//Handles sending user form data to databas
   try {
     const { username, password, email, phone, securityQuestion, securityAnswer} = await request.json();
 
+    // ===== Debugging Lines =====
+    console.log("===== SIGNUP API RECEIVED =====");
+    console.log("Username:", username);
+    console.log("Password:", password ? "******" : "EMPTY");
+    console.log("Email:", email);
+    console.log("Phone:", phone);
+    console.log("Question:", securityQuestion);
+    console.log("Answer:", securityAnswer);
+    console.log("===============================");
+
     let valid = await validateConnection();
 
     if (!valid) {

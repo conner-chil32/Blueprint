@@ -353,9 +353,69 @@ export default function CanvasPage() {
           backgroundColor: '#cccccc',
           pointerEventsNone: false,
           rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
         };
         break;
-
+      case 'circle':
+          newWidget = {
+          type: 'circle',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
+      case 'triangle':
+          newWidget = {
+          type: 'triangle',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
+          case 'polygon':
+          newWidget = {
+          type: 'polygon',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+                    borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
       case 'video':
         newWidget = {
           type: 'video',

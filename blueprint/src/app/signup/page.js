@@ -145,6 +145,11 @@ export default function SignUpPage() {
               {loading ? "Creating..." : <>CREATE <br/> ACCOUNT</>}
             </button>
             {message && <div className={styles.message}>{message}</div>}
+            <div style={{ textAlign: 'center', marginTop: '15px' }}>
+              <a href="/account-recovery" style={{ color: 'white', textDecoration: 'underline' }}>
+                Forgot Username/Password?
+              </a>
+            </div>
           </form>
         </div>
         <div className={`${styles.bodySection} ${styles.reqsSection}`}>

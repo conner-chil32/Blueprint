@@ -13,7 +13,7 @@ import {
 } from './userQueries.js';
 import { Website } from './website.js';
 
-import {bcrypt} from 'bcrypt'; 
+import bcrypt from 'bcryptjs';
 
 export class User {
     constructor() {

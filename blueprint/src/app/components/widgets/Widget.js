@@ -21,13 +21,17 @@ import { useState } from 'react';
  *  onDragStop: function
  *  scale: number
  *  recordState: function
+ *  borderWidth: number
+ *  borderColor: color
+ *  borderStyle: String
+ *  useOuterBorderFrame: Boolean
  * 
  * Returns an RND element surrounding a div. Used as a central component in various widgets.
  * The RND element controls movement and rotation. This is used to allow the user to change 
  * the widget's size and position. The div contains all fields needed for React to render 
  * the widget itself.
  */
-export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDrag, onDragStop, scale, recordState }) {
+export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDrag, onDragStop, scale, recordState, opacity, borderWidth, borderColor, borderStyle, useOuterBorderFrame }) {
   const [previousPosition, setPreviousPosition] = useState({ x: 0, y: 0 });
   const handleResize = (e, direction, refToElement, delta, position) => {
     alertDragStop && alertDragStop(id, position.x, position.y, { width: parseInt(refToElement.style.width, 10), height: parseInt(refToElement.style.height, 10) });
@@ -86,9 +90,17 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
           transform: `rotate(${rotation || 0}deg)`,
           width: width,
           height: height,
+          border: useOuterBorderFrame === false//user outerborderframe is set to false for non rectangular objects to prevent border rendering errors.
+          ? 'none'
+          : (
+              isSelected
+                ? '2px solid blue'
+                : `${borderWidth ?? 1}px ${borderStyle ?? 'solid'} ${borderColor ?? '#000'}`
+            ),
           cursor: 'grab',
           isMoving: isMoving,
           pointerEvents: pointerEventsNone ? 'none' : 'auto',
+          opacity: opacity !== undefined ? opacity : 1,
           ...style,
         }}
         onClick={e => {
