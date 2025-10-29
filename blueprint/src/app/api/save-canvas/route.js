@@ -5,12 +5,12 @@ import { existsSync } from 'fs';
 
 export async function POST(request) {
   try {
-    const { pages, userId, filename } = await request.json();
+    const { pages, selectedPageID, nextPageID, nextWidgetId, userId, filename } = await request.json();
 
     // Validate inputs
-    if (!pages || !userId || !filename) {
+    if (!pages || selectedPageID === undefined || nextPageID === undefined || nextWidgetId === undefined || !userId || !filename) {
       return NextResponse.json({ 
-        error: 'Missing required fields: pages, userId, or filename' 
+        error: 'Missing required fields: pages, selectedPageID, nextPageID, nextWidgetId, userId, or filename' 
       }, { status: 400 });
     }
 
@@ -29,7 +29,7 @@ export async function POST(request) {
     const filePath = path.join(userDir, fullFilename);
 
     // Write the JSON file
-    await writeFile(filePath, JSON.stringify(pages, null, 2), 'utf-8');
+    await writeFile(filePath, JSON.stringify({ pages, selectedPageID, nextPageID, nextWidgetId }, null, 2), 'utf-8');
 
     console.log(`[Save Canvas] Saved pages to ${filePath}`);
 

@@ -40,8 +40,9 @@ export default function History(parent) {
             undoStack.push(recordState());
             
             // Save to temp.json whenever history is pushed
+            // Use setTimeout to ensure React state updates have completed
             if (savePagesToJSON) {
-                savePagesToJSON("1", "temp");
+                setTimeout(() => savePagesToJSON(), 0);
             }
         }
     }
@@ -68,7 +69,7 @@ export default function History(parent) {
         
         // Save to temp.json after undo
         if (savePagesToJSON) {
-            savePagesToJSON("1", "temp");
+            savePagesToJSON();
         }
     }
 
@@ -84,7 +85,7 @@ export default function History(parent) {
         
         // Save to temp.json after redo
         if (savePagesToJSON) {
-            savePagesToJSON("1", "temp");
+            savePagesToJSON();
         }
     }
 
