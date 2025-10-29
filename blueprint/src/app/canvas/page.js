@@ -57,6 +57,14 @@ export default function CanvasPage() {
   
   // Ref to hold the savePagesToJSON function
   const savePagesToJSONRef = useRef(null);
+  
+  // Helper function to get cookie value by name
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  };
 
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
@@ -98,7 +106,10 @@ export default function CanvasPage() {
       },
       
       // Pass savePagesToJSON via ref so it can save automatically
-      savePagesToJSON: () => savePagesToJSONRef.current?.("1", "temp")
+      savePagesToJSON: () => {
+        const userId = getCookieValue('UserCookie');
+        savePagesToJSONRef.current?.(userId);
+      }
     })
   }, []);
 
@@ -207,8 +218,11 @@ export default function CanvasPage() {
    * The file will be saved to: users/{userId}/{filename}.json.
    * This will be used to store the temp file for active editing.
    */
-  const savePagesToJSON = async (userId = "user", filename = "canvas_pages") => {
+  const savePagesToJSON = async (filename = "temp") => {
     try {
+      // Get userId from UserCookie if not provided
+      const effectiveUserId = getCookieValue('UserCookie') || '1';
+      
       const response = await fetch('/api/save-canvas', {
         method: 'POST',
         headers: {
@@ -216,7 +230,7 @@ export default function CanvasPage() {
         },
         body: JSON.stringify({
           pages,
-          userId,
+          userId: effectiveUserId,
           filename
         })
       });
@@ -225,6 +239,7 @@ export default function CanvasPage() {
 
       if (response.ok) {
         console.log(`Saved pages to server: ${result.path}`);
+        setIsSaved(true); // Mark as saved
         // Only show alert on manual save (not auto-save)
         if (filename !== "temp") {
           alert(`Pages saved successfully to ${result.path}`);
@@ -243,7 +258,39 @@ export default function CanvasPage() {
     }
   };
   
-  // Update the ref whenever savePagesToJSON changes
+  /** Conner Childers, 10/29/2025
+   * Manual save function to save pages data to database.
+   * Called when user presses Ctrl+S or Cmd+S.
+   * Sends the current pages state directly to the database.
+   */
+  const saveToDatabase = async () => {
+    try {
+      const userId = getCookieValue('UserCookie') || '1';
+      
+      // TODO: Replace '%SITEID%' with actual site ID
+      const response = await fetch('api/website?site_id=%SITEID%', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pages)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log('Successfully saved to database:', result);
+        setIsSaved(true);
+        alert('Project saved successfully!');
+      } else {
+        console.error('Error saving to database:', result.error);
+        alert(`Failed to save: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error saving to database:', error);
+      alert(`Error saving: ${error.message}`);
+    }
+  };
   savePagesToJSONRef.current = savePagesToJSON;
 
   /** Christopher Parsons, 9/18/2025
@@ -284,12 +331,11 @@ export default function CanvasPage() {
       }
 
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
-        console.log("Saving");
+        console.log("Manual save triggered");
         e.preventDefault();
-        setIsSaved(true); // Mark as saved
+        // Save pages data to database
+        saveToDatabase();
       }
-
-      // Do NOT delete widgets on Backspace/Delete anymore.
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
         e.preventDefault();
