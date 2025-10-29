@@ -1,13 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/users/:path*',
-        destination: '/api/serve-user-file/:path*',
-      },
-    ];
-  },
-};
+const nextConfig = {};
 
 export default nextConfig;

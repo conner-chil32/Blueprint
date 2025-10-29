@@ -1,6 +1,9 @@
 import { validateConnection } from "./utility.js";
 import { encryptString } from "./utility.js";
 import { connection } from "./connection.js";
+import { User } from "./user.js";
+import { getCookie } from "@root/api/CookieController.js";
+import { getSiteByID } from "./siteQueries.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -93,5 +96,23 @@ export async function createAccountWithPhone(user, password, email, phone, secur
 export async function getUserByUsername(username) {
     if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
-    return result;
+    return new User (result[0]);
+}
+
+export async function validateUser(req) {
+    const user = getCookie(req, 'TempCookie');
+
+    if (await getUserByID(user).length != 0){
+        return true;
+    } else {
+        throw false;
+    }
+}
+
+export async function validateSite(site_id) {
+    if ((await getSiteByID(site_id)).length == 0) {
+        return true;
+    } else {
+        throw false;
+    }
 }

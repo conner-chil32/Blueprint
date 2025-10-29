@@ -19,7 +19,7 @@ import { MenuScroll } from "../components/widgets/MenuScroll";
  * 
  * Updates the current state of the inputted widget in React.
  */
-export function WidgetRenderer({ staticRender=false, widget, onClick, recordState, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty, style }) {
+export function WidgetRenderer({ staticRender=false, widget, onClick, alertDragStop, isSelected, onDragStart, onDragStop, scale, changeWidgetProperty, style }) {
 
   /**
    * Render the correct type of widget.
@@ -31,35 +31,29 @@ export function WidgetRenderer({ staticRender=false, widget, onClick, recordStat
     ...widget,
     onClick,
     alertDragStop,
-    onDragStart,
-    onDragStop,
     isSelected,
     staticRender,
-    recordState,
-    scale,
-    style,
   };
 
   switch (widget.type) {
     case 'box':
-      return <Box key={widget.id} {...common} />;
+      return <Box staticRender={staticRender} key={widget.id} {...widget} onClick={onClick} alertDragStop={alertDragStop} isSelected={isSelected} onDragStart={onDragStart} onDragStop={onDragStop} scale={scale} style={style} />;
     case "video":
-      return <Video key={widget.id} {...common} />;
+      return <Video {...common} />;
     case "dropdown":
       return <Dropdown 
-                key={widget.id} {...common}
                 {...common}
                 onValueChange={(v) => changeWidgetProperty(widget.id, { value: v })}
                 changeWidgetProperty={changeWidgetProperty}
             />;
     case "advert":
-      return <Advert key={widget.id} {...common} />;
+      return <Advert {...common} />;
     
     case "hyperlink":
-      return <Hyperlink key={widget.id} {...common} />;
+      return <Hyperlink {...common} />;
 
     case "menuScroll":
-      return <MenuScroll key={widget.id} {...common} changeWidgetProperty={changeWidgetProperty} />;
+      return <MenuScroll {...common} changeWidgetProperty={changeWidgetProperty} />;
   
     default:
       console.warn("Warning: Unknown widget type:", widget.type);

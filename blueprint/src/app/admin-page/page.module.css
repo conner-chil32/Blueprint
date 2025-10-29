@@ -1,109 +1,99 @@
-.root{
-    --info-color: #d9d9d9;
-    --button-color: #ffffff;
-    --text-color: #000000;
+.container {
+  width: 80%;
+  max-width: 1200px;
+  background: #666;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  gap: 15px;
+  transform: translateY(150px);
 }
 
-.quickView {
-    margin-top: 100px;
-    color: var(--text-color);
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    /* ensures both sides match height */
-    gap: 20px;
-    width: 80%;
-}
+  .box {
+    background: #888;
+    padding: 15px;
+    border-radius: 10px;
+  }
 
-.topRow {
-    display: flex;
-    gap: 20px;
+  .listelement {
+    background: #4d4d4d;
+    padding: 15px;
+    border-radius: 10px;
+    align-items: flex-start;
+  }
+  
+  .logo {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    background: white;
+    color: black;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .statusSummary div {
+    background: #aaa;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 5px;
+  }
+  
+  .userSummary input,
+  .accountList div {
+    background: white;
+    color: black;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
     width: 100%;
-}
-
-.cell {
-    background-color: var(--light-grey);
-    border-radius: var(--border-weight);
+    box-sizing: border-box;
+  }
+  
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .actions button {
+    width: 100%;
     padding: 10px;
-    flex: 1;
-    /* Share space equally */
-    text-align: left;
-}
-
-.cell h1{
+    border: none;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #000000;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .modifyAccounts input {
+    width: 100%;
+    padding: 10px;
     margin-bottom: 10px;
-}
-
-.ActionButtonsList{
-    display: flex;
-    flex-direction: column;
-}
-
-.infoText {
-   color: #000000;
-}
-
-.infoText dt{
-    margin: 10px;
-    background-color: var(--text-background);
-    border-radius: var(--border-weight);
-    padding: 10px;
+    border-radius: 5px;
+    border: none;
+  }
+  
+  .addAccount {
+    background: #ffffff;
     color: #000000;
-}
-
-.leftSide {
-    flex: 1;
+  }
+  
+  .graphContainer {
+    grid-column: span 3;
+    background: #777;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 250px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    color: #000000;
-}
-
-.rightSide {
-    flex: 0 1 300px; /*when this is changed the right side user search box tends to take up too much real estate*/
-    /* or however narrow you want */
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    color: #000000;
-}
-
-.accountList dt{
-    margin: 15px 10px 30px 10px;
-    background-color: white;
-    border-radius: var(--border-weight);
-    padding: 10px 10px 50px 10px;
-    text-align: left;
-}
-
-.searchUser {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .searchUser {
     background-color: var(--text-background);
     border-radius: var(--border-weight);
     padding: 15px;
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(to right, var(--dark-blue), var(--bg-color)) fixed;
-  background-attachment: fixed;
-  background-size: cover;
-  text-align: center;
-  align-items: center;
-  font-family: var(--global-font), sans-serif;
-  color: var(--text-color);
-}
-
-.mainContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 80px 20px 60px;
-  min-height: calc(100vh - 70px);
-  justify-content: flex-start;
-}
+  }

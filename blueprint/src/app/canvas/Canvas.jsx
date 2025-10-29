@@ -8,13 +8,16 @@ import React from "react";
 /** Christopher Parsons, 9/18/2025
  * Inputs:
  *  widgets: array
+ *  isPlacing: Boolean
  *  isDragging: Boolean
+ *  widgetToPlace: Widget
  *  selectedWidgets: array
  *  setSelectedWidgets: function
  *  setIsDragging: function
  *  updateWidget: function
  *  scale: number
  *  setScale: function
+ *  setTransformCoords: function
  *  currentPage: Page
  *  canvasRef: JSX Reference
  *  handleCanvasClick: function
@@ -22,20 +25,23 @@ import React from "react";
  * Returns the central part of the page. An interface for manipulating the page itself
  * and positioning widgets.
  */
-export function Canvas({ widgets, recordState, changeWidgetProperty, isDragging, selectedWidgets, setSelectedWidgets,
-    setIsDragging, updateWidget, scale, setScale, currentPage, canvasRef, handleCanvasClick }) {
+export function Canvas({ widgets, changeWidgetProperty, isPlacing, isDragging, widgetToPlace, selectedWidgets, setSelectedWidgets,
+    setIsDragging, updateWidget, scale, setScale, setTransformCoords, currentPage, canvasRef, handleCanvasClick }) {
 
     return (
         /* The wrapper that applies react-zoom-pan-pinch's attributes to the draggable component */
         <TransformWrapper
             initialScale={1}
-            disabled={isDragging}
+            // initialPositionX={0}
+            // initialPositionY={0}
+            disabled={isPlacing || isDragging}
             limitToBounds={false}
             panning={{ velocityDisabled: true }}
             minScale={0.05}
-            // Keep track of scale
+            // Keep track of zoom transform and scale
             onTransformed={({ state }) => {
                 setScale(state.scale);
+                setTransformCoords({ posX: state.positionX, posY: state.positionY });
             }}
         >
             {/* Canvas area, a window to view the current page */}
@@ -72,18 +78,18 @@ export function Canvas({ widgets, recordState, changeWidgetProperty, isDragging,
                                             setSelectedWidgets([widget]);
                                             console.log("Selected widget: " + widget.id);
                                         }}
-                                        onDragStart={() => {
-                                            setIsDragging(true);
-                                        }}
-                                        onDragStop={() => {
-                                            setIsDragging(false);
-                                        }}
+                                        onDragStart={() => setIsDragging(true)}
+                                        onDragStop={() => setIsDragging(false)}
                                         alertDragStop={updateWidget}
                                         changeWidgetProperty={changeWidgetProperty}
                                         scale={scale}
-                                        recordState={recordState}
                                     />
                                 ))}
+
+                            {/* If placing a widget, render it at the mouse position */}
+                            {isPlacing && widgetToPlace && (
+                                <WidgetRenderer key={"placing-" + widgetToPlace.id} widget={widgetToPlace} scale={scale} />
+                            )}
                         </div>
                     </div>
                 </TransformComponent>

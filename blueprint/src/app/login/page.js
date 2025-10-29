@@ -21,6 +21,8 @@ import Navbar from "../components/navbar"
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; 
 import { useState } from "react";
+import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
 export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
@@ -60,7 +62,9 @@ export default function SignUpPage() {
       const data = await res.json();
       if (data.success) {//debug messages can remove later or simplify for end user
         setMessage("Logged in successfully!");
-        e.target.reset();
+        setTimeout(5000); //in this time, cookies are set to denote user has signed in
+        window.location.href = "/";
+        //redirect to set cookie
       } else {
         setMessage("Failed: " + (data.error || "Unknown error"));
       }

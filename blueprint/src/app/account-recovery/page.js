@@ -7,7 +7,7 @@ export default function Recovery() {
         <>
             <Navbar />
             <div className={styles.loginContainer}>
-                <img src="images/pog_web_logo.png" alt="pog web design logo" className={styles.logo}></img>
+                <img src="images/pog_web_logo.png" className={styles.logo}></img>
                 <AccountCollecter currentPage="/recovery" />
             </div>
         </>

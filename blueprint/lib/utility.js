@@ -57,14 +57,16 @@ export function parse() {
 export async function validateConnection() {
     try {
         console.log("[DB] Validating connection to database...");
-        if (connection.state === "disconnected" || !connection) {
-            await closeConnection();
-            throw false;
+        if (connection === undefined || !connection) {
+            if (connection.state !== undefined) {
+                await closeConnection(); //close connection
+            }
+            throw "Invalid Connection"; //reject the promise with a false
         } else {
             return true;
         }
     } catch (err) {
-        throw false;
+        throw {error: err};
     }
 }
 

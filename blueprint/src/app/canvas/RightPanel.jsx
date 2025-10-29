@@ -22,8 +22,7 @@ import HTMLExport from "./HtmlExport";
  */
 export function RightPanel({
     changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
-    pages, selectedPageID, setSelectedPageID, currentPage, createPage,
-    changePageProperty, recordState }) {
+    pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty}) {
     const [buttonSelected, setButtonSelected] = useState(false);
 
   /** Christopher Parsons, 9/18/2025
@@ -46,15 +45,11 @@ export function RightPanel({
       <button className={styles.switchButton} onClick={handleButtonClick}>Switch</button>
 
       {/* False = widget properties. True = page properties */}
-      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} recordState={recordState} />
+      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} />
         : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />}
     </div>
 
   );
-}
-
-function downloadMediaToDisk(url, filepath) {
-
 }
 
 /** Christopher Parsons, 9/18/2025
@@ -67,8 +62,7 @@ function downloadMediaToDisk(url, filepath) {
  * Returns a series of controls for the manipulation of
  * widgets.
  */
-function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget, recordState }) {
-
+function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget }) {
   // Render the selected widgets panel
   if (selectedWidgets && selectedWidgets.length > 0) {
     // If something is selected
@@ -113,12 +107,8 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 min="0"
                 max="360"
                 value={widget.rotation || 0}
-                onMouseDown={e => 
-                  recordState()
-                }
                 onChange={e =>
-                  // Change the rotation without updating history
-                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) }, true)
+                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) })
                 }
               />
 
@@ -224,61 +214,6 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                       changeWidgetProperty(widget.id, { videoUrl: e.target.value || null })
                     }
                   />
-
-                  <p>Or upload a local video:</p>
-                  <input
-                    type="file"
-                    accept="video/*"
-                    onChange={async (e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        // Show loading state with temporary object URL
-                        const tempUrl = URL.createObjectURL(file);
-                        changeWidgetProperty(widget.id, { videoUrl: tempUrl, uploading: true });
-
-                        try {
-                          // Upload to server
-                          const formData = new FormData();
-                          formData.append('video', file);
-                          
-                          // Hardcoded subdirectory
-                          formData.append('subdirectory', '1'); // subdirectory ID = userID
-                                                                // hardcoded for now
-
-                          const response = await fetch('/api/upload-video', {
-                            method: 'POST',
-                            body: formData,
-                          });
-
-                          if (!response.ok) {
-                            throw new Error('Upload failed');
-                          }
-
-                          const data = await response.json();
-                          
-                          // Update with server URL and clear loading state
-                          URL.revokeObjectURL(tempUrl);
-                          changeWidgetProperty(widget.id, { 
-                            videoUrl: data.videoUrl,
-                            uploading: false 
-                          });
-
-                          console.log('[Video Upload] Success:', data.filename);
-                        } catch (error) {
-                          console.error('[Video Upload] Error:', error);
-                          alert('Failed to upload video. Please try again.');
-                          URL.revokeObjectURL(tempUrl);
-                          changeWidgetProperty(widget.id, { 
-                            videoUrl: widget.videoUrl || null,
-                            uploading: false 
-                          });
-                        }
-                      }
-                      // Reset file input
-                      e.target.value = '';
-                    }}
-                  />
-                  {widget.uploading && <p style={{color: '#4CAF50'}}>Uploading...</p>}
   
                   <label
                   style={{
@@ -471,18 +406,6 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                   value={widget.borderColor || "#333333"}
                   onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
                 />
-
-                <div style={{marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #555'}}>
-                  <p><b>Advanced (Placeholder)</b></p>
-                  <p>Ad Service Code Snippet:</p>
-                    <textarea
-                      placeholder="Paste ad code snippet here (e.g., from Google AdSense)"
-                      value={widget.adSnippet || ""}
-                      onChange={e => changeWidgetProperty(widget.id, { adSnippet: e.target.value })}
-                      style={{ width: '100%', minHeight: '100px', fontFamily: 'monospace', fontSize: '12px' }}
-                    />
-                </div>
-
               </>
             )}
           </div>

@@ -6,10 +6,8 @@ import { NextResponse } from 'next/server';
  * @param {NextResponse} name 
  * @param {NextResponse} value 
  */
-export function setCookie(res, name, value) {
-    res.cookies.set(name, value, {
-        // Settings for the cookie
-    });
+export function setCookie(res, name, value, options={}) {
+    res.cookies.set(name, value, options);
 }
 
 /** Chris Parsons
@@ -21,7 +19,6 @@ export function setCookie(res, name, value) {
 export function getCookie(req, name) {
     const cookie = req.cookies.get(name);
     if (!cookie) return null;
-
     return cookie.value;
 }
 

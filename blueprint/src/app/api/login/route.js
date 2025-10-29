@@ -2,27 +2,37 @@ import { NextResponse } from 'next/server';
 import { createAccount, createAccountWithPhone } from '@lib/userQueries';
 import { openConnection, closeConnection, connection } from '@lib/connection'; 
 import { validateConnection } from '@lib/utility';
-import { encryptData, loginWordpress } from '@lib/user';
-import { User } from '@lib/user';
+import { loginUser, loginWordpress, User, setLoginCookie} from '@lib/user';
+import { getCookie, setCookie } from '../CookieController';
 
 export async function POST(request) {//Handles sending user form data to database via user queries calls, is called in /signup/page.js
   try {
+    const res = NextResponse.json({ success: true }, { status: 302 }); //prepared successful response
     const { username, password } = await request.json();
 
-    let valid = await validateConnection(connection);
+    await validateConnection(); //if connection is not valid, catch is executed
 
-    if (!valid) {
-      return NextResponse.json(//error thrown if no db/connection
-        { success: false, error: "No DB connection" },
-        { status: 500 }
-      );
-    }
+    const user = await loginUser(username,password); //check if the password matches the user in database
 
-    let result = await encryptData(username,password);
-    loginWordpress(username, password);
-    return NextResponse.json({ success: true, result });//return if successful
+    switch (getCookie(request, 'TempCookie')) {
+      case 'LoggedAgain':
+        break;
+      case 'LoggedIn':
+        setCookie(res, 'TempCookie', 'LoggedAgain');
+        break;
+      default: //if there exists 
+        setCookie(res, 'TempCookie', 'LoggedIn');
+        setCookie(res, 'UserCookie', user);
+        break;
+    } 
+    
+    //user is assumed to have logged in successfully
+     //set user cookie to id of user
+
+    loginWordpress(request, username, password);
+    return res;
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });//return if failed
+    return NextResponse.json({ success: false, error: err.error }, { status: 401 });//return if failed
   }
 }

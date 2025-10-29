@@ -8,13 +8,13 @@
 }*/
 
 const features = {
-    label: "features", 
+    label: "Features", 
     href: "/features", 
     className: "nav-button",    //className included for the nav bar
 }
 
 const pricing = {
-    label: "pricing", 
+    label: "Pricing", 
     href: "/pricing", 
     className: "nav-button"     //className included for the nav bar
 }
@@ -28,7 +28,7 @@ const logo = {
 }
 
 const login = {
-    label: "login", 
+    label: "Login", 
     href: "/login", 
     className: "nav-button"     //className included for the nav bar
 }
@@ -46,7 +46,7 @@ const admin_page = {
 }
 
 const canvas = {
-    label: "canvas",
+    label: "Canvas",
     href: "/canvas", 
     className: "nav-button" 
 }
@@ -93,26 +93,10 @@ const wordpress_test = {
     className: "nav-button" 
 }
 
-const payment = {
-    label: "buy now",
-    href: "/payment",
-    className: "nav-button"
-}
 
-const account_recovery = {
-    label: "account-recovery",
-    href: "/account-recovery",
-    className: "nav-button"
-}
-
-const admin_details = {
-    label: "admin-details",
-    href: "/admin-detailed",
-    className: "nav-button"
-}
 
 const navtest = {
-    label: "navtest",
+    label: "Navtest",
     href: "/navtest",
     className: "nav-button"
 }
@@ -131,9 +115,9 @@ const library = {
     recovery:recovery,
     signup:signup,
     userwebbackend:userwebbackend,
-    payment:payment,
-    account_recovery:account_recovery,
-    admin_details:admin_details,
+/*    wordpress_CRUD:wordpress_CRUD,
+    wordpress_test:wordpress_test,
+*/
 
     navtest:navtest
 }

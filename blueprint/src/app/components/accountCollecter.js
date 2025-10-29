@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 */
 function UserField() {
     return (
-        <div className = {styles.userFieldContainer} data-testid="username">
+        <div className = {styles.userFieldContainer}>
             <input name = "username" placeholder = "Enter Username" type = "text" className={styles.userField} id = "login_username"></input>
         </div>
     )
@@ -24,7 +24,7 @@ function UserField() {
 */
 function PasswField() {
     return (
-        <div className = {styles.passFieldContainer} data-testid="password">
+        <div className = {styles.passFieldContainer}>
             <input name = "password" className={styles.passField} placeholder="Enter Password" type = "password" id = "login_username"></input>
         </div>
     );

@@ -30,8 +30,5 @@ NEXT_PUBLIC_WP_AUTH key must be in base64 form and held in .env.local
 
 //src/app/api/testenv/route.js
 export async function GET() {
-    return new Response(
-      JSON.stringify({ auth: process.env.NEXT_PUBLIC_WP_AUTH }),
-      { status: 200 }
-    );
-  }
+    // return NextResponse(fetch('https://blueprint-wordpress:')
+}

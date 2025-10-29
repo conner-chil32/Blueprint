@@ -13,24 +13,24 @@ import {
 } from './userQueries.js';
 import { Website } from './website.js';
 
-import {bcrypt} from 'bcrypt'; 
+import bcrypt from 'bcrypt'; 
+import { setCookie } from '@root/api/CookieController.js';
 
 export class User {
-    constructor() {
-        this.id = null;
-        this.userName = '';
-        this.userPassHash = '';
-        this.userWpName = '';
-        this.userWpPassHash = '';
-        this.userEmail = '';
-        this.userPhone = '';
-        this.userWebsites = 0;
-        this.userDateCreated = null;
-        this.userLastLogin = null;
-        this.isAdmin = false;
-        this.loggedIn = false;
-        this.userQuestion = '';
-        this.userAnswer = '';
+    constructor(result) {
+        this.id = result?.userID;
+        this.userName = result?.userName;
+        this.userPassHash = result?.userPassHash;
+        this.userWpName = result?.userWpName;
+        this.userWpPassHash = result?.userWpPassHash;
+        this.userEmail = result?.userEmail;
+        this.userPhone = result?.userPhone;
+        this.userWebsites = result?.userWebsites;
+        this.userDateCreated = result?.userDateCreated;
+        this.userLastLogin = result?.userLastLogin;
+        this.isAdmin = result?.isAdmin;
+        this.userQuestion = result?.userQuestion;
+        this.userAnswer = result?.userAnswer;
     }
 
     /**
@@ -245,13 +245,6 @@ export class User {
     }
 
     /**
-     * Check if user is already logged in
-     * @returns {boolean} true if logged in, false otherwise
-     */
-    isLoggedIn() {
-        return this.loggedIn;
-    }
-    /**
      * Handles errors from the database
      * @param {Error} error The error to handle
      * @returns {string} A not found message
@@ -268,28 +261,28 @@ export class User {
  * @param {string} password The password to authenticate
  * @returns {boolean} true if login is successful, false otherwise
  */
-export async function encryptData(username, password) {
+export async function loginUser(username, password) {
     try {
-        if (this.isLoggedIn()) return true; //If user already logged in
-        
         const user = await getUserByUsername(username);
 
-        if (!user) return false; // If user not found, return false
+
+        if (user == undefined || user.id == undefined) throw "Invalid Username or Password"; // If user not found, return false
 
         const storedUsername = user.userName;
         const storedPassword = user.userPassHash;
 
+
         const match = await bcrypt.compare(password,storedPassword);
 
+        console.log(match);
+
         if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
-            this.loggedIn = true; 
-            return true;
+            return user.id;
         } else {
-            return false;
+            throw "Invalid Username or Password"
         }
     } catch (err) {
-        console.error(err);
-        return false;
+        throw {error: err};
     }
 }
 
@@ -321,21 +314,17 @@ export async function registerWordpress(username, password, email) {
         
 }
 
-export async function loginWordpress(username, password) {
+export async function loginWordpress(res, username, password) {
     const requestOptions = {
         method: "POST",
         redirect: "follow"
     };
 
-    fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
+    fetch(`http://${address}:80/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
-        sessionStorage.setItem("WP_TOKEN", result["token"])
+        sessionStorage.setItem('WPToken',result)
         console.log("token set")
     })
     .catch((error) => console.error(error));
 }
-
-
-
-export default User;

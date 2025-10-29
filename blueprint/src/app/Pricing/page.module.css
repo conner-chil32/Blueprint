@@ -1,0 +1,125 @@
+/* Main Body Styles */
+.body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, var(--dark-blue), var(--bg-color)) fixed;
+  background-attachment: fixed;
+  background-size: cover;
+  text-align: center;
+  font-family: var(--global-font), sans-serif;
+  color: var(--text-color);
+}
+
+  
+  /* Main Content Styles */
+  .mainContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 80px 20px 60px; /* Top padding for navbar */
+    min-height: calc(100vh - 70px);
+    justify-content: flex-start;
+  }
+  
+  .title {
+    font-size: 56px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: var(--text-color);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  
+  /* Plans Section */
+  .plans {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    max-width: 1200px;
+    padding: 0 20px;
+    animation: fadeIn 1.2s ease-out forwards;
+    opacity: 0; /* For animation */
+  }
+  
+  .planCard {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    padding: 30px;
+    border-radius: 16px;
+    width: 250px;
+    min-height: 300px;
+    height: auto;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 1.2s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .planCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+  
+  .plan h2 {
+    margin: 15px 0 10px;
+    font-weight: 600;
+    font-size: 24px;
+  }
+  
+  .plan p {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .plan ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+  }
+  
+  .plan ul li {
+    margin-bottom: 15px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .planIcon {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: var(--accent);
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .plans {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .planCard {
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+  
+    .title {
+      font-size: 36px;
+    }
+  }
