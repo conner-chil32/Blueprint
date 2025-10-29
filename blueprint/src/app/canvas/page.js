@@ -65,6 +65,55 @@ export default function CanvasPage() {
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
   };
+  
+  /** Conner Childers, 10/29/2025
+   * Loads temp.json if it exists when the page first loads.
+   * This restores the user's previous work session.
+   */
+  const loadTempJSON = async () => {
+    try {
+      const userId = getCookieValue('UserCookie') || 'user';
+      
+      // TODO: Replace with actual API endpoint to read temp.json
+      const response = await fetch(`/api/load-canvas?userId=${userId}&filename=temp`);
+      
+      if (!response.ok) {
+        // If temp.json doesn't exist or there's an error, just use default state
+        console.log('No temp.json found or error loading, using default state');
+        return;
+      }
+      
+      const data = await response.json();
+      
+      if (data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
+        console.log('Loaded temp.json successfully');
+        setPages(data.pages);
+        
+        // Restore other state if available
+        if (data.selectedPageID !== undefined) {
+          setSelectedPageID(data.selectedPageID);
+        }
+        if (data.nextPageID !== undefined) {
+          setNextPageID(data.nextPageID);
+        }
+        if (data.nextWidgetId !== undefined) {
+          setNextWidgetId(data.nextWidgetId);
+        }
+        
+        setIsSaved(true);
+      }
+    } catch (error) {
+      console.error('Error loading temp.json:', error);
+      // Silently fail and use default state
+    }
+  };
+  
+  /** Conner Childers, 10/29/2025
+   * Load temp.json on initial page mount
+   */
+  useEffect(() => {
+    loadTempJSON();
+  }, []);
 
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
