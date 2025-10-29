@@ -52,6 +52,69 @@ export default function CanvasPage() {
     nextWidgetId,
   });
 
+  // Save status tracking
+  const [isSaved, setIsSaved] = useState(true);
+  
+  // Ref to hold the savePagesToJSON function
+  const savePagesToJSONRef = useRef(null);
+  
+  // Helper function to get cookie value by name
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  };
+  
+  /** Conner Childers, 10/29/2025
+   * Loads temp.json if it exists when the page first loads.
+   * This restores the user's previous work session.
+   */
+  const loadTempJSON = async () => {
+    try {
+      const userId = getCookieValue('UserCookie') || 'user';
+      
+      // TODO: Replace with actual API endpoint to read temp.json
+      const response = await fetch(`/api/load-canvas?userId=${userId}&filename=temp`);
+      
+      if (!response.ok) {
+        // If temp.json doesn't exist or there's an error, just use default state
+        console.log('No temp.json found or error loading, using default state');
+        return;
+      }
+      
+      const data = await response.json();
+      
+      if (data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
+        console.log('Loaded temp.json successfully');
+        setPages(data.pages);
+        
+        // Restore other state if available
+        if (data.selectedPageID !== undefined) {
+          setSelectedPageID(data.selectedPageID);
+        }
+        if (data.nextPageID !== undefined) {
+          setNextPageID(data.nextPageID);
+        }
+        if (data.nextWidgetId !== undefined) {
+          setNextWidgetId(data.nextWidgetId);
+        }
+        
+        setIsSaved(true);
+      }
+    } catch (error) {
+      console.error('Error loading temp.json:', error);
+      // Silently fail and use default state
+    }
+  };
+  
+  /** Conner Childers, 10/29/2025
+   * Load temp.json on initial page mount
+   */
+  useEffect(() => {
+    loadTempJSON();
+  }, []);
+
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
    */
@@ -89,6 +152,12 @@ export default function CanvasPage() {
         setSelectedPageID(recordedState.selectedPageID);
         setNextPageID(recordedState.nextPageID);
         setNextWidgetId(recordedState.nextWidgetId);
+      },
+      
+      // Pass savePagesToJSON via ref so it can save automatically
+      savePagesToJSON: () => {
+        const userId = getCookieValue('UserCookie');
+        savePagesToJSONRef.current?.(userId, "temp");
       }
     })
   }, []);
@@ -101,6 +170,7 @@ export default function CanvasPage() {
   function recordState() {
     console.log("Pushing history:", history.current);
     history.current?.pushHistory();
+    setIsSaved(false); // Mark as unsaved when state changes
   }
 
   /** Christopher Parsons, 9/18/2025
@@ -133,8 +203,6 @@ export default function CanvasPage() {
    * it was before, but with a new page added.
    */
   const createPage = () => {
-    recordState();
-
     setPages([
       ...pages,
       {
@@ -149,6 +217,9 @@ export default function CanvasPage() {
     setSelectedPageID(nextPageID);
     console.log('Created page', nextPageID);
     setNextPageID(nextPageID + 1);
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   /** 
@@ -166,19 +237,110 @@ export default function CanvasPage() {
       console.log('Cannot delete the last page');
       return;
     }
-    recordState();
 
     setPages(prev => prev.filter(page => page.id !== pageId));
     if (selectedPageID === pageId) {
       setSelectedPageID(pages[0].id);
     }
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   // Update page name
   const updatePageName = (pageId, newName) => {
-    recordState();
     setPages(prev => prev.map(page => page.id === pageId ? { ...page, name: newName } : page));
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
+
+  /** Conner Childers, 10/27/2025
+   * Inputs:
+   *  userId: string (optional) - User identifier for the directory
+   *  filename: string (optional) - Custom filename for the JSON file
+   *  pages: pages variable
+   * Outputs:
+   *  none
+   * 
+   * Saves the pages variable to a JSON file on the server in the users directory.
+   * The file will be saved to: users/{userId}/{filename}.json.
+   * This will be used to store the temp file for active editing.
+   */
+  const savePagesToJSON = async (userId = null, filename = "canvas_pages") => {
+    try {
+      // Get userId from UserCookie if not provided
+      const effectiveUserId = userId || getCookieValue('UserCookie') || 'user';
+      
+      const response = await fetch('/api/save-canvas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pages,
+          userId: effectiveUserId,
+          filename
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(`Saved pages to server: ${result.path}`);
+        setIsSaved(true); // Mark as saved
+        // Only show alert on manual save (not auto-save)
+        if (filename !== "temp") {
+          alert(`Pages saved successfully to ${result.path}`);
+        }
+      } else {
+        console.error('Error saving pages:', result.error);
+        if (filename !== "temp") {
+          alert(`Failed to save pages: ${result.error}`);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving pages to JSON:', error);
+      if (filename !== "temp") {
+        alert(`Error saving pages: ${error.message}`);
+      }
+    }
+  };
+  
+  /** Conner Childers, 10/29/2025
+   * Manual save function to save pages data to database.
+   * Called when user presses Ctrl+S or Cmd+S.
+   * Sends the current pages state directly to the database.
+   */
+  const saveToDatabase = async () => {
+    try {
+      const userId = getCookieValue('UserCookie') || '1';
+      
+      // TODO: Replace '%SITEID%' with actual site ID
+      const response = await fetch(`api/website?site_id=%SITEID%`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pages)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log('Successfully saved to database:', result);
+        setIsSaved(true);
+        alert('Project saved successfully!');
+      } else {
+        console.error('Error saving to database:', result.error);
+        alert(`Failed to save: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error saving to database:', error);
+      alert(`Error saving: ${error.message}`);
+    }
+  };
+  savePagesToJSONRef.current = savePagesToJSON;
 
   /** Christopher Parsons, 9/18/2025
    * Inputs:
@@ -217,7 +379,12 @@ export default function CanvasPage() {
         history.current?.redo();
       }
 
-      // Do NOT delete widgets on Backspace/Delete anymore.
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        console.log("Manual save triggered");
+        e.preventDefault();
+        // Save pages data to database
+        // saveToDatabase();
+      }
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
         e.preventDefault();
@@ -229,7 +396,7 @@ export default function CanvasPage() {
     return () => {
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
-  }, []);
+  }, [pages, savePagesToJSON]);
 
 
   /** Christopher Parsons, 9/18/2025
@@ -295,7 +462,6 @@ export default function CanvasPage() {
    * string fed in. Advances nextWidgetID + 1.
    */
   const createWidget = (typeToMake) => {
-    recordState();
     let newWidget = null;
     const nextId = nextWidgetId;
 
@@ -313,9 +479,69 @@ export default function CanvasPage() {
           backgroundColor: '#cccccc',
           pointerEventsNone: false,
           rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
         };
         break;
-
+      case 'circle':
+          newWidget = {
+          type: 'circle',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
+      case 'triangle':
+          newWidget = {
+          type: 'triangle',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
+          case 'polygon':
+          newWidget = {
+          type: 'polygon',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+                    borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
       case 'video':
         newWidget = {
           type: 'video',
@@ -443,6 +669,9 @@ export default function CanvasPage() {
     setNextWidgetId((prevId) => prevId + 1);
     setWidgets([...widgets, newWidget]);
     setSelectedWidgets([newWidget]);
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -454,10 +683,12 @@ export default function CanvasPage() {
    * but without the designated widget.
    */
   function deleteWidget(id) {
-    recordState();
     console.log('Deleting widget', id);
     setWidgets(widgets.filter(widget => widget.id !== id));
     deselectAllWidgets();
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   }
 
   /** Christopher Parsons, 9/18/2025
@@ -484,7 +715,6 @@ export default function CanvasPage() {
    * with a modified attribute.
    */
   function changePageProperty(pageID, newProperties) {
-    recordState();
     const changedPages = pages.map(page =>
       // If this is the correct widget, then update the object
       page.id === pageID ? { ...page, ...newProperties }
@@ -492,6 +722,9 @@ export default function CanvasPage() {
     );
 
     setPages(changedPages);
+    
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   }
 
   return (
@@ -520,6 +753,7 @@ export default function CanvasPage() {
               createPage={createPage}
               updatePageName={updatePageName}
               deletePage={deletePage}
+              isSaved={isSaved}
             />
           </header>
 
@@ -606,7 +840,7 @@ export default function CanvasPage() {
 /** 
  * 
  */
-function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage }) {
+function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage, isSaved }) {
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
 
@@ -629,8 +863,9 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '10px 0' }}>
-      {pages.map(page => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflowX: 'auto', padding: '10px 0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto' }}>
+        {pages.map(page => (
         <div
           key={page.id}
           style={{
@@ -677,8 +912,18 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
             🗑️
           </span>
         </div>
-      ))}
-      <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+        ))}
+        <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+      </div>
+      <div style={{ 
+        marginLeft: 'auto', 
+        paddingRight: '20px', 
+        fontSize: '14px',
+        color: isSaved ? '#10b981' : '#f59e0b',
+        fontWeight: '500'
+      }}>
+        {isSaved ? '✓ Saved' : '● Unsaved changes'}
+      </div>
     </div>
   );
 }
