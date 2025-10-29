@@ -7,7 +7,7 @@ export function Circle({ scale, ...props }) {
       {...props}
       style={{
         borderRadius: "50%", 
-        aspectRatio: "1 / 1",
+        //aspectRatio: "1 / 1",
         backgroundColor: props.backgroundColor || '#cccccc',
       }}
       scale={scale}

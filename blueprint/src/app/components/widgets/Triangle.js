@@ -31,22 +31,20 @@ export function Triangle({ scale, ...props }) {
       scale={scale}
       useOuterBorderFrame={false}
       style={{
-        width,
-        height,
-        position: 'relative',
+        // width,
+        // height,
+        // position: 'relative',
         backgroundColor: 'transparent', // no box fill
       }}
     >
       <svg
-        width={width}
-        height={height}
+        width="100%"
+        height="100%"
         viewBox={`0 0 ${width} ${height}`}
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
-          width: '100%',
-          height: '100%',
           //transform: `rotate(${rotation || 0}deg)`,
           opacity: opacity ?? 1,
           pointerEvents: 'none',
@@ -59,7 +57,6 @@ export function Triangle({ scale, ...props }) {
           stroke={strokeColor}                  // border color
           strokeWidth={strokeWidth}             // border width
           strokeDasharray={strokeDasharray}
-          vectorEffect="non-scaling-stroke"
         />
       </svg>
     </Widget>

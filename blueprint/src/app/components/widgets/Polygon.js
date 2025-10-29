@@ -59,10 +59,10 @@ export function Polygon({ scale, ...props }) {
         // width,
         // height,
         // position: 'relative',
-        aspectRatio: '1 / 1',
-        width,
-        height,
-        position: 'relative',
+        //aspectRatio: '1 / 1',
+        // width,
+        // height,
+        // position: 'relative',
       }}
     >
       {/* Polygon clip path independent of selection */}
@@ -82,14 +82,14 @@ export function Polygon({ scale, ...props }) {
         />
       {/* Code for border outline */}
       <svg
-        width={width}
-        height={height}
+        width='100%'
+        height='100%'
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio='none'
         style={{
           position: 'absolute',
           left: 0,
           top: 0,
-          width: '100%',
-          height: '100%',
           //transform: `rotate(${rotation || 0}deg)`,
           opacity: opacity ?? 1,
           pointerEvents: 'none',
@@ -103,7 +103,6 @@ export function Polygon({ scale, ...props }) {
           strokeWidth={strokeWidth}
           strokeDasharray={strokeDasharray}
           strokeLinejoin="miter"
-          vectorEffect="non-scaling-stroke"
         />
       </svg>
     </Widget>

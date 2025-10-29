@@ -131,6 +131,12 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
     const sizeWidth = (width / pageWidth) * 100;
     const sizeHeight = (height / pageHeight) * 100;
 
+    // Sanatize certain attributes we don't want in the html
+    const newStyle = { ...style };
+    if ('aspectRatio' in newStyle) {
+      delete newStyle.aspectRatio;
+    }
+
     return (
       <div
         key={id}
@@ -147,11 +153,12 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
               ? 'none'
               : `${borderWidth ?? 1}px ${borderStyle ?? 'solid'} ${borderColor ?? '#000'}`,
           boxSizing: 'border-box',
-          cursor: 'grab',
           isMoving: isMoving,
           pointerEvents: pointerEventsNone ? 'none' : 'auto',
           opacity: opacity !== undefined ? opacity : 1,
           ...style,
+          ...newStyle,
+          cursor: 'default',
         }}
         onClick={e => {
           // Prevent click from bubbling up to the canvas
