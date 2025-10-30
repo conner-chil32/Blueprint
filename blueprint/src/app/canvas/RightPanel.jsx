@@ -87,12 +87,11 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
             <button
               className={styles.deleteButton}
               onClick={() => {
-                selectedWidgets.forEach(widget => {
-                  console.log('Deleting ', widget)
-                  deleteWidget(widget.id);
-                })
+                const ids = selectedWidgets.map(widget => widget.id);
+                console.log('Deleting ', ids);
+                deleteWidget(ids);
               }}
-            >Delete Selected Widget</button>
+            >Delete Selected Widgets</button>
           </div>
           {/* Menu to change widgets */}
           {selectedWidgets.map((widget) =>{
