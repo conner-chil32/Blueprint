@@ -136,18 +136,32 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
     if ('aspectRatio' in newStyle) {
       delete newStyle.aspectRatio;
     }
+    delete newStyle.position;
+    delete newStyle.left;
+    delete newStyle.top;
+    delete newStyle.right;
+    delete newStyle.bottom;
+    delete newStyle.inset;
+    delete newStyle.width;
+    delete newStyle.height;
+    delete newStyle.maxWidth;
+    delete newStyle.maxHeight;
+    delete newStyle.minWidth;
+    delete newStyle.minHeight;
+    delete newStyle.transform;
+    delete newStyle.cursor;
 
     return (
       <div
         key={id}
         style={{
           position: 'absolute',
-          left: `${fromLeft}%`,
-          top: `${fromTop}%`,
+          left: `${x}px`,
+          top: `${y}px`,
+          width: `${width}px`,
+          height: `${height}px`,
           transform: `rotate(${rotation || 0}deg)`,
           transformOrigin: '50% 50%',
-          width: `${sizeWidth}%`,
-          height: `${sizeHeight}%`,
           border:
             useOuterBorderFrame === false //user outerborderframe is set to false for non rectangular objects to prevent border rendering errors.
               ? 'none'
@@ -156,7 +170,6 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
           isMoving: isMoving,
           pointerEvents: pointerEventsNone ? 'none' : 'auto',
           opacity: opacity !== undefined ? opacity : 1,
-          ...style,
           ...newStyle,
           cursor: 'default',
         }}

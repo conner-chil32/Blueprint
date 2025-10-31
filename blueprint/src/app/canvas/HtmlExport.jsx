@@ -36,47 +36,55 @@ export default function HTMLExport(page) {
             </head>
 
             <body style={{
-                width: "100dvw",
-                height: "100dvh",
-                display: "grid",
-                placeItems: "center",
+                margin: 0,
                 backgroundColor: pageToExport.backgroundColor,
             }}>
                 <div
                     id="exporting-page"
                     style={{
-                        position: "relative",
-                        aspectRatio: pageToExport.width / pageToExport.height,
-                        width: `min(100vw, calc(100vh * ${pageToExport.width / pageToExport.height}))`,
-                        height: "auto",
+                        width: "100vw",
+                        height: "100svh",
+                        overflow: "auto",
+                        display: "grid",
+                        placeItems: "center",
                     }}>
-                    <div style={{
-                        position: "absolute",
-                        inset: 0,
-                        boxSizing: "border-box",
-                        transformOrigin: "top left",
-                    }}>
-                        {/* Render the page */}
-                        <div>
-                            {/* Render each widget as a static object */}
-                            {pageToExport.widgets?.map((widget) => (
-                                <WidgetRenderer
-                                    bounds="parent"
-                                    staticRender={true}
-                                    key={widget.id}
-                                    widget={widget}
-                                    isSelected={false}
-                                    onClick={() => { undefined }}
-                                    onDragStart={undefined}
-                                    onDragStop={undefined}
-                                    alertDragStop={undefined}
-                                    scale={1}
-                                    changeWidgetProperty={() => { }}
-                                    style={widget.style}
-                                    pageWidth={pageToExport.width}
-                                    pageHeight={pageToExport.height}
-                                />
-                            ))}
+                    <div
+                        id="wrapper"
+                        style={{
+                            display: "inline-block",
+                            transformOrigin: "top left",
+                        }}>
+                        <div
+                            id="viewport"
+                            style={{
+                                position: "relative",
+                                width: `${pageToExport.width}px`,
+                                height: `${pageToExport.height}px`,
+                                boxSizing: "border-box",
+                                transformOrigin: "top left",
+                            }}>
+                            {/* Render the page */}
+                            <div>
+                                {/* Render each widget as a static object */}
+                                {pageToExport.widgets?.map((widget) => (
+                                    <WidgetRenderer
+                                        bounds="parent"
+                                        staticRender={true}
+                                        key={widget.id}
+                                        widget={widget}
+                                        isSelected={false}
+                                        onClick={() => { undefined }}
+                                        onDragStart={undefined}
+                                        onDragStop={undefined}
+                                        alertDragStop={undefined}
+                                        scale={1}
+                                        changeWidgetProperty={() => { }}
+                                        style={widget.style}
+                                        pageWidth={pageToExport.width}
+                                        pageHeight={pageToExport.height}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
