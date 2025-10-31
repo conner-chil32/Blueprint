@@ -2,8 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import React from 'react'
 import Recovery from '@/app/account-recovery/page'
 
-//4 hours 10/24: 12-4
-//0.5 hours 10/25: 9:30 - 10
 
 describe('Recovery Page', () => {
 
@@ -19,7 +17,7 @@ describe('Recovery Page', () => {
 
     test('Checking if username box loads', ()=>{
         render(<Recovery />);
-        //expect(screen.getByTestId('username')).toBeInTheDocument();
+        
         const userbox = screen.getByRole('textbox');
         expect(userbox).toBeInTheDocument();
         expect(userbox).toHaveAttribute('class', 'userField');
@@ -31,6 +29,7 @@ describe('Recovery Page', () => {
 
     test('Checking if Recovery button loads',()=>{
         render(<Recovery />);
+        
         const reset = screen.getByRole('button',{name:"Send Reset Link",exact:false});
         expect(reset).toBeInTheDocument();
         expect(reset).toHaveAttribute('type','submit');
