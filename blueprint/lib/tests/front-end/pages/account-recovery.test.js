@@ -2,8 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import React from 'react'
 import Recovery from '@/app/account-recovery/page'
 
-//4 hours 10/24: 12-4
-//0.5 hours 10/25: 9:30 - 10
 
 describe('Recovery Page', () => {
 
@@ -19,28 +17,23 @@ describe('Recovery Page', () => {
 
     test('Checking if username box loads', ()=>{
         render(<Recovery />);
-        expect(screen.getByTestId('username')).toBeInTheDocument();
-    });
-
-    test('Checking if password box loads', ()=>{
-        render(<Recovery />);
-        expect(screen.getByTestId('password')).toBeInTheDocument();
+        
+        const userbox = screen.getByRole('textbox');
+        expect(userbox).toBeInTheDocument();
+        expect(userbox).toHaveAttribute('class', 'userField');
+        expect(userbox).toHaveAttribute('id', 'recover_email');
+        expect(userbox).toHaveAttribute('name','email');
+        expect(userbox).toHaveAttribute('placeholder','Enter Your Email Address');
+        expect(userbox).toHaveAttribute('type','email');
     });
 
     test('Checking if Recovery button loads',()=>{
         render(<Recovery />);
-        expect(screen.getByRole('button',{name:"Recover",exact:false})).toBeInTheDocument();
+        
+        const reset = screen.getByRole('button',{name:"Send Reset Link",exact:false});
+        expect(reset).toBeInTheDocument();
+        expect(reset).toHaveAttribute('type','submit');
+        expect(reset).toHaveAttribute('class','accountSubmit submit-button')
+
     });
-
-/*      10/25/25: removing test as button leads to a 404 error 
-    test('Checking Recover button redirects to /recovery',()=>{
-        render(<Recovery />);
-
-
-        expect(getByRole('link')).toHaveTextContent('Recover')
-        expect(getByRole('link')).toHaveProperty('href', '/recovery')
-    });
-    
-    //verify Recover button goes to the right place
-*/
 });
