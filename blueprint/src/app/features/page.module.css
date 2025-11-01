@@ -1,90 +1,160 @@
-
+/* page.module.css */
 /* Features Section Styles */
+
 .featuresSection {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: auto; /* Push section toward bottom */
-    padding-top: 50px; /*Add space from the heading */
-  }
-     
-  .featuresSection h3 {
-    margin-bottom: 30px;
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-  }
-     
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.featuresSection::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(114,211,96,0.08), transparent 70%);
+  z-index: 0;
+}
+
+.featuresSection h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-color);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  z-index: 2;
+}
+
+.featuresGrid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1800px;
+  padding: 0 60px;
+  z-index: 2;
+}
+
+/* Feature Card Styles */
+.featureCard {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  width: 240px;
+  min-height: 200px;
+  color: var(--card-text);
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 40px 30px;
+  font-weight: 500;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: fadeUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.featureCard:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 0 25px rgba(114, 211, 96, 0.4);
+  border-color: var(--accent);
+}
+
+.featureIcon {
+  font-size: 42px;
+  margin-bottom: 15px;
+  transition: transform 0.4s ease, filter 0.4s ease;
+  color: var(--light-blue);
+}
+
+.featureCard:hover .featureIcon {
+  transform: scale(1.15) rotate(5deg);
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+
+.featureText {
+  font-size: 16px;
+  margin: 0;
+  width: 100%;
+  line-height: 1.5;
+  color: var(--text-color);
+}
+
+/* Titles */
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 100px 20px 60px;
+  min-height: calc(100vh - 70px);
+  justify-content: flex-start;
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.mainContent h1 {
+  font-size: 60px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 15px;
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mainContent h2 {
+  font-size: 24px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  margin-bottom: 80px;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll Reveal */
+.featuresSection.hidden {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.featuresSection.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
   .featuresGrid {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap; /* Changed from nowrap to wrap */
-    gap: 30px;
-    max-width: 2040px;/* This is over the standard px of a monitor, but doesnt seem to effect the layout other than if you set it too low, tested on 1080p, 1440p vertical, and 4k*/
-    padding: 0 20px;
-    overflow: hidden; /* Hide both horizontal and vertical scrollbars */
-  }
-     
-  .featureCard {
-    background-color: white;
-    color: black;
-    padding: 30px 20px;
-    border-radius: 12px;
-    width: 180px;
-    height: 180px; /* Increased height to fit all text */
-    font-weight: 600;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s;
-    flex-shrink: 0;
-  }
-     
-  .featureCard:hover {
-    background-color: #f0f0f0;
-  }
-     
-  .featureText {
-    font-size: 14px;
-    margin: 0; 
-    width: 100%; /* Ensure text takes full width of container */
-  }
-  
-  /* Main Content Styles */
-  .mainContent {
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 60px 20px;
-    min-height: 80vh; /* Make content area taller */
-    justify-content: space-between; /* Distribute content to push features down */
+    gap: 25px;
   }
-     
-  .mainContent h1 {
-    font-size: 48px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: white;
+
+  .featureCard {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
   }
-     
-  .mainContent h2 {
-    font-size: 20px;
-    font-weight: 400;
-    margin-bottom: 50px;
-    color: white;
-  }
-  
-  .body {
-    display: block;
-    justify-content: unset;
-    align-items: unset;
-    background-color: #555;
-    font-family: var(--global-font), sans-serif;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-  }
+
+  .mainContent h1 { font-size: 38px; }
+  .mainContent h2 { font-size: 18px; }
+}

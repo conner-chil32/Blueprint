@@ -8,6 +8,7 @@ import { useState } from "react";
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const infoBoxes = [
     {
@@ -17,16 +18,6 @@ export default function SignUpPage() {
     {
       id: 'email',
       text: "Email"
-    },
-    {
-      id: 'password1',
-      text: "Password",
-      type: "password"
-    },
-    {
-      id: 'password2',
-      text: "Re-enter Password",
-      type: "password"
     },
     {
       id: 'phone' ,
@@ -56,12 +47,23 @@ export default function SignUpPage() {
     const marketing = formData.get("marketing") === "Yes";
     const securityQuestion = formData.get("securityQuestion");
     const securityAnswer = formData.get("securityAnswer");
+    
+
 
     if (password1 !== password2) {//error if passwords dont match
       setMessage("Passwords do not match.");
       setLoading(false);
       return;
     }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#\$%&!]).{8,}$/;
+
+    if (!passwordRegex.test(password1)) {
+      setMessage("Password does meet requirements.");
+      setLoading(false);
+      return;
+    }
+
 
     try {
       const res = await fetch("/api/signup", {
@@ -99,16 +101,20 @@ export default function SignUpPage() {
       <div className={styles.body}>
         <div className={`${styles.bodySection} ${styles.createSection}`}>
           <form onSubmit={handleSubmit}>
-            {infoBoxes.map((box) => (
+            {infoBoxes.filter(b => b.id !== 'phone').map((box) => (
               <div key={box.id} className={styles.infoBox}>
-                <input
-                  type={box.type || "text"}
-                  name={box.id}
-                  placeholder={box.text}
-                  required={box.id !== "phone"}
-                />
+                <input type={box.type || "text"} name={box.id} placeholder={box.text} required/>
               </div>
             ))}
+            <div className={styles.infoBox}>
+              <input type={showPassword ? "text" : "password"} name="password1" placeholder="Password" required/>
+            </div>
+            <div className={styles.infoBox}>
+              <input type={showPassword ? "text" : "password"} name="password2" placeholder="Re-enter Password" required />
+            </div>
+            <div className={styles.infoBox}>
+              <input type="text" name="phone" placeholder="Phone Number (Optional)" />
+            </div>
             <div className={styles.infoBox}>
               <select name="securityQuestion" className = {styles.selectInput} required>
                 <option value="">Select a security question</option>
@@ -125,12 +131,25 @@ export default function SignUpPage() {
                 required
               />
             </div>
+            <div>
+              <label className={styles.showPasswordToggle}>
+                <input
+                  type="checkbox"
+                  onChange={() => setShowPassword(!showPassword)}
+                /> Show Password
+              </label>
+            </div>
             <input type="checkbox" id="marketing" name="marketing" value="Yes"/>
             <label> I am interested in future marketing</label><br />
             <button className="submit-button" type="submit" disabled={loading}>
               {loading ? "Creating..." : <>CREATE <br/> ACCOUNT</>}
             </button>
             {message && <div className={styles.message}>{message}</div>}
+            <div style={{ textAlign: 'center', marginTop: '15px' }}>
+              <a href="/account-recovery" style={{ color: 'white', textDecoration: 'underline' }}>
+                Forgot Username/Password?
+              </a>
+            </div>
           </form>
         </div>
         <div className={`${styles.bodySection} ${styles.reqsSection}`}>

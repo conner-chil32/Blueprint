@@ -3,6 +3,12 @@
 import { useEffect, useState, useRef } from "react";
 import styles from './page.module.css';
 
+/** Christopher Parsons, 9/18/2025
+ * Inputs:
+ *  createWidget: function
+ * 
+ * Returns an interface for creating widget types.
+ */
 export function LeftPanel({ createWidget }) {
     return (
         <div>
@@ -22,6 +28,9 @@ export function LeftPanel({ createWidget }) {
 
           <div className={styles.sectionTitle}>Shapes</div>
           <button className={styles.categoryItem} onClick={() => createWidget('box')}>Box</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('circle')}>Circle</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('triangle')}>Triangle</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('polygon')}>Polygon</button>
           <button className={styles.categoryItem}>Forms</button>
           <button className={styles.categoryItem}>Images</button>
         </div>

@@ -1,5 +1,6 @@
 import { connection, closeConnection } from "./connection.js";
 import { getUserByID } from "./userQueries.js";
+import bcrypt from 'bcrypt';
 /*
     commit() - commits the current transaction to the database
     Input: none
@@ -67,3 +68,17 @@ export async function validateConnection() {
     }
 }
 
+export async function encryptString(string) {
+    const saltRounds = Number(process.env.PASSWORD_SALT_ROUNDS);
+    
+    //encrypt the thing
+    const saltedString = await bcrypt.hash(string, saltRounds);
+   
+    //return false if encryption failed
+    if (string === saltedString) 
+    {
+        throw false;
+    } else { //return the encrypted string
+        return saltedString;
+    }
+}

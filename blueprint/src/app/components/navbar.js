@@ -1,21 +1,70 @@
-import CreateButton from "./CreateRouteButton.js"
-import CreateImage from "./CreateRouteImage.js"
+"use client";
+
+import CreateButton from "./CreateRouteButton.js";
+import CreateImage from "./CreateRouteImage.js";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
-    return (
-      <div className = "topBarBackground">
+  const [theme, setTheme] = useState("dark");
+
+  // Load saved theme
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    } else {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  }, []);
+
+  // Apply & persist theme
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
+  return (
+    <>
+      {/* Cloud layer div for Dawn Mode */}
+      <div className="cloud-layer"></div>
+
+      <div className="topBarBackground">
         <div className="navbar">
-        <div className="nav-left">
+          {/* Left Side */}
+          <div className="nav-left">
             <CreateImage code="logo" />
             <CreateButton code="features" />
             <CreateButton code="pricing" />
             <CreateButton code="canvas" />
+          </div>
 
-        </div>
-        <CreateButton code='navtest' />
-        <CreateButton code="login" />
+          {/* Right Side */}
+          <div className="nav-right">
+            <CreateButton code="navtest" />
+            <CreateButton code="login" />
+
+            {/* Theme Toggle */}
+            <div className="theme-toggle">
+              <input
+                type="checkbox"
+                id="theme-switch"
+                checked={theme === "light"}
+                onChange={toggleTheme}
+              />
+              <label htmlFor="theme-switch" className="toggle-label">
+                <span className="toggle-knob">
+                  {theme === "light" ? "🌅" : "🌌"}
+                </span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
-    )
-  }
-//remove line 13 when testing complete
+    </>
+  );
+}
