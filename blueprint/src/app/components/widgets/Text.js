@@ -61,6 +61,7 @@ export function Text(props) {
     <Widget
       {...rest}
       id={id}
+      dragCancelSelector=".text-editor, textarea"
       // Forward any onDoubleClick passed by WidgetRenderer;
       // if not provided, fall back to our own that toggles editing.
       onDoubleClick={onDoubleClick ?? enterEditing}
@@ -73,6 +74,7 @@ export function Text(props) {
     >
       {!isEditing && (
         <div
+          className="text-content"
           // IMPORTANT: do NOT disable pointer events here,
           // so the Widget container can receive clicks/double-clicks.
           style={{
@@ -108,6 +110,7 @@ export function Text(props) {
 
       {isEditing && (
         <div
+          className="text-editor"
           // Prevent drag/move & selection changes while editing.
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}

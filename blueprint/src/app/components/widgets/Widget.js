@@ -32,7 +32,7 @@ import { useState } from 'react';
  * the widget itself.
  */
 export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone,
-  onDragStart, onDrag, onDragStop, scale, recordState, opacity, borderWidth, borderColor, borderStyle, useOuterBorderFrame, onDoubleClick }) {
+  onDragStart, onDrag, onDragStop, scale, recordState, opacity, borderWidth, borderColor, borderStyle, useOuterBorderFrame, onDoubleClick, dragCancelSelector }) {
   const [previousPosition, setPreviousPosition] = useState({ x: 0, y: 0 });
   const handleResize = (e, direction, refToElement, delta, position) => {
     alertDragStop && alertDragStop(id, position.x, position.y, { width: parseInt(refToElement.style.width, 10), height: parseInt(refToElement.style.height, 10) });
@@ -45,6 +45,7 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
       bounds="parent"
       enableResizing={isSelected ? undefined : false}
       disableDragging={!isSelected}
+      cancel={dragCancelSelector || undefined}
       // Update live
       onResize={(e, direction, refToElement, delta, position) => {
         handleResize(e, direction, refToElement, delta, position);
