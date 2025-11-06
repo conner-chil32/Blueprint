@@ -95,7 +95,7 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
           </div>
           {/* Menu to change widgets */}
           {selectedWidgets.map((widget) =>{
-            const isShape =
+            const borderWhitelist =
               widget.type === 'box' ||
               widget.type === 'circle' ||
               widget.type === 'triangle' ||
@@ -109,7 +109,7 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 value={widget.backgroundColor || "#cccccc"}
                 onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
               />
-              {isShape && (
+              {borderWhitelist && (
                 <>
                   <p>Border Color:</p>
                   <input
@@ -509,6 +509,24 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 </>
               );
             })()}
+            {widget.type === 'html' && (
+              <>
+                <p>HTML (inline CSS allowed):</p>
+                <textarea
+                  value={widget.html || ""}
+                  onChange={e => changeWidgetProperty(widget.id, { html: e.target.value })}
+                  style={{ width: '100%', minHeight: 140, fontFamily: 'monospace' }}
+                />
+                <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+                 <input
+                   // type="checkbox"
+                    //checked={!!widget.sandbox}
+                    //onChange={e => changeWidgetProperty(widget.id, { sandbox: e.target.checked })}
+                  />
+                   {/*Render in sandboxed iframe (safer)*/}
+                </label>
+              </>
+            )}
             {/* Customizable polygon controls */}
             {widget.type === 'polygon' && (
               <>

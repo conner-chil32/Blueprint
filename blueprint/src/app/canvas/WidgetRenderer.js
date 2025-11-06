@@ -7,6 +7,7 @@ import { Dropdown } from "../components/widgets/Dropdown";
 import { Advert } from "../components/widgets/Advert";
 import { Hyperlink } from '../components/widgets/Hyperlink';
 import { MenuScroll } from "../components/widgets/MenuScroll";
+import { CustomHTML } from "../components/widgets/CustomHTML";
 
 /** Christopher Parsons, 9/18/2025
  *  Angel Ramirez
@@ -65,7 +66,15 @@ export function WidgetRenderer({ staticRender=false, widget, onClick, recordStat
 
     case "menuScroll":
       return <MenuScroll key={widget.id} {...common} changeWidgetProperty={changeWidgetProperty} />;
-  
+    case "html":
+      return (
+        <CustomHTML
+          key={widget.id}
+          {...common}
+          html={widget.html}
+          sandbox={!!widget.sandbox}
+        />
+      );
     default:
       console.warn("Warning: Unknown widget type:", widget.type);
       return null;

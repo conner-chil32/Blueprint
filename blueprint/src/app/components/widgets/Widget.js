@@ -31,7 +31,7 @@ import { useState } from 'react';
  * the widget's size and position. The div contains all fields needed for React to render 
  * the widget itself.
  */
-export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDrag, onDragStop, scale, recordState, opacity, borderWidth, borderColor, borderStyle, useOuterBorderFrame }) {
+export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDrag, onDragStop, scale, recordState, opacity, borderWidth, borderColor, borderStyle, useOuterBorderFrame, dragHandleClassName, header }) {
   const [previousPosition, setPreviousPosition] = useState({ x: 0, y: 0 });
   const handleResize = (e, direction, refToElement, delta, position) => {
     alertDragStop && alertDragStop(id, position.x, position.y, { width: parseInt(refToElement.style.width, 10), height: parseInt(refToElement.style.height, 10) });
@@ -44,6 +44,7 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
       bounds="parent"
       enableResizing={isSelected ? undefined : false}
       disableDragging={!isSelected}
+      dragHandleClassName={dragHandleClassName}
       // Update live
       onResize={(e, direction, refToElement, delta, position) => {
         handleResize(e, direction, refToElement, delta, position);
@@ -109,9 +110,12 @@ export function Widget({ id, x, y, width, height, isSelected, isMoving, rotation
           onClick && onClick(e);
         }}
       >
+        {/* Optional widget header/drag handle */}
+        {header}
         {/* Actual widget */}
         {children}
       </div>
     </Rnd>
   );
 }
+

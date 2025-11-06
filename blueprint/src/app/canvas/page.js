@@ -608,7 +608,7 @@ export default function CanvasPage() {
           objectFit: 'contain',
         };
         break;
-
+      
       case 'dropdown':
         newWidget = {
           type: 'dropdown',
@@ -698,7 +698,26 @@ export default function CanvasPage() {
           selectedValue: 'Menu Item 1', // Default to the first item
         };
         break;
-
+      
+      case 'html':
+        newWidget = {
+          type: 'html',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 320,
+          height: 200,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: 'transparent',
+          opacity: 1.0,
+          pointerEventsNone: false,
+          rotation: 0,
+          // custom props:
+          html: "<div style='padding:12px;border:2px dashed #555;background:#fafafa;border-radius:8px'>Inline <b>HTML</b> works here.</div>",
+          sandbox: false, // toggle to true for iframe isolation
+        };
+      break;
       default:
         console.warn('Warning: Unknown widget type: ' + typeToMake);
         return;
@@ -871,7 +890,15 @@ export default function CanvasPage() {
   function changeWidgetProperty(widgetID, newProperties, dontUpdate) {
     setWidgets(prev =>
       prev.map(current => (current.id === widgetID ? { ...current, ...newProperties } : current))
-    )
+    );
+
+    // Keep the selection array in sync so controlled inputs (like Custom HTML)
+    // receive the latest value immediately and don't reset user cursor position.
+    setSelectedWidgets(prev =>
+      prev && prev.length > 0
+        ? prev.map(sel => (sel.id === widgetID ? { ...sel, ...newProperties } : sel))
+        : prev
+    );
 
     if (!dontUpdate) recordState();
   }
