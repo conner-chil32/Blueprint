@@ -297,7 +297,7 @@ export async function registerWordpress(username, password, email) {
     console.log("[WP] Registering Wordpress");
 
 
-    await fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${process.env.DB_USER}&password=${process.env.DB_PASSWORD}`, {
+    await fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${process.env.WORDPRESS_DATABASE_USER}&password=${process.env.WORDPRESS_DATABASE_PASSWORD}`, {
         method: "POST",
         redirect: "follow"
     })

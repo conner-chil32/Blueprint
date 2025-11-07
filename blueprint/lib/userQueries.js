@@ -1,6 +1,7 @@
 import { validateConnection } from "./utility.js";
 import { encryptString } from "./utility.js";
 import { connection } from "./connection.js";
+import { registerWordpress } from "./user.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -60,7 +61,7 @@ export async function createAccount(user, password, email, securityQuestion, sec
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userWpName, userWpPassHash, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, user, loginHash, securityQuestion, securityAnswer]);
-    //registerWordpress(user, loginHash);
+    registerWordpress(user, loginHash, email);
     return result;
 }
 
@@ -93,7 +94,7 @@ export async function createAccountWithPhone(user, password, email, phone, secur
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userWpName, userWpPassHash, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, phone, user, loginHash, securityQuestion, securityAnswer]);
-    //registerWordpress(user, loginHash);
+    registerWordpress(user, loginHash, email);
     return result;
 }
 
