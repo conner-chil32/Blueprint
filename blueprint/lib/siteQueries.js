@@ -86,16 +86,16 @@ export async function getSitesByUser(userId) {
  */
 export async function getSiteCount(id) {
     var result;
+    console.log(id);
     try {
         await validateConnection();
-        [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites WHERE userID=?;`, [id]);
+        [result] = await connection.query(`SELECT COUNT(*) as 'siteCount' FROM userWebsites WHERE userID=?;`, [id]);
     } catch (err) {
+        console.log(err);
         throw undefined;
     }
-    return result;
-    // if (!await validateConnection()) return false;
-    // const [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites;`)
-    // return result;
+    console.log(result[0]?.siteCount);
+    return result[0]?.siteCount;
 }
 
 /**
@@ -111,13 +111,13 @@ export async function createSite(name, userId) {
     try {
         await validateConnection();
         await connection.query(`INSERT INTO userWebsites (websiteName, userID) VALUES (?, ?);`, [name, userId]);
-        await commit();
-        validateSiteCreated = await getSiteByName(name);
+        const validatedSiteCreated = (await getSiteByName(name))[0]?.siteID;
+        console.log(validatedSiteCreated);
+        return validatedSiteCreated;
     } catch (err) {
         console.log(err)
         throw false;
     }
-    return validateSiteCreated;
     // if (!await validateConnection()) return false;
     // await connection.query(`INSERT INTO userWebsites (websiteName, website_user_id) VALUES (?, ?);`, [name, userId]);
     // return await commit(connection);

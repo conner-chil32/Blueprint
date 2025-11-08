@@ -29,7 +29,7 @@ export async function POST(request) {//Handles sending user form data to databas
     //user is assumed to have logged in successfully
      //set user cookie to id of user
 
-    loginWordpress(request, username, password);
+    // loginWordpress(request, username, password);
     return res;
   } catch (err) {
     console.error(err);

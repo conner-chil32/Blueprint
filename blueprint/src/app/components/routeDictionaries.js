@@ -101,6 +101,12 @@ const navtest = {
     className: "nav-button"
 }
 
+const logout = {
+    label: "Logout",
+    href: "/api/logout",
+    className: "nav-button"
+}
+
 const library = {
     features: features,
     pricing: pricing,
@@ -119,6 +125,7 @@ const library = {
     wordpress_test:wordpress_test,
 */
 
-    navtest:navtest
+    navtest:navtest,
+    logout:logout
 }
 export { library };

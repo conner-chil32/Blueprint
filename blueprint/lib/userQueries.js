@@ -4,6 +4,7 @@ import { connection } from "./connection.js";
 import { User } from "./user.js";
 import { getCookie } from "@root/api/CookieController.js";
 import { getSiteByID } from "./siteQueries.js";
+import { registerWordpress } from "./user.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -81,7 +82,7 @@ export async function createAccountWithPhone(user, password, email, phone, secur
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userWpName, userWpPassHash, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, phone, user, loginHash, securityQuestion, securityAnswer]);
-    //registerWordpress(user, loginHash);
+    // await registerWordpress(user, loginHash);
     return result;
 }
 
@@ -99,10 +100,19 @@ export async function getUserByUsername(username) {
     return new User (result[0]);
 }
 
-export async function validateUser(req) {
-    const user = getCookie(req, 'UserCookie');
+/**
+ * validateUser - retrieves the user id from cookie "UserCookie" if the id is valid
+ * Input: req - the http request object
+ * Ouput: string - the user primary key in the database
+ * Error: Exception - user validation failed
+ */
+export async function validateUser(request) {
+    //get user cookie and check database if user is seen in database
+    const user = getCookie(request, 'UserCookie');
     if (user === null) throw "Could not validate user";
     const validationCheck = ((await getUserByID(user)).length != 0);
+    
+    //if valid return the user id
     if (validationCheck){
         return user;
     } else {
@@ -110,10 +120,30 @@ export async function validateUser(req) {
     }
 }
 
+/**
+ * validateUser - retrieves the user id from cookie "UserCookie" if the id is valid
+ * Input: site - the http request object
+ * Ouput: string - the id of the site
+ * Error: Exception - site validation failed
+ */
 export async function validateSite(site_id) {
-    if ((await getSiteByID(site_id)).length != 0) {
-        return true;
-    } else {
+    try {
+        if ((await getSiteByID(site_id)).length <= 0) { //checks if there are sites under the site's id
+            return site_id; //returns the id of the site
+        } else {
+            throw "Could not validate site";
+        }
+    } catch {
         throw "Could not validate site";
+    }
+}
+
+export async function validateUserSite(user_id, site_id) {
+    try {
+        await validateSite(site_id);
+        await validateUser(user_id);
+        return true;
+    } catch {
+        throw "Could not validate the User Site"
     }
 }

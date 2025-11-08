@@ -1,15 +1,17 @@
 'use server'
 
 import { createMedia } from "@lib/siteQueries";
-import { validateUser, validateSite } from "@lib/userQueries";
+import { validateUser, validateSite, validateUserSite } from "@lib/userQueries";
 import { useRouter } from "next/router";
 import { NextResponse  } from "next/server";
 
-export async function POST(request, {site_id}) {
-    const params = new URLSearchParams(request.url); //get the parameter name (user)
-    const jsonpage = params.get('media_data');
+export async function POST(request) {
+    const params = new URLSearchParams(new URL(request.url)); //get the parameter name (user)
+    const body = await request.body.json();
 
-    if (((pages_name !== undefined && jsonpage !== undefined && site_id !== undefined) && await validateUser(request) && await validateSite(site_id))) return NextResponse({message: "Unauthorized User"}, 401); 
-
-
+    if (await validateUserSite(request, params?.get('site_id'))) {
+        
+    } else {
+        return NextResponse({message: "Could not Save Media"}, 401); 
+    }
 }

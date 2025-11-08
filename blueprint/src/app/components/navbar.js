@@ -5,9 +5,13 @@ import CreateImage from "./CreateRouteImage.js"
 import { useState, useEffect } from 'react';
 
 export default function Navbar() {
+  const [loginStatus, setloginStatus] = useState(false);
   const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
+    const cookies = document.cookie.split('; ');
+    const loggedInCookie = cookies.find(cookie => cookie.startsWith('UserCookie'));
+    if (loggedInCookie !== undefined) setloginStatus(true);
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
@@ -26,7 +30,7 @@ export default function Navbar() {
         </div>
         <div className="nav-right">
           <CreateButton code='navtest' />
-          <CreateButton code="login" />
+          <CreateButton code={loginStatus ? 'logout' : 'login'} />
           <div className="theme-toggle">
             <input 
               type="checkbox" 
