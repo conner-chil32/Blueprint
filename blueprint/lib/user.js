@@ -300,7 +300,8 @@ export async function registerWordpress(username, password, email) {
     
     try {
         // Log in with admin credentials
-        const response = await fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, {
+        const tokenUrl = `${wordpressBase}/wp-json/jwt-auth/v1/token`;
+        const response = await fetch(tokenUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
