@@ -109,11 +109,9 @@ export async function getSiteCount(id) {
 export async function createSite(name, userId) {
     var validateSiteCreated;
     try {
-        await validateConnection();
+        await validateConnection()
         await connection.query(`INSERT INTO userWebsites (websiteName, userID) VALUES (?, ?);`, [name, userId]);
-        const validatedSiteCreated = (await getSiteByName(name))[0]?.siteID;
-        console.log(validatedSiteCreated);
-        return validatedSiteCreated;
+        await commit(connection);
     } catch (err) {
         console.log(err)
         throw false;
@@ -158,11 +156,7 @@ export async function deleteSite(siteId) {
 export async function updateSite(id, siteName, json = {}) {
     try {
         await validateConnection();
-        if ( siteName == undefined || siteName == "" || json == {}) {
-            throw "Site Unchanged";
-        }
-        await connection.query(`UPDATE userWebsites SET websiteName=? WHERE siteID = ?;`, 
-            [siteName, id]);
+        await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateUpdated=NOW()  WHERE siteID = ?;`, [name, id]);
         await commit();
     } catch (err) {
         console.error(err);

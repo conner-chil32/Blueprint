@@ -1,0 +1,139 @@
+/* Main Layout */
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 100px 20px 60px;
+  min-height: calc(100vh - 70px);
+  justify-content: flex-start;
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* Title */
+.title {
+  font-size: 60px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 60px;
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Plans Section */
+.plans {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  max-width: 1200px;
+  padding: 0 20px;
+  animation: fadeIn 1.2s ease-out forwards;
+  opacity: 0;
+}
+
+/* Plan Cards (glass style) */
+.planCard {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--card-text);
+  padding: 40px 30px;
+  border-radius: 20px;
+  width: 250px;
+  min-height: 320px;
+  height: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: fadeUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Hover Effect */
+.planCard:hover {
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 0 30px rgba(114, 211, 96, 0.5);
+  border-color: var(--accent);
+}
+
+/* Icon */
+.planIcon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  color: var(--light-blue);
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.planCard:hover .planIcon {
+  transform: scale(1.15) rotate(8deg);
+  filter: drop-shadow(0 0 8px var(--accent));
+}
+
+/* Plan Name */
+.planCard h2 {
+  margin: 10px 0 8px;
+  font-weight: 700;
+  font-size: 22px;
+  text-transform: capitalize;
+  color: var(--text-color);
+}
+
+/* Price */
+.planCard p {
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Feature List */
+.planCard ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.planCard ul li {
+  margin-bottom: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .plans {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .planCard {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .title {
+    font-size: 38px;
+  }
+}

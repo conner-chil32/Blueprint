@@ -1,0 +1,105 @@
+name: Full-site Docker Image Workflow
+
+on:
+  push:
+    branches: [ "development" ]
+  pull_request:
+    branches: [ "development" ]
+  workflow_dispatch:
+        inputs:
+          run_frontend:
+            description: "run the frontend tests"
+            type: boolean
+            default: true
+          run_backend:
+            description: "run the backend tests"
+            type: boolean
+            default: false
+  
+
+jobs:
+  build-images:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup Docker Compose
+      uses: docker/setup-compose-action@v1
+      with:
+        version: 'latest'
+    
+    - name: Copy Environment File
+      run: cp .env_example .env
+    
+    - name: Build Docker Images
+      run: docker compose up -d
+
+    - name: Teardown Docker Containers
+      run: docker compose down
+
+    - name: Save Docker Images as a Tarball
+      run: |
+        $(docker save $(docker images -q) -o docker-images.tar)
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+          name: docker-images
+          path: docker-images.tar 
+          retention-days: 30
+    
+  test-frontend:
+    runs-on: ubuntu-latest
+    needs: build-images
+    if: ${{ inputs.run_frontend }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Docker Compose
+      uses: docker/setup-compose-action@v1
+      with:
+        version: 'latest'
+    
+    - name: Copy Environment File
+      run: cp .env_example .env
+
+    - name: Start Docker Containers
+      run: docker compose up -d
+    
+    - name: Run Site Tests
+      run: |
+        # Add your test commands here
+        echo "Running tests..."
+        docker exec -i blueprint-site npm run test:frontend
+  
+  test-backend:
+    runs-on: ubuntu-latest
+    needs: build-images
+    if: ${{ inputs.run_backend }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Docker Compose
+      uses: docker/setup-compose-action@v1
+      with:
+        version: 'latest'
+    
+    - name: Copy Environment File
+      run: cp .env_example .env
+
+    - name: Start Docker Containers
+      run: docker compose up -d
+    
+    - name: Run Backend Tests
+      run: |
+        # Add your test commands here
+        echo "Running tests..."
+        docker exec -i blueprint-site npm run test:backend
+    
+    

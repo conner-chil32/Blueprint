@@ -4,6 +4,14 @@ import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import PageRenderer from "./PageRenderer";
 import HTMLExport from "./HtmlExport";
 
+// Helper function to get cookie value by name
+const getCookieValue = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+};
+
 /** Christopher Parsons, 9/18/2025
  * Inputs:
  *  selectedWidgets: array
@@ -22,7 +30,8 @@ import HTMLExport from "./HtmlExport";
  */
 export function RightPanel({
     changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
-    pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty}) {
+    pages, selectedPageID, setSelectedPageID, currentPage, createPage,
+    changePageProperty, recordState }) {
     const [buttonSelected, setButtonSelected] = useState(false);
 
   /** Christopher Parsons, 9/18/2025
@@ -45,11 +54,15 @@ export function RightPanel({
       <button className={styles.switchButton} onClick={handleButtonClick}>Switch</button>
 
       {/* False = widget properties. True = page properties */}
-      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} />
+      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} recordState={recordState} />
         : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />}
     </div>
 
   );
+}
+
+function downloadMediaToDisk(url, filepath) {
+
 }
 
 /** Christopher Parsons, 9/18/2025
@@ -62,7 +75,8 @@ export function RightPanel({
  * Returns a series of controls for the manipulation of
  * widgets.
  */
-function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget }) {
+function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, deleteWidget, recordState }) {
+
   // Render the selected widgets panel
   if (selectedWidgets && selectedWidgets.length > 0) {
     // If something is selected
@@ -73,16 +87,20 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
             <button
               className={styles.deleteButton}
               onClick={() => {
-                selectedWidgets.forEach(widget => {
-                  console.log('Deleting ', widget)
-                  deleteWidget(widget.id);
-                })
+                const ids = selectedWidgets.map(widget => widget.id);
+                console.log('Deleting ', ids);
+                deleteWidget(ids);
               }}
-            >Delete Selected Widget</button>
+            >Delete Selected Widgets</button>
           </div>
-  
           {/* Menu to change widgets */}
-          {selectedWidgets.map((widget) => (
+          {selectedWidgets.map((widget) =>{
+            const isShape =
+              widget.type === 'box' ||
+              widget.type === 'circle' ||
+              widget.type === 'triangle' ||
+              widget.type === 'polygon';
+            return (
             <div key={widget.id} className={styles.widgetOptions}>
               {/* Inputs to change widget properties */}
               <p>Color:</p>
@@ -91,7 +109,48 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 value={widget.backgroundColor || "#cccccc"}
                 onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
               />
-  
+              {isShape && (
+                <>
+                  <p>Border Color:</p>
+                  <input
+                    type="color"
+                    value={widget.borderColor || "#000000"}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        borderColor: e.target.value
+                      })
+                    }
+                  />
+
+                  <p>Border Width (px):</p>
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    value={widget.borderWidth ?? 1}
+                    onChange={e => {
+                      const val = parseInt(e.target.value || "0", 10);
+                      changeWidgetProperty(widget.id, { borderWidth: val });
+                    }}
+                  />
+
+                  <p>Border Style:</p>
+                  <select
+                    value={widget.borderStyle || "solid"}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        borderStyle: e.target.value
+                      })
+                    }
+                  >
+                    <option value="solid">Solid</option>
+                    <option value="dashed">Dashed</option>
+                    <option value="dotted">Dotted</option>
+                    <option value="double">Double</option>
+                    <option value="none">None</option>
+                  </select>
+                </>
+              )}
               {/* Two rotation inputs, one as an editable display and the other as a slider */}
               <p>Rotation: {widget.rotation}</p>
               <input
@@ -107,11 +166,48 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 min="0"
                 max="360"
                 value={widget.rotation || 0}
+                onMouseDown={e => 
+                  recordState()
+                }
                 onChange={e =>
-                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) })
+                  // Change the rotation without updating history
+                  changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) }, true)
                 }
               />
-
+              <p>Opacity: {(widget.opacity ?? 1).toFixed(2)}</p>
+                <input
+                  type="number"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={widget.opacity ?? 1}
+                  onChange={e => {
+                    const raw = e.target.value
+                    if (raw === "") {
+                      changeWidgetProperty(widget.id, { opacity: 0 })
+                      return
+                    }
+                    let val = parseFloat(raw)
+                    if (isNaN(val)) val = 0
+                    if (val < 0) val = 0
+                    if (val > 1) val = 1
+                    changeWidgetProperty(widget.id, { opacity: val })
+                  }}
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={widget.opacity ?? 1}
+                  onMouseDown={() => {
+                    recordState()
+                  }}
+                  onChange={e => {
+                    const val = parseFloat(e.target.value)
+                    changeWidgetProperty(widget.id, { opacity: val }, true)
+                  }}
+              />
               {/* ===== Menu Scroll controls ===== */}
               {widget.type === 'menuScroll' && (() => {
                 const draft = widget.itemsText ?? (widget.items || []).join(", ");
@@ -214,6 +310,61 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                       changeWidgetProperty(widget.id, { videoUrl: e.target.value || null })
                     }
                   />
+
+                  <p>Or upload a local video:</p>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        // Show loading state with temporary object URL
+                        const tempUrl = URL.createObjectURL(file);
+                        changeWidgetProperty(widget.id, { videoUrl: tempUrl, uploading: true });
+
+                        try {
+                          // Upload to server
+                          const formData = new FormData();
+                          formData.append('video', file);
+                          
+                          // Get userId from UserCookie
+                          const userId = getCookieValue('UserCookie') || 'user';
+                          formData.append('subdirectory', userId); // subdirectory ID = userID
+
+                          const response = await fetch('/api/upload-video', {
+                            method: 'POST',
+                            body: formData,
+                          });
+
+                          if (!response.ok) {
+                            throw new Error('Upload failed');
+                          }
+
+                          const data = await response.json();
+                          
+                          // Update with server URL and clear loading state
+                          URL.revokeObjectURL(tempUrl);
+                          changeWidgetProperty(widget.id, { 
+                            videoUrl: data.videoUrl,
+                            uploading: false 
+                          });
+
+                          console.log('[Video Upload] Success:', data.filename);
+                        } catch (error) {
+                          console.error('[Video Upload] Error:', error);
+                          alert('Failed to upload video. Please try again.');
+                          URL.revokeObjectURL(tempUrl);
+                          changeWidgetProperty(widget.id, { 
+                            videoUrl: widget.videoUrl || null,
+                            uploading: false 
+                          });
+                        }
+                      }
+                      // Reset file input
+                      e.target.value = '';
+                    }}
+                  />
+                  {widget.uploading && <p style={{color: '#4CAF50'}}>Uploading...</p>}
   
                   <label
                   style={{
@@ -358,8 +509,36 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 </>
               );
             })()}
+            {/* Customizable polygon controls */}
+            {widget.type === 'polygon' && (
+              <>
+                <p>Sides: {widget.numSides || 5}</p>
+                <input
+                  type="range"
+                  min="3"
+                  max="12"
+                  value={widget.numSides || 5}
+                  onChange={e => {
+                    const sides = parseInt(e.target.value, 10);
+                    changeWidgetProperty(widget.id, { numSides: sides });
+                  }}
+                />
 
-
+                <input
+                  type="number"
+                  min="3"
+                  max="12"
+                  value={widget.numSides || 5}
+                  onChange={e => {
+                    let sides = parseInt(e.target.value || "3", 10);
+                    if (isNaN(sides)) sides = 3;
+                    if (sides < 3) sides = 3;
+                    if (sides > 12) sides = 12;
+                    changeWidgetProperty(widget.id, { numSides: sides });
+                  }}
+                />
+              </>
+            )}
             {/* ===== Advertisement controls ===== */}
             {widget.type === 'advert' && (
               <>
@@ -406,10 +585,23 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                   value={widget.borderColor || "#333333"}
                   onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
                 />
+
+                <div style={{marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #555'}}>
+                  <p><b>Advanced (Placeholder)</b></p>
+                  <p>Ad Service Code Snippet:</p>
+                    <textarea
+                      placeholder="Paste ad code snippet here (e.g., from Google AdSense)"
+                      value={widget.adSnippet || ""}
+                      onChange={e => changeWidgetProperty(widget.id, { adSnippet: e.target.value })}
+                      style={{ width: '100%', minHeight: '100px', fontFamily: 'monospace', fontSize: '12px' }}
+                    />
+                </div>
+
               </>
             )}
           </div>
-        ))}
+        );
+      })}
       </div>
     );
   }
