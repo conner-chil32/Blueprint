@@ -216,7 +216,7 @@ export default function admin_view() {
                                         <dt>Username: {selectedUser.userName}</dt>
                                         <dt>Email address: {selectedUser.userEmail}</dt>
                                         <dt>Phone number: {selectedUser.userPhone}</dt>
-                                        <dt>Last login: {selectedUser.userLastLogin}</dt>
+                                        <dt>Last login: {selectedUser.userLastLogin ? new Date(selectedUser.userLastLogin).toLocaleString() : "Never"}</dt>
                                     </dl>
                                 ) : (
                                     <dl className={styles.infoText}>
@@ -279,16 +279,16 @@ export default function admin_view() {
                                                     value={customDurationUnit}
                                                     onChange={(e) => setCustomDurationUnit(e.target.value)}
                                                 >
-                                                    <option value="hours">hours</option>
                                                     <option value="days">days</option>
                                                     <option value="weeks">weeks</option>
+                                                    <option value="months">months</option>
                                                 </select>
                                                 <button
                                                     onClick={() => {
                                                         let multiplier = 0;
-                                                        if (customDurationUnit === "hours") multiplier = 60 * 60 * 1000;
-                                                        else if (customDurationUnit === "days") multiplier = 24 * 60 * 60 * 1000;
+                                                        if (customDurationUnit === "days") multiplier = 24 * 60 * 60 * 1000;
                                                         else if (customDurationUnit === "weeks") multiplier = 7 * 24 * 60 * 60 * 1000;
+                                                        else if (customDurationUnit === "months") multiplier = 30 * 24 * 60 * 60 * 1000; // approximate 30 days per month
 
                                                         handleUserBan(customDurationValue * multiplier);
                                                     }}
