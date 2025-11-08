@@ -81,6 +81,8 @@ services:
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_ALLOW_MULTISITE', true);
         define('JWT_AUTH_SECRET_KEY', getenv_docker('JWT_AUTH_SECRET_KEY', 'secret'));
+        define('WP_HOME', 'http://wordpress');
+        define('WP_SITEURL', 'http://wordpress');
 
     depends_on: 
       - wordpress-db

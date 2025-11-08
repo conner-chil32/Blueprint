@@ -293,17 +293,23 @@ export async function encryptData(username, password) {
     }
 }
 
+const wordpressBase = 'http://wordpress';
+
 export async function registerWordpress(username, password, email) {
     console.log("[WP] Registering Wordpress");
-    let token = null;
-
+    
     try {
         // Log in with admin credentials
-        const response = await fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${process.env.WORDPRESS_DATABASE_USER}&password=${process.env.WORDPRESS_DATABASE_PASSWORD}`, {
+        const response = await fetch(`${wordpressBase}/index.php?rest_route=/jwt-auth/v1/token`, {
             method: "POST",
-            redirect: "manual"
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({ username: process.env.WORDPRESS_DB_USER, password: process.env.WORDPRESS_DB_PASSWORD }),
+            redirect: "follow"
         });
 
+        // Redirect detector
         if ([301,302,307,308].includes(response.status)) {
             const loc = response.headers.get("location");
             throw new Error(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
@@ -313,32 +319,23 @@ export async function registerWordpress(username, password, email) {
             throw new Error(`[WP] Response error: Status ${response.status}, ${await response.text().catch(() => "")}`);
         }
 
-        const getToken = await response.json();
-        token = getToken["token"];
+        const { token } = await response.json();
 
-        // Create a response to send to create the WP account
-        const myHeaders = new Headers();
-        myHeaders.append("Authorization", `Bearer ${token}`);
-        myHeaders.append("Content-Type", "application/json");
-
-        const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify({
-            username,
-            email,
-            password
-        }),
-        };
-
-        const responseContent = await fetch(`http://wordpress:80/wp-json/wp/v2/users`, requestOptions);
+        // Create a response to send to create the WP account to create a user
+        const responseContent = await fetch(`${wordpressBase}/wp-json/wp/v2/users`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, email, password })
+        });
 
         if (!responseContent.ok) {
             throw new Error('[WP] User creation failed.');
-        } else {
-            console.log('[WP] User created');
         }
-
+        
+        console.log('[WP] User created');
         return true;
 
     } catch (e) {
@@ -353,7 +350,7 @@ export async function loginWordpress(username, password) {
         redirect: "follow"
     };
 
-    fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
+    fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
         sessionStorage.setItem("WP_TOKEN", result["token"])
