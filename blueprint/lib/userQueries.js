@@ -204,18 +204,18 @@ export async function banUser(userId, duration) {
  */
 export async function isBanned(userId) {
     if (!await validateConnection()) return false;
-    const [result] = await connection.query(`SELECT bannedUntil FROM userAccounts WHERE userID = ?;`, [userId]);
-    if (result === null){
-        return false;
-    } 
+    const [rows] = await connection.query(`SELECT bannedUntil FROM userAccounts WHERE userID = ?;`, [userId]);
+    
+    const bannedUntil = rows[0]?.bannedUntil;
+    if (!bannedUntil) return false; // not banned
 
     const now = new Date();
-    if (result < now) { //user is no longer banned and bannned status will be updated
-        banUser(userID, null);
+    if (new Date(bannedUntil) < now) { //ban has expired
+        await banUser(userId, null);  // remove ban
         return false;
     }
     
-    return true;
+    return true; // still banned
 }
 
 
