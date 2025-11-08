@@ -300,20 +300,20 @@ export async function registerWordpress(username, password, email) {
     
     try {
         // Log in with admin credentials
-        const response = await fetch(`${wordpressBase}/index.php?rest_route=/jwt-auth/v1/token`, {
+        const response = await fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: new URLSearchParams({ username: process.env.WORDPRESS_DB_USER, password: process.env.WORDPRESS_DB_PASSWORD }),
-            redirect: "manual"
+            //redirect: "manual"
         });
 
         // Redirect detector
-        if ([301,302,307,308].includes(response.status)) {
-            const loc = response.headers.get("location");
-            throw new Error(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
-        }
+        // if ([301,302,307,308].includes(response.status)) {
+        //     const loc = response.headers.get("location");
+        //     throw new Error(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
+        // }
 
         if (!response.ok) {
             throw new Error(`[WP] Response error: Status ${response.status}, ${await response.text().catch(() => "")}`);
