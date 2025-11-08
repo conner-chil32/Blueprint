@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS userAccounts (
     userID INT NOT NULL AUTO_INCREMENT,
-    userName VARCHAR(255) NOT NULL,
+    userName VARCHAR(255) NOT NULL UNIQUE,
     userPassHash VARCHAR(255) NOT NULL,
     userWpName VARCHAR(255),
     userWpPassHash VARCHAR(255),
@@ -13,14 +13,15 @@ CREATE TABLE IF NOT EXISTS userAccounts (
     userLastLogin TIMESTAMP,
     userTier ENUM('free', 'personal', 'business', 'enterprise') NOT NULL DEFAULT 'free',
     isAdmin BOOLEAN DEFAULT FALSE,
-    adminNote VARCHAR(255),
+    adminNote VARCHAR(255) DEFAULT NULL,
+    bannedUntil TIMESTAMP NULL DEFAULT NULL
     PRIMARY KEY (userID)
 );
 
-CREATE TABLE IF NOT EXISTS Logins (
+CREATE TABLE IF NOT EXISTS logins (
     trailID INT NOT NULL AUTO_INCREMENT,
     userID INT NOT NULL,
-    loginDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    loginTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (trailID),
     FOREIGN KEY (userID) REFERENCES userAccounts(userID) ON DELETE CASCADE
 );
@@ -112,9 +113,17 @@ AFTER UPDATE ON userAccounts
 FOR EACH ROW
 BEGIN
     IF OLD.userLastLogin <> NEW.userLastLogin THEN
-        INSERT INTO Logins (userID, loginDate)
+        INSERT INTO Logins (userID, loginTime)
         VALUES (NEW.userID, NEW.userLastLogin);
     END IF;
+END //
+
+CREATE TRIGGER trig_login_on_create
+AFTER INSERT ON userAccounts
+FOR EACH ROW
+BEGIN
+    INSERT INTO logins (userID, loginTime)
+    VALUES (NEW.userID, NOW());
 END //
 
 DELIMITER ;
