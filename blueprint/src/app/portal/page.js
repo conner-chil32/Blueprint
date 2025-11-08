@@ -23,7 +23,7 @@ export default function RawHTMLPage() {
                                 <th rowSpan="3" align="center" className={styles.tableHeader}>Website Preview image</th>
                                 <td className={styles.tableData}>Statistics</td>
                                 <td className={styles.tableData}>
-                                    <Link href="/canvas">
+                                    <Link href="/api/website?site_id=1">
                                         <button className={styles.linkButton}>
                                             Website
                                         </button>
