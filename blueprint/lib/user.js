@@ -299,15 +299,14 @@ export async function registerWordpress(username, password, email) {
     console.log("[WP] Registering Wordpress");
     
     try {
-        // Log in with admin credentials
-        const tokenUrl = `${wordpressBase}/wp-json/jwt-auth/v1/token`;
-        const response = await fetch(tokenUrl, {
+        // Log in with admin credentials; they are now in the enviornment from runtime
+        const response = await fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: new URLSearchParams({ username: process.env.WORDPRESS_DB_USER, password: process.env.WORDPRESS_DB_PASSWORD }),
-            //redirect: "manual"
+            redirect: "follow"
         });
 
         // Redirect detector

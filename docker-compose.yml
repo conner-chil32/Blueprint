@@ -42,6 +42,9 @@ services:
       DB_NAME: ${DATABASE_NAME}
       DB_USER: ${DATABASE_USER}
       DB_PASSWORD: ${DATABASE_PASSWORD}
+      WORDPRESS_DB_USER: ${WORDPRESS_DATABASE_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DATABASE_PASSWORD}
+
     ports:
       - "3000:3000"
     volumes:
@@ -113,12 +116,14 @@ services:
     command: >
       /bin/sh -c '
       sleep 60;
-      wp core --path='/var/www/html' multisite-install --url=${ADDRESS}:8000 --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
+      wp core --path='/var/www/html' multisite-install --url=http://wordpress --title="blueprint" --admin_user=${WORDPRESS_DATABASE_USER} --admin_password=${WORDPRESS_DATABASE_PASSWORD} --admin_email=foo@bar.com;
+      wp option update siteurl "http://wordpress";
+      wp option update home "http://wordpress";
       cp /temp/.htaccess_dummy /var/www/html/.htaccess;
       chmod 644 /var/www/html/.htaccess;
       rm /temp/.htaccess_dummy;
-      wp rewrite structure '/%postname%/';
-      wp rewrite flush --hard;
+      # wp rewrite structure '/%postname%/';
+      # wp rewrite flush --hard;
       echo "SETUP DONE!";
       '
     networks:
