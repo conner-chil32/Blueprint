@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS userAccounts (
     userTier ENUM('free', 'personal', 'business', 'enterprise') NOT NULL DEFAULT 'free',
     isAdmin BOOLEAN DEFAULT FALSE,
     adminNote VARCHAR(255) DEFAULT NULL,
-    bannedUntil TIMESTAMP NULL DEFAULT NULL
+    bannedUntil TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (userID)
 );
 
@@ -106,16 +106,6 @@ BEGIN
     UPDATE userWebsites
     SET websiteDateUpdated = NOW()
     WHERE siteID = OLD.siteID;
-END //
-
-CREATE TRIGGER trig_login_creation
-AFTER UPDATE ON userAccounts
-FOR EACH ROW
-BEGIN
-    IF OLD.userLastLogin <> NEW.userLastLogin THEN
-        INSERT INTO Logins (userID, loginTime)
-        VALUES (NEW.userID, NEW.userLastLogin);
-    END IF;
 END //
 
 CREATE TRIGGER trig_update_lastlogin
