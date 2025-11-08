@@ -306,7 +306,7 @@ export async function registerWordpress(username, password, email) {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: new URLSearchParams({ username: process.env.WORDPRESS_DB_USER, password: process.env.WORDPRESS_DB_PASSWORD }),
-            redirect: "follow"
+            redirect: "manual"
         });
 
         // Redirect detector
