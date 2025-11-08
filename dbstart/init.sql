@@ -118,12 +118,13 @@ BEGIN
     END IF;
 END //
 
-CREATE TRIGGER trig_login_on_create
-AFTER INSERT ON userAccounts
+CREATE TRIGGER trig_update_lastlogin
+AFTER INSERT ON logins
 FOR EACH ROW
 BEGIN
-    INSERT INTO logins (userID, loginTime)
-    VALUES (NEW.userID, NOW());
+    UPDATE userAccounts
+    SET userLastLogin = NEW.loginTime
+    WHERE userID = NEW.userID;
 END //
 
 DELIMITER ;
