@@ -312,16 +312,16 @@ export async function registerWordpress(username, password, email) {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: new URLSearchParams({username: process.env.WORDPRESS_DB_USER, password: process.env.WORDPRESS_DB_PASSWORD}),
-            redirect: "manual"
+            body: new URLSearchParams({username: process.env.WORDPRESS_DATABASE_USER, password: process.env.WORDPRESS_DATABASE_PASSWORD}),
+            redirect: "follow"
         });
 
         // Redirect detector
-        if ([301,302,307,308].includes(response.status)) {
-            const loc = response.headers.get("location");
-            //throw new Error(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
-            console.log(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
-        }
+        // if ([301,302,307,308].includes(response.status)) {
+        //     const loc = response.headers.get("location");
+        //     //throw new Error(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
+        //     console.log(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
+        // }
 
         if (!response.ok) {
             throw new Error(`[WP] Response error: Status ${response.status}, Error: ${await response.text().catch(() => "")}`);
@@ -353,18 +353,18 @@ export async function registerWordpress(username, password, email) {
 }
 
 export async function loginWordpress(username, password) {
-    // const requestOptions = {
-    //     method: "POST",
-    //     redirect: "follow"
-    // };
+    const requestOptions = {
+        method: "POST",
+        redirect: "follow"
+    };
 
-    // fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
-    // .then((response) => response.json())
-    // .then((result) => {
-    //     sessionStorage.setItem("WP_TOKEN", result["token"])
-    //     console.log("token set")
-    // })
-    // .catch((error) => console.error(error));
+    fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+        sessionStorage.setItem("WP_TOKEN", result["token"])
+        console.log("token set")
+    })
+    .catch((error) => console.error(error));
 }
 
 
