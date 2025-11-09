@@ -304,6 +304,9 @@ const wordpressBase = 'http://wordpress';
 
 export async function registerWordpress(username, password, email) {
     console.log("[WP] Registering Wordpress");
+
+    // Wordpress API only accepts lowercase usernames
+    username = username.toLowerCase();
     
     try {
         // Log in with admin credentials; they are now in the enviornment from runtime
@@ -315,13 +318,6 @@ export async function registerWordpress(username, password, email) {
             body: new URLSearchParams({username: process.env.WORDPRESS_DATABASE_USER, password: process.env.WORDPRESS_DATABASE_PASSWORD}),
             redirect: "follow"
         });
-
-        // Redirect detector
-        // if ([301,302,307,308].includes(response.status)) {
-        //     const loc = response.headers.get("location");
-        //     //throw new Error(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
-        //     console.log(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
-        // }
 
         if (!response.ok) {
             throw new Error(`[WP] Response error: Status ${response.status}, Error: ${await response.text().catch(() => "")}`);
@@ -340,7 +336,7 @@ export async function registerWordpress(username, password, email) {
         });
 
         if (!responseContent.ok) {
-            throw new Error('[WP] User creation failed.');
+            throw new Error(`[WP] User creation failed, ${responseContent.status}, Error: ${await responseContent.text().catch(() => "")}`);
         }
         
         console.log('[WP] User created');
@@ -355,10 +351,11 @@ export async function registerWordpress(username, password, email) {
 export async function loginWordpress(username, password) {
     const requestOptions = {
         method: "POST",
+        body: new URLSearchParams({username, password}),
         redirect: "follow"
     };
 
-    fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
+    fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
         sessionStorage.setItem("WP_TOKEN", result["token"])
