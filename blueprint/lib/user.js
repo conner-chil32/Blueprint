@@ -270,23 +270,30 @@ export class User {
  */
 export async function encryptData(username, password) {
     try {
-        if (this.isLoggedIn()) return true; //If user already logged in
+        // if (this.isLoggedIn()) return true; //If user already logged in
         
-        const user = await getUserByUsername(username);
+        // const user = await getUserByUsername(username);
 
-        if (!user) return false; // If user not found, return false
+        // if (!user) return false; // If user not found, return false
 
-        const storedUsername = user.userName;
-        const storedPassword = user.userPassHash;
+        // const storedUsername = user.userName;
+        // const storedPassword = user.userPassHash;
 
-        const match = await bcrypt.compare(password,storedPassword);
+        // const match = await bcrypt.compare(password,storedPassword);
 
-        if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
-            this.loggedIn = true; 
-            return true;
-        } else {
-            return false;
-        }
+        // if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
+        //     this.loggedIn = true; 
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+
+        const rows = await getUserByUsername(username);
+        const user = Array.isArray(rows) ? rows[0] : rows;
+        if (!user) return false;
+        const match = await bcrypt.compare(password, user.userPassHash);
+        return user.userName === username && match;
+
     } catch (err) {
         console.error(err);
         return false;
@@ -305,18 +312,19 @@ export async function registerWordpress(username, password, email) {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: new URLSearchParams({ username: process.env.WORDPRESS_DB_USER, password: process.env.WORDPRESS_DB_PASSWORD }),
-            redirect: "follow"
+            body: new URLSearchParams({username: process.env.WORDPRESS_DB_USER, password: process.env.WORDPRESS_DB_PASSWORD}),
+            redirect: "manual"
         });
 
         // Redirect detector
-        // if ([301,302,307,308].includes(response.status)) {
-        //     const loc = response.headers.get("location");
-        //     throw new Error(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
-        // }
+        if ([301,302,307,308].includes(response.status)) {
+            const loc = response.headers.get("location");
+            //throw new Error(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
+            console.log(`[WP] Token endpoint redirected (${response.status}) to: ${loc}`);
+        }
 
         if (!response.ok) {
-            throw new Error(`[WP] Response error: Status ${response.status}, ${await response.text().catch(() => "")}`);
+            throw new Error(`[WP] Response error: Status ${response.status}, Error: ${await response.text().catch(() => "")}`);
         }
 
         const { token } = await response.json();
@@ -345,18 +353,18 @@ export async function registerWordpress(username, password, email) {
 }
 
 export async function loginWordpress(username, password) {
-    const requestOptions = {
-        method: "POST",
-        redirect: "follow"
-    };
+    // const requestOptions = {
+    //     method: "POST",
+    //     redirect: "follow"
+    // };
 
-    fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => {
-        sessionStorage.setItem("WP_TOKEN", result["token"])
-        console.log("token set")
-    })
-    .catch((error) => console.error(error));
+    // fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
+    // .then((response) => response.json())
+    // .then((result) => {
+    //     sessionStorage.setItem("WP_TOKEN", result["token"])
+    //     console.log("token set")
+    // })
+    // .catch((error) => console.error(error));
 }
 
 

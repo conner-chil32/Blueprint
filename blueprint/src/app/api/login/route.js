@@ -19,7 +19,7 @@ export async function POST(request) {//Handles sending user form data to databas
     }
 
     let result = await encryptData(username,password);
-    loginWordpress(username, password);
+    // loginWordpress(username, password);
     return NextResponse.json({ success: true, result });//return if successful
   } catch (err) {
     console.error(err);
