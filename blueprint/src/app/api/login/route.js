@@ -35,14 +35,12 @@ export async function POST(request) {//Handles sending user form data to databas
       return NextResponse.json({ success: false, error: "[WP] Key mismatch." }, { status: 401 });
     }
 
+    const token = await loginWordpress(username, password);
     const response = NextResponse.json({ success: true, result: true });
 
     // Create a WP cookie
-    response.cookies.set('wpSessionKey', user.userWpPassHash, {
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24
+    response.cookies.set('WP_Token', token, {
+      // Cookie settings
     });
 
     return response;

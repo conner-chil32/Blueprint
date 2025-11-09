@@ -349,19 +349,25 @@ export async function registerWordpress(username, password, email) {
 }
 
 export async function loginWordpress(username, password) {
-    const requestOptions = {
-        method: "POST",
-        body: new URLSearchParams({username, password}),
-        redirect: "follow"
-    };
 
-    fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => {
-        sessionStorage.setItem("WP_TOKEN", result["token"])
-        console.log("token set")
-    })
-    .catch((error) => console.error(error));
+    const response = await fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, {
+        method: "POST",
+        body: new URLSearchParams({ username, password }),
+        redirect: "follow"
+    });
+
+    const data = await response.json();
+    if (!data.token) throw new Error("[WP] Error: No WP token.");
+
+    return data.token;
+
+    // fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, requestOptions)
+    // .then((response) => response.json())
+    // .then((result) => {
+    //     sessionStorage.setItem("WP_TOKEN", result["token"])
+    //     console.log("token set")
+    // })
+    // .catch((error) => console.error(error));
 }
 
 
