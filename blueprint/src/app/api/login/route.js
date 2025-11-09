@@ -41,7 +41,6 @@ export async function POST(request) {//Handles sending user form data to databas
     response.cookies.set('wpSessionKey', user.userWpPassHash, {
       httpOnly: true,
       sameSite: 'lax',
-      secure: true,
       path: '/',
       maxAge: 60 * 60 * 24
     });
