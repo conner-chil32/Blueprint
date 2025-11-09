@@ -323,15 +323,18 @@ export default function CanvasPage() {
    */
   const saveToDatabase = async () => {
     try {
-      const userId = getCookieValue('UserCookie') || '1';
+    //   const userId = getCookieValue('UserCookie') || '1';
+      const siteID = getCookieValue('CurrentSite') || '1';
       
       // TODO: Replace '%SITEID%' with actual site ID
-      const response = await fetch(`api/website?site_id=%SITEID%`, {
+      console.log(pages[0]);
+      const response = await fetch(`api/website?site_id=${siteID}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(pages)
+        body: JSON.stringify(pages[0]),
+        redirect: 'manual'
       });
 
       const result = await response.json();
@@ -426,7 +429,7 @@ export default function CanvasPage() {
         console.log("Manual save triggered");
         e.preventDefault();
         // Save pages data to database
-        // saveToDatabase();
+        saveToDatabase();
       }
       
       // Prevent browser back navigation in some contexts.

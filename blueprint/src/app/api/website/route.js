@@ -1,20 +1,21 @@
 import { NextResponse } from "next/server";
 import { setCookie } from "../CookieController";
-import { createSite, getSitesByUser, updateSite } from "@lib/siteQueries";
+import { createPage, createSite, getSitesByUser, updateSite } from "@lib/siteQueries";
 import { validateSite, validateUser } from "@lib/userQueries";
 
 /** */
 export async function PATCH(request) {
     //validate user (grab id when verified)
-    const res = NextResponse.redirect(new URL("/canvas", request.url)); //ready the redirect to the canvas page
+    const res = NextResponse.json({status: 200}); //ready the redirect to the canvas page
     const site_id = request.nextUrl.searchParams.get('site_id');
-    const { sitejson } = await request.json();
+    const sitejson = await request.json();
+    const parsedJson = JSON.stringify(sitejson);
 
     try{
         //validate and obtain 
-        await validateUser(request);
+        const user = await validateUser(request);
         const site = await validateSite(site_id);
-        await updateSite(site, sitejson); //update site
+        await createPage(parseInt(site), `site/${user}/pages`, parsedJson); //update site
     } catch (err) {
         console.log(err);
         return new NextResponse("Something went wrong updating the site...", {status: 500});
@@ -32,7 +33,7 @@ export async function POST(request) {
     try{
         //validate user
         const user = await validateUser(request);
-
+        console.log(user);
         //create site and add id
         const createdSite = await createSite(name, user);
 
@@ -53,6 +54,7 @@ export async function POST(request) {
 export async function GET(request) {    
 
     try {
+        // gathering prepared request/response data
         const params =(new URL(request.url)).searchParams
         const res = NextResponse.redirect(new URL('/canvas', request.url));
         const temp_ste_id = params.get('site_id');

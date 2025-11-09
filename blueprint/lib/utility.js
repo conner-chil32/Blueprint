@@ -11,7 +11,7 @@ import bcrypt from 'bcrypt';
 export async function commit() {
     try{
         await validateConnection()
-        await connection.commit()
+        // await connection.commit()
     } catch (error) {
         console.error("[DB] error on commit", error);
     }

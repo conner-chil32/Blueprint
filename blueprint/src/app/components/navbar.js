@@ -10,7 +10,12 @@ export default function Navbar() {
 
   // Load saved theme
   useEffect(() => {
+    const cookies = document.cookie.split("; ");
+    const loggedInCookie = cookies.find(cookie => cookie.startsWith("UserCookie"));
     const savedTheme = localStorage.getItem("theme");
+
+    if (loggedInCookie) setloginStatus(true);
+    
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.setAttribute("data-theme", savedTheme);
@@ -18,15 +23,6 @@ export default function Navbar() {
       document.documentElement.setAttribute("data-theme", "dark");
     }
   }, []);
-
-  // Apply & persist theme
-  useEffect(() => {
-    const cookies = document.cookie.split("; ");
-    const loggedInCookie = cookies.find(cookie => cookie.startsWith("UserCookie"));
-    if (loggedInCookie !== undefined) setloginStatus(true);
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));

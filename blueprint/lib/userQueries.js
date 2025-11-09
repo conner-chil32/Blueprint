@@ -142,13 +142,15 @@ export async function validateUser(request) {
  * Error: Exception - site validation failed
  */
 export async function validateSite(site_id) {
+    var siteCount = (await getSiteByID(site_id))?.length;
     try {
-        if ((await getSiteByID(site_id)).length <= 0) { //checks if there are sites under the site's id
+        if (siteCount >= 1) { //checks if there are sites under the site's id
             return site_id; //returns the id of the site
         } else {
             throw "Could not validate site";
         }
-    } catch {
+    } catch (err) {
+        console.log(err);
         throw "Could not validate site";
     }
 }
@@ -162,8 +164,7 @@ export async function validateUserSite(user_id, site_id) {
         throw "Could not validate the User Site"
     }
 }
-    return result;
-}
+
 
 /**
  * getAllUsers - Retrieves all users in database

@@ -1,5 +1,6 @@
 import { commit, validateConnection } from "./utility.js";
 import { connection } from "./connection.js"
+import { validateSite } from "./userQueries.js";
 
 /**
     getSites() - Retrieves all sites from the database.
@@ -34,6 +35,7 @@ export async function getSiteByID(id) {
         await validateConnection();
         [result] = await connection.query(`SELECT * FROM userWebsites WHERE siteID = ?;`, [id]);
     } catch (err) {
+        console.log(err);
         throw undefined;
     }
     return result;
@@ -107,13 +109,15 @@ export async function getSiteCount(id) {
  * Dependencies: mysql
  */
 export async function createSite(name, userId) {
-    var validateSiteCreated;
     try {
-        await validateConnection()
+        await validateConnection();
         await connection.query(`INSERT INTO userWebsites (websiteName, userID) VALUES (?, ?);`, [name, userId]);
-        await commit(connection);
+        
+        const siteId = await connection.query(`SELECT siteID from userWebsites WHERE websiteName = '${name}' AND userID = '${userId}'`);
+        
+        return siteId[0][0]?.siteID;
     } catch (err) {
-        console.log(err)
+        console.log(err);
         throw false;
     }
     // if (!await validateConnection()) return false;
@@ -266,10 +270,11 @@ export async function deleteMedia(id, siteId) {
  */
 export async function createPage(siteId, path, data) {
     try {
-        await validateConnection()
-        await connection.query(`INSERT INTO sitePages (siteID, pagePath, pageData) VALUES (?, ?, ?);`,
+        await validateConnection();
+        await connection.query(`INSERT INTO sitePages (siteID, pagePath, pageData) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE pageData = VALUES(pageData)`,
             [siteId, path, data]);
     } catch (err) {
+        console.log(err);
         throw false;
     }
     return true;
