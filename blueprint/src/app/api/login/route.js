@@ -40,7 +40,7 @@ export async function POST(request) {//Handles sending user form data to databas
 
     // Create a WP cookie
     response.cookies.set('WP_Token', token, {
-      sameSite: "none" // Attempt to allow the server to share cookies with the user
+      // Cookie Settings
     });
 
     return response;
