@@ -17,7 +17,7 @@ outputs:
 This function uses premade dictionaries create image buttons to reuse code as much as possible
 update 9/10/25: Supports setting image dimensions and alt text to be desplayed if the image cannot load
 */
-export default function CreateImage({code = "",type="default"}){
+export default function CreateImage({code = "",type="default"}){ //TODO: make each part default if library[code]===undefined (a code that doesn't exist in path is called)
     const path = library[code]
 
 //    console.log("route in separated function is ")

@@ -96,7 +96,7 @@ const admin_details = {
 }
 
 const navtest = {
-    label: "navtest",
+    label: "!NAVTEST!",
     href: "/navtest"
 }
 

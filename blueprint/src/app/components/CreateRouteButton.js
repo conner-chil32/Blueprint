@@ -25,8 +25,8 @@ export default function CreateButton({code = "",type="default"}){
     
     return(
         <div className = "capitalize">
-            <Link href={path.href} className={(type === "default") ? 'nav-button' : ((type==='set') ? path.className : type)}>
-                {path.label} 
+            <Link href={(path === undefined) ? "/" : path.href} className={(type === "default") ? 'nav-button' : ((type==='set') ? path.className : type)}>
+                {(path === undefined) ? "Bad_Code_Default" : path.label} 
             </Link>
         </div> 
     )
