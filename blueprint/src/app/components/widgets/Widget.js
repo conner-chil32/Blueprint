@@ -123,6 +123,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
             onClick && onClick(e);
           }}
         >
+          {header}
           {/* Actual widget */}
           {children}
         </div>
