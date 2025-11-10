@@ -4,7 +4,7 @@ import { openConnection, closeConnection, connection } from '@lib/connection';
 import { validateConnection } from '@lib/utility';
 import { encryptData, loginWordpress } from '@lib/user';
 import { User } from '@lib/user';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 export async function POST(request) {//Handles sending user form data to database via user queries calls, is called in /signup/page.js
   try {
