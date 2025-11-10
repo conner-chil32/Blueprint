@@ -1,12 +1,15 @@
 import { Widget } from './Widget';
+import { getShapeVariantStyles } from './shapeStyles';
 
-export function Box({ scale, ...props }) {
+export function Box({ scale, boxStyle = 'default', ...props }) {
   
+  const variant = getShapeVariantStyles(boxStyle, props);
   return (
     <Widget
       {...props}
       style={{
-        backgroundColor: props.backgroundColor || '#cccccc',
+        ...variant.wrapper,
+        ...variant.surface,
       }}
       scale={scale}
     />
