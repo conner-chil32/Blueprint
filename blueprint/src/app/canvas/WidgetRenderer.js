@@ -12,6 +12,7 @@ import { CustomHTML } from "../components/widgets/CustomHTML";
 /** Christopher Parsons, 9/18/2025
  *  Angel Ramirez
  * Inputs:
+ *  staticRender: Boolean
  *  widget: Widget
  *  onClick: function
  *  alertDragStop: function
@@ -23,7 +24,7 @@ import { CustomHTML } from "../components/widgets/CustomHTML";
  * 
  * Updates the current state of the inputted widget in React.
  */
-export function WidgetRenderer({ staticRender=false, widget, onClick, recordState, alertDragStop, isSelected, onDragStart, onDrag, onDragStop, scale = 1, changeWidgetProperty, style }) {
+export function WidgetRenderer({ staticRender=false, widget, onClick, recordState, alertDragStop, isSelected, onDragStart, onDrag, onDragStop, scale = 1, changeWidgetProperty, style, pageWidth, pageHeight  }) {
   const { key: _ignoredKey, ...w } = widget;
 
   const common = {
@@ -38,6 +39,8 @@ export function WidgetRenderer({ staticRender=false, widget, onClick, recordStat
     recordState,
     scale,
     style,
+    pageWidth,
+    pageHeight,
   };
 
   switch (widget.type) {
