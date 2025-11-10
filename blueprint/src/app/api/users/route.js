@@ -1,4 +1,4 @@
-import { getAllUsers, updateUserNote, deleteAccount } from '@lib/userQueries';
+import { getAllUsers, updateUserNote, deleteAccount, banUser } from '@lib/userQueries';
 import { NextResponse } from 'next/server';
 
 //gets user list
@@ -38,6 +38,19 @@ export async function DELETE(request) {
   try {
     const { userID } = await request.json();
     const result = await deleteAccount(userID)
+
+    return NextResponse.json({ success: true, result });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  }
+}
+
+//ban user
+export async function PATCH(request) {
+  try {
+    const { userID, bannedUntil} = await request.json();
+    const result = await banUser(userID, bannedUntil);
 
     return NextResponse.json({ success: true, result });
   } catch (err) {

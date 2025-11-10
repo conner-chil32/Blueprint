@@ -42,6 +42,15 @@ export async function POST(request) {//Handles sending user form data to databas
     return NextResponse.json({ success: true, result });//return if successful
   } catch (err) {
     console.error(err);
+
+    // Check for MySQL duplicate entry error
+    if (err.code === 'ER_DUP_ENTRY') {
+      return NextResponse.json(
+        { success: false, error: "Username already taken" },
+        { status: 400 }
+      );
+    }
+    
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });//return if failed
   }
 }

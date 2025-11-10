@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createAccount, createAccountWithPhone, getUserByUsername } from '@lib/userQueries';
+import { createLoginByUsername, createAccount, createAccountWithPhone, getUserByUsername } from '@lib/userQueries';
 import { openConnection, closeConnection, connection } from '@lib/connection'; 
 import { validateConnection } from '@lib/utility';
 import { encryptData, loginWordpress } from '@lib/user';
