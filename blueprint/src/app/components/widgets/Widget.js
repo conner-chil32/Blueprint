@@ -31,7 +31,7 @@ import { useState } from 'react';
  * the widget's size and position. The div contains all fields needed for React to render 
  * the widget itself.
  */
-export function Widget({ staticRender = false, id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDrag, onDragStop, scale, recordState, pageWidth, pageHeight, opacity, borderWidth, borderColor, borderStyle, useOuterBorderFrame }) {
+export function Widget({ staticRender = false, id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone, onDragStart, onDrag, onDragStop, scale, recordState, pageWidth, pageHeight, opacity, borderWidth, borderColor, borderStyle, useOuterBorderFrame, dragHandleClassName, header }) {
   const [previousPosition, setPreviousPosition] = useState({ x: 0, y: 0 });
   const handleResize = (e, direction, refToElement, delta, position) => {
     alertDragStop &&
@@ -41,7 +41,6 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
       });
   };
 
-  // If rendering static for an HTML page, don't render dynamic components.
   if (!staticRender) {
     return (
       <Rnd
@@ -50,6 +49,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         bounds="parent"
         enableResizing={isSelected ? undefined : false}
         disableDragging={!isSelected}
+        dragHandleClassName={dragHandleClassName}
         // Update live
         onResize={(e, direction, refToElement, delta, position) => {
           handleResize(e, direction, refToElement, delta, position);
@@ -59,6 +59,32 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         onResizeStart={() => {
           // When the user starts resizing, record the page so undo is accurate
           recordState();
+        }}
+        // Finish resizing
+        onResizeStop={(e, direction, refToElement, delta, position) => {
+          handleResize(e, direction, refToElement, delta, position);
+          // Alert the canvas page when resizing stops
+          onDragStop && onDragStop(id);
+        }}
+        onDragStart={(e, data) => {
+          // When drag is started, note the widget's position
+          setPreviousPosition({ x: data.x, y: data.y });
+
+          // Alert the canvas page when dragging starts
+          onDragStart && onDragStart(id);
+        }}
+        onDrag={(e, data) => {
+          onDrag && onDrag(data.x, data.y);
+        }}
+        onDragStop={(e, data) => {
+          alertDragStop && alertDragStop(id, data.x, data.y);
+          // Alert the canvas page when dragging stops
+          onDragStop && onDragStop(id);
+
+          // If the box has not moved within reason, don't update history
+          if (Math.abs(data.x - previousPosition.x) > 1 || Math.abs(data.y - previousPosition.y) > 1) {
+            recordState();
+          }
         }}
         // Finish resizing
         onResizeStop={(e, direction, refToElement, delta, position) => {
@@ -124,7 +150,6 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         </div>
       </Rnd>
     );
-
   } else {
     const fromLeft = (x / pageWidth) * 100;
     const fromTop = (y / pageHeight) * 100;
@@ -180,7 +205,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         }}
       >
         {children}
-      </div>
+      </div >
     );
   }
 }

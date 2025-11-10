@@ -1,7 +1,8 @@
 import { Widget } from './Widget';
+import { getShapeVariantStyles } from './shapeStyles';
 //Needed to do large rewrites to account for border
 
-export function Triangle({ scale, ...props }) {
+export function Triangle({ scale, boxStyle = 'default', ...props }) {
   const {
     width,
     height,
@@ -13,6 +14,7 @@ export function Triangle({ scale, ...props }) {
     rotation,
     opacity,
   } = props;
+  const variant = getShapeVariantStyles(boxStyle, props);
 
   // const strokeColor = isSelected ? 'blue' : (borderColor ?? '#000');
   //const strokeWidth = isSelected ? 2 : (borderWidth ?? 1);
@@ -35,8 +37,18 @@ export function Triangle({ scale, ...props }) {
         // height,
         // position: 'relative',
         backgroundColor: 'transparent', // no box fill
+        ...variant.wrapper,
       }}
     >
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          clipPath: 'polygon(50% 0, 0 100%, 100% 100%)',
+          pointerEvents: 'none',
+          ...variant.surface,
+        }}
+      />
       <svg
         width="100%"
         height="100%"
@@ -53,7 +65,7 @@ export function Triangle({ scale, ...props }) {
       >
         <polygon
           points={`${width / 2},0 0,${height} ${width},${height}`}
-          fill={backgroundColor || '#cccccc'}   // triangle fill
+          fill="transparent"   // triangle fill handled by overlay
           stroke={strokeColor}                  // border color
           strokeWidth={strokeWidth}             // border width
           strokeDasharray={strokeDasharray}

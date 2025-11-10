@@ -1,6 +1,7 @@
 import { Widget } from './Widget';
+import { getShapeVariantStyles } from './shapeStyles';
 //Needed to do large rewrites to account for border
-export function Polygon({ scale, ...props }) {
+export function Polygon({ scale, boxStyle = 'default', ...props }) {
   const {
     width,
     height,
@@ -13,6 +14,7 @@ export function Polygon({ scale, ...props }) {
     opacity,
     numSides = 5, // default sides
   } = props;
+  const variant = getShapeVariantStyles(boxStyle, props);
 
   //const strokeColor = isSelected ? 'blue' : (borderColor ?? '#000');
   //const strokeWidth = isSelected ? 2 : (borderWidth ?? 1);
@@ -47,22 +49,11 @@ export function Polygon({ scale, ...props }) {
       scale={scale}
       useOuterBorderFrame={false} // disable Widget’s external border (errant square)
       style={{
-        // fill shape with clip path so it fills properly
-        // clipPath: `polygon(${pts
-        //   .map(p => {
-        //     const [x, y] = p.split(',').map(Number);
-        //     return `${(x / width) * 100}% ${(y / height) * 100}%`;
-        //   })
-        //   .join(',')})`,
-        // aspectRatio: '1 / 1',
-        // backgroundColor: backgroundColor || '#cccccc',
-        // width,
-        // height,
-        // position: 'relative',
-        //aspectRatio: '1 / 1',
-        // width,
-        // height,
-        // position: 'relative',
+        aspectRatio: '1 / 1',
+        width,
+        height,
+        position: 'relative',
+        ...variant.wrapper,
       }}
     >
       {/* Polygon clip path independent of selection */}
@@ -70,7 +61,6 @@ export function Polygon({ scale, ...props }) {
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundColor: backgroundColor || '#cccccc',
           clipPath: `polygon(${pts
           .map(p => {
             const [x, y] = p.split(',').map(Number);
@@ -78,6 +68,7 @@ export function Polygon({ scale, ...props }) {
           })
           .join(',')})`,
           pointerEvents: 'none',
+          ...variant.surface,
         }}
         />
       {/* Code for border outline */}
