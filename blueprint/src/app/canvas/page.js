@@ -333,7 +333,7 @@ export default function CanvasPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(pages[0]),
+        body: JSON.stringify(pages),
         redirect: 'manual'
       });
 
