@@ -623,6 +623,7 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
  * Returns an interface for creating and modifying pages.
  */
 function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty }) {
+  const [downloadType, setDownloadType] = useState("html");
 
   /** Christopher Parsons, 9/20/2025
    * Inputs:
@@ -642,6 +643,29 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
 
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
+  }
+
+  /** Christopher Parsons, 11/9/2025
+   * Inputs:
+   *  downloadType: string
+   * 
+   * Downloads an html or a json file based on the currently selected input under Download As
+   * Made in an effort to allow downloads on both Chrome and Firefox
+   */
+  function handleDownloadBrowsers(downloadType) {
+    if (downloadType === "html") {
+      const html = returnHTML(currentPage);
+      const blob = new Blob([html], { type: 'text/html' });
+      download(blob, `${currentPage.name || 'page'}.html`);
+
+    } else if (downloadType === "json") {
+      const json = returnJSON(currentPage);
+      const blob = new Blob([json], { type: 'application/json' });
+      download(blob, `${currentPage.name || 'page'}.json`);
+
+    } else {
+      console.log("Invalid download type.");
+    }
   }
 
   /** Christopher Parsons, 9/20/2025
@@ -726,21 +750,17 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
 
       {/* Download current page as HTML or JSON */}
       <p>Download as:</p>
-      <select>
+      <select
+        value={downloadType}
+        onChange={e => setDownloadType(e.target.value)}>
         {/* Download as HTML */}
-        <option onClick={() => {
-          const htmlFile = returnHTML(currentPage);
-          const blob = new Blob([htmlFile], { type: "text/html" });
-          download(blob, currentPage.name);
-        }}>HTML</option>
-
+        <option value="html">HTML</option>
         {/* Download as JSON */}
-        <option onClick={() => {
-          const jsonFile = returnJSON(currentPage);
-          const blob = new Blob([jsonFile], { type: "application/json" });
-          download(blob, currentPage.name)
-        }}>JSON</option>
+        <option value="json">JSON</option>
       </select>
+      <button onClick={() => handleDownloadBrowsers(downloadType)}>
+          Download
+      </button>
     </div>
   );
 }
