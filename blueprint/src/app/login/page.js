@@ -20,16 +20,16 @@ export default function Login() {
 import Navbar from "../components/navbar"
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 
 export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
-
-    if (window.document.cookie.includes("UserCookie")) window.location.href = "/";
-
+    useEffect(()=>{
+        if (window.document.cookie.includes("UserCookie")) window.location.href = "/";
+    })
 
     const infoBoxes = [
         {
