@@ -57,10 +57,10 @@ export default function CanvasPage() {
 
   // Save status tracking
   const [isSaved, setIsSaved] = useState(true);
-  
+
   // Ref to hold the savePagesToJSON function
   const savePagesToJSONRef = useRef(null);
-  
+
   // Helper function to get cookie value by name
   const getCookieValue = (name) => {
     const value = `; ${document.cookie}`;
@@ -68,7 +68,7 @@ export default function CanvasPage() {
     if (parts.length === 2) return parts.pop().split(';').shift();
     return null;
   };
-  
+
   /** Conner Childers, 10/29/2025
    * Loads temp.json if it exists when the page first loads.
    * This restores the user's previous work session.
@@ -76,22 +76,22 @@ export default function CanvasPage() {
   const loadTempJSON = async () => {
     try {
       const userId = getCookieValue('UserCookie') || 'user';
-      
+
       // TODO: Replace with actual API endpoint to read temp.json
       const response = await fetch(`/api/load-canvas?userId=${userId}&filename=temp`);
-      
+
       if (!response.ok) {
         // If temp.json doesn't exist or there's an error, just use default state
         console.log('No temp.json found or error loading, using default state');
         return;
       }
-      
+
       const data = await response.json();
-      
+
       if (data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
         console.log('Loaded temp.json successfully');
         setPages(data.pages);
-        
+
         // Restore other state if available
         if (data.selectedPageID !== undefined) {
           setSelectedPageID(data.selectedPageID);
@@ -102,7 +102,7 @@ export default function CanvasPage() {
         if (data.nextWidgetId !== undefined) {
           setNextWidgetId(data.nextWidgetId);
         }
-        
+
         setIsSaved(true);
       }
     } catch (error) {
@@ -110,7 +110,7 @@ export default function CanvasPage() {
       // Silently fail and use default state
     }
   };
-  
+
   /** Conner Childers, 10/29/2025
    * Load temp.json on initial page mount
    */
@@ -156,7 +156,7 @@ export default function CanvasPage() {
         setNextPageID(recordedState.nextPageID);
         setNextWidgetId(recordedState.nextWidgetId);
       },
-      
+
       // Pass savePagesToJSON via ref so it can save automatically
       savePagesToJSON: () => {
         const userId = getCookieValue('UserCookie');
@@ -223,7 +223,7 @@ export default function CanvasPage() {
     setSelectedPageID(nextPageID);
     console.log('Created page', nextPageID);
     setNextPageID(nextPageID + 1);
-    
+
     // Record state after updates
     setTimeout(() => recordState(), 0);
   };
@@ -248,7 +248,7 @@ export default function CanvasPage() {
     if (selectedPageID === pageId) {
       setSelectedPageID(pages[0].id);
     }
-    
+
     // Record state after updates
     setTimeout(() => recordState(), 0);
   };
@@ -256,7 +256,7 @@ export default function CanvasPage() {
   // Update page name
   const updatePageName = (pageId, newName) => {
     setPages(prev => prev.map(page => page.id === pageId ? { ...page, name: newName } : page));
-    
+
     // Record state after updates
     setTimeout(() => recordState(), 0);
   };
@@ -277,7 +277,7 @@ export default function CanvasPage() {
     try {
       // Get userId from UserCookie if not provided
       const effectiveUserId = userId || getCookieValue('UserCookie') || 'user';
-      
+
       const response = await fetch('/api/save-canvas', {
         method: 'POST',
         headers: {
@@ -315,7 +315,7 @@ export default function CanvasPage() {
       }
     }
   };
-  
+
   /** Conner Childers, 10/29/2025
    * Manual save function to save pages data to database.
    * Called when user presses Ctrl+S or Cmd+S.
@@ -365,6 +365,7 @@ export default function CanvasPage() {
    * handleDocumentKeyDown keeps track of when something is clicked.
    * If the user hits undo, trigger .undo in HistoryManager. If they hit redo, trigger .redo in PageManager.
    * If the user hits copy, save all selected widgets. If they hit paste, place currently copied things on the page.
+   * If the user hits duplicate, take all selected widgets and make copies of them.
    */
   useEffect(() => {
     const handleDocumentKeyDown = (e) => {
@@ -407,6 +408,7 @@ export default function CanvasPage() {
       // If the user hits paste, place clipboard on the canvas and set them as selected
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "v") {
         e.preventDefault();
+
         if (clipboard.current) {
           console.log("Pasting:", clipboard.current);
           deselectAllWidgets();
@@ -425,16 +427,40 @@ export default function CanvasPage() {
         }
       }
 
+      // If the user hits copy, place a copy of currently selected widgets onto the canvas and set them as copied
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "d") {
+        e.preventDefault();
+        if (selectedWidgets.length <= 0) return;
+
+        console.log("Duplicating:", selectedWidgets);
+        const widgetsToPaste = selectedWidgets.map((widget, i) => ({
+          ...widget,
+          x: widget.x + 10,
+          y: widget.y + 10,
+          isSelected: false,
+          isMoving: false,
+          id: nextWidgetId + i,
+        }));
+        setNextWidgetId(ids => ids + widgetsToPaste.length);
+
+        setWidgets([...widgets, ...widgetsToPaste]);
+        setSelectedWidgets(widgetsToPaste);
+        recordState();
+      }
+
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
         console.log("Manual save triggered");
         e.preventDefault();
         // Save pages data to database
         saveToDatabase();
       }
-      
+
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
         e.preventDefault();
+        const ids = selectedWidgets.map(widget => widget.id);
+        console.log('Deleting ', ids);
+        deleteWidget(ids);
       }
     };
 
@@ -524,6 +550,7 @@ export default function CanvasPage() {
           isSelected: false,
           isMoving: false,
           backgroundColor: '#cccccc',
+          boxStyle: 'default',
           pointerEventsNone: false,
           rotation: 0,
           opacity: 1.0,
@@ -533,7 +560,7 @@ export default function CanvasPage() {
         };
         break;
       case 'circle':
-          newWidget = {
+        newWidget = {
           type: 'circle',
           id: nextId,
           x: currentPage.width / 2,
@@ -543,6 +570,7 @@ export default function CanvasPage() {
           isSelected: false,
           isMoving: false,
           backgroundColor: '#cccccc',
+          boxStyle: 'default',
           pointerEventsNone: false,
           rotation: 0,
           opacity: 1.0,
@@ -552,7 +580,7 @@ export default function CanvasPage() {
         };
         break;
       case 'triangle':
-          newWidget = {
+        newWidget = {
           type: 'triangle',
           id: nextId,
           x: currentPage.width / 2,
@@ -562,6 +590,7 @@ export default function CanvasPage() {
           isSelected: false,
           isMoving: false,
           backgroundColor: '#cccccc',
+          boxStyle: 'default',
           pointerEventsNone: false,
           rotation: 0,
           opacity: 1.0,
@@ -570,8 +599,8 @@ export default function CanvasPage() {
           borderStyle: "solid",
         };
         break;
-          case 'polygon':
-          newWidget = {
+      case 'polygon':
+        newWidget = {
           type: 'polygon',
           id: nextId,
           x: currentPage.width / 2,
@@ -581,10 +610,11 @@ export default function CanvasPage() {
           isSelected: false,
           isMoving: false,
           backgroundColor: '#cccccc',
+          boxStyle: 'default',
           pointerEventsNone: false,
           rotation: 0,
           opacity: 1.0,
-                    borderWidth: 1,
+          borderWidth: 1,
           borderColor: "#000000",
           borderStyle: "solid",
         };
@@ -611,7 +641,7 @@ export default function CanvasPage() {
           objectFit: 'contain',
         };
         break;
-
+      
       case 'dropdown':
         newWidget = {
           type: 'dropdown',
@@ -701,7 +731,26 @@ export default function CanvasPage() {
           selectedValue: 'Menu Item 1', // Default to the first item
         };
         break;
-
+      
+      case 'html':
+        newWidget = {
+          type: 'html',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 320,
+          height: 200,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: 'transparent',
+          opacity: 1.0,
+          pointerEventsNone: false,
+          rotation: 0,
+          // custom props:
+          html: "<div style='padding:12px;border:2px dashed #555;background:#fafafa;border-radius:8px'>Inline <b>HTML</b> works here.</div>",
+          sandbox: false, // toggle to true for iframe isolation
+        };
+      break;
       default:
         console.warn('Warning: Unknown widget type: ' + typeToMake);
         return;
@@ -716,7 +765,7 @@ export default function CanvasPage() {
     setNextWidgetId((prevId) => prevId + 1);
     setWidgets([...widgets, newWidget]);
     setSelectedWidgets([newWidget]);
-    
+
     // Record state after updates
     setTimeout(() => recordState(), 0);
   };
@@ -732,9 +781,9 @@ export default function CanvasPage() {
   function deleteWidget(ids) {
     const idSet = new Set(Array.isArray(ids) ? ids : [ids]);
     setWidgets(prev => prev.filter(widget => !idSet.has(widget.id)));
-    
+
     setSelectedWidgets(prev => prev.filter(widget => !idSet.has(widget.id)));
-    setTimeout(() => recordState(), 0);
+    recordState();
   }
 
   /** Christopher Parsons, 9/18/2025
@@ -768,7 +817,7 @@ export default function CanvasPage() {
     );
 
     setPages(changedPages);
-    
+
     // Record state after updates
     setTimeout(() => recordState(), 0);
   }
@@ -874,7 +923,15 @@ export default function CanvasPage() {
   function changeWidgetProperty(widgetID, newProperties, dontUpdate) {
     setWidgets(prev =>
       prev.map(current => (current.id === widgetID ? { ...current, ...newProperties } : current))
-    )
+    );
+
+    // Keep the selection array in sync so controlled inputs (like Custom HTML)
+    // receive the latest value immediately and don't reset user cursor position.
+    setSelectedWidgets(prev =>
+      prev && prev.length > 0
+        ? prev.map(sel => (sel.id === widgetID ? { ...sel, ...newProperties } : sel))
+        : prev
+    );
 
     if (!dontUpdate) recordState();
   }
@@ -909,58 +966,58 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflowX: 'auto', padding: '10px 0' }}>
       <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto' }}>
         {pages.map(page => (
-        <div
-          key={page.id}
-          style={{
-            margin: '0 10px',
-            padding: '5px 10px',
-            cursor: 'pointer',
-            backgroundColor: page.id === selectedPageID ? '#e2e8f0' : 'transparent',
-            borderRadius: '4px',
-            fontWeight: page.id === selectedPageID ? 'bold' : 'normal',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          onMouseDown={() => {
-            if (editingId !== page.id) {
-              setSelectedPageID(page.id);
-            }
-          }}
-        >
-          {editingId === page.id ? (
-            <input
-              value={editName}
-              onChange={e => setEditName(e.target.value)}
-              onBlur={() => saveEdit(page.id)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  saveEdit(page.id);
-                } else if (e.key === 'Escape') {
-                  setEditingId(null);
-                }
-              }}
-              autoFocus
-              style={{ width: '100px' }}
-            />
-          ) : (
-            <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
-          )}
-          <span
-            onMouseDown={(e) => {
-              e.stopPropagation();
-              handleDelete(page.id);
+          <div
+            key={page.id}
+            style={{
+              margin: '0 10px',
+              padding: '5px 10px',
+              cursor: 'pointer',
+              backgroundColor: page.id === selectedPageID ? '#e2e8f0' : 'transparent',
+              borderRadius: '4px',
+              fontWeight: page.id === selectedPageID ? 'bold' : 'normal',
+              display: 'flex',
+              alignItems: 'center',
             }}
-            style={{ cursor: 'pointer', marginLeft: '5px' }}
+            onMouseDown={() => {
+              if (editingId !== page.id) {
+                setSelectedPageID(page.id);
+              }
+            }}
           >
-            🗑️
-          </span>
-        </div>
+            {editingId === page.id ? (
+              <input
+                value={editName}
+                onChange={e => setEditName(e.target.value)}
+                onBlur={() => saveEdit(page.id)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    saveEdit(page.id);
+                  } else if (e.key === 'Escape') {
+                    setEditingId(null);
+                  }
+                }}
+                autoFocus
+                style={{ width: '100px' }}
+              />
+            ) : (
+              <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
+            )}
+            <span
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                handleDelete(page.id);
+              }}
+              style={{ cursor: 'pointer', marginLeft: '5px' }}
+            >
+              🗑️
+            </span>
+          </div>
         ))}
         <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
       </div>
-      <div style={{ 
-        marginLeft: 'auto', 
-        paddingRight: '20px', 
+      <div style={{
+        marginLeft: 'auto',
+        paddingRight: '20px',
         fontSize: '14px',
         color: isSaved ? '#10b981' : '#f59e0b',
         fontWeight: '500'

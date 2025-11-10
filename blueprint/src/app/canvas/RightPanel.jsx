@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import styles from './page.module.css';
-import { renderToStaticMarkup, renderToString } from "react-dom/server";
-import PageRenderer from "./PageRenderer";
 import HTMLExport from "./HtmlExport";
+import { SHAPE_STYLE_OPTIONS } from "../components/widgets/shapeStyles";
 
 // Helper function to get cookie value by name
 const getCookieValue = (name) => {
@@ -11,6 +10,8 @@ const getCookieValue = (name) => {
   if (parts.length === 2) return parts.pop().split(';').shift();
   return null;
 };
+
+const shapeStyleWidgets = new Set(['box', 'circle', 'triangle', 'polygon']);
 
 /** Christopher Parsons, 9/18/2025
  * Inputs:
@@ -95,7 +96,7 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
           </div>
           {/* Menu to change widgets */}
           {selectedWidgets.map((widget) =>{
-            const isShape =
+            const borderWhitelist =
               widget.type === 'box' ||
               widget.type === 'circle' ||
               widget.type === 'triangle' ||
@@ -109,7 +110,22 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 value={widget.backgroundColor || "#cccccc"}
                 onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
               />
-              {isShape && (
+              {shapeStyleWidgets.has(widget.type) && (
+                <>
+                  <p>Shape Style:</p>
+                  <select
+                    value={widget.boxStyle || 'default'}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, { boxStyle: e.target.value })
+                    }
+                  >
+                    {SHAPE_STYLE_OPTIONS.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </>
+              )}
+              {borderWhitelist && (
                 <>
                   <p>Border Color:</p>
                   <input
@@ -509,6 +525,24 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 </>
               );
             })()}
+            {widget.type === 'html' && (
+              <>
+                <p>HTML (inline CSS allowed):</p>
+                <textarea
+                  value={widget.html || ""}
+                  onChange={e => changeWidgetProperty(widget.id, { html: e.target.value })}
+                  style={{ width: '100%', minHeight: 140, fontFamily: 'monospace' }}
+                />
+                <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+                 <input
+                   // type="checkbox"
+                    //checked={!!widget.sandbox}
+                    //onChange={e => changeWidgetProperty(widget.id, { sandbox: e.target.checked })}
+                  />
+                   {/*Render in sandboxed iframe (safer)*/}
+                </label>
+              </>
+            )}
             {/* Customizable polygon controls */}
             {widget.type === 'polygon' && (
               <>
@@ -625,6 +659,7 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
  * Returns an interface for creating and modifying pages.
  */
 function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty }) {
+  const [downloadType, setDownloadType] = useState("html");
 
   /** Christopher Parsons, 9/20/2025
    * Inputs:
@@ -644,6 +679,29 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
 
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
+  }
+
+  /** Christopher Parsons, 11/9/2025
+   * Inputs:
+   *  downloadType: string
+   * 
+   * Downloads an html or a json file based on the currently selected input under Download As
+   * Made in an effort to allow downloads on both Chrome and Firefox
+   */
+  function handleDownloadBrowsers(downloadType) {
+    if (downloadType === "html") {
+      const html = returnHTML(currentPage);
+      const blob = new Blob([html], { type: 'text/html' });
+      download(blob, `${currentPage.name || 'page'}.html`);
+
+    } else if (downloadType === "json") {
+      const json = returnJSON(currentPage);
+      const blob = new Blob([json], { type: 'application/json' });
+      download(blob, `${currentPage.name || 'page'}.json`);
+
+    } else {
+      console.log("Invalid download type.");
+    }
   }
 
   /** Christopher Parsons, 9/20/2025
@@ -728,21 +786,17 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
 
       {/* Download current page as HTML or JSON */}
       <p>Download as:</p>
-      <select>
+      <select
+        value={downloadType}
+        onChange={e => setDownloadType(e.target.value)}>
         {/* Download as HTML */}
-        <option onClick={() => {
-          const htmlFile = returnHTML(currentPage);
-          const blob = new Blob([htmlFile], { type: "text/html" });
-          download(blob, currentPage.name);
-        }}>HTML</option>
-
+        <option value="html">HTML</option>
         {/* Download as JSON */}
-        <option onClick={() => {
-          const jsonFile = returnJSON(currentPage);
-          const blob = new Blob([jsonFile], { type: "application/json" });
-          download(blob, currentPage.name)
-        }}>JSON</option>
+        <option value="json">JSON</option>
       </select>
+      <button onClick={() => handleDownloadBrowsers(downloadType)}>
+          Download
+      </button>
     </div>
   );
 }

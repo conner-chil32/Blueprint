@@ -145,8 +145,10 @@ export default function SignUpPage() {
                 /> Show Password
               </label>
             </div>
+            <div>
             <input type="checkbox" id="marketing" name="marketing" value="Yes"/>
-            <label> I am interested in future marketing</label><br />
+              <label> I am interested in future marketing</label><br />
+            </div>
             <button className="submit-button" type="submit" disabled={loading}>
               {loading ? "Creating..." : <>CREATE <br/> ACCOUNT</>}
             </button>

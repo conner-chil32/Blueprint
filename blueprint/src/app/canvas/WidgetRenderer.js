@@ -7,10 +7,12 @@ import { Dropdown } from "../components/widgets/Dropdown";
 import { Advert } from "../components/widgets/Advert";
 import { Hyperlink } from '../components/widgets/Hyperlink';
 import { MenuScroll } from "../components/widgets/MenuScroll";
+import { CustomHTML } from "../components/widgets/CustomHTML";
 
 /** Christopher Parsons, 9/18/2025
  *  Angel Ramirez
  * Inputs:
+ *  staticRender: Boolean
  *  widget: Widget
  *  onClick: function
  *  alertDragStop: function
@@ -22,7 +24,7 @@ import { MenuScroll } from "../components/widgets/MenuScroll";
  * 
  * Updates the current state of the inputted widget in React.
  */
-export function WidgetRenderer({ staticRender=false, widget, onClick, recordState, alertDragStop, isSelected, onDragStart, onDrag, onDragStop, scale = 1, changeWidgetProperty, style }) {
+export function WidgetRenderer({ staticRender=false, widget, onClick, recordState, alertDragStop, isSelected, onDragStart, onDrag, onDragStop, scale = 1, changeWidgetProperty, style, pageWidth, pageHeight  }) {
   const { key: _ignoredKey, ...w } = widget;
 
   const common = {
@@ -37,6 +39,8 @@ export function WidgetRenderer({ staticRender=false, widget, onClick, recordStat
     recordState,
     scale,
     style,
+    pageWidth,
+    pageHeight,
   };
 
   switch (widget.type) {
@@ -65,7 +69,15 @@ export function WidgetRenderer({ staticRender=false, widget, onClick, recordStat
 
     case "menuScroll":
       return <MenuScroll key={widget.id} {...common} changeWidgetProperty={changeWidgetProperty} />;
-  
+    case "html":
+      return (
+        <CustomHTML
+          key={widget.id}
+          {...common}
+          html={widget.html}
+          sandbox={!!widget.sandbox}
+        />
+      );
     default:
       console.warn("Warning: Unknown widget type:", widget.type);
       return null;
