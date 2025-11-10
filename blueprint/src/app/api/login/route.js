@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createAccount, createAccountWithPhone } from '@lib/userQueries';
+import {createLoginByUsername} from '@lib/userQueries';
 import { openConnection, closeConnection, connection } from '@lib/connection'; 
 import { validateConnection } from '@lib/utility';
 import { encryptData, loginWordpress } from '@lib/user';
@@ -20,6 +20,7 @@ export async function POST(request) {//Handles sending user form data to databas
 
     let result = await encryptData(username,password);
     loginWordpress(username, password);
+    await createLoginByUsername(username);
     return NextResponse.json({ success: true, result });//return if successful
   } catch (err) {
     console.error(err);

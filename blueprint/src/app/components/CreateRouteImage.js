@@ -6,15 +6,18 @@ import { library } from "./routeDictionaries.js"
 function: CreateImage()
 inputs: 
     code: string
+update 10/27/25: 	
+    'type': string
+        "default" will draw a button with the standard nav-button preset
+        "set" sill draw a button with whatever className is set to in routeDictionaries.js 
 	
 outputs:
     next.js button
 
 This function uses premade dictionaries create image buttons to reuse code as much as possible
-~~does not currently support setting image dimensions or alt text~~
-9/10/25: Supports setting image dimensions and alt text to be desplayed if the image cannot load
+update 9/10/25: Supports setting image dimensions and alt text to be desplayed if the image cannot load
 */
-export default function CreateImage({code = ""}){
+export default function CreateImage({code = "",type="default"}){ //TODO: make each part default if library[code]===undefined (a code that doesn't exist in path is called)
     const path = library[code]
 
 //    console.log("route in separated function is ")
@@ -22,7 +25,7 @@ export default function CreateImage({code = ""}){
 
     return(
         <div className = "routingImage">
-            <Link href={path.href}><img title = {path.label} src = {path.image} width = {path.width} height = {path.height} alt = {path.alt_text} className={path.className}></img>
+            <Link href={path.href}><img title = {path.label} src = {path.image} width = {path.width} height = {path.height} alt = {path.alt_text} className={(type === "default") ? 'default' : ((type==='set') ? path.className : type)}></img>
                 {path.label} 
             </Link>
         </div> 

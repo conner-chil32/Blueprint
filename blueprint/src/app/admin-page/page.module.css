@@ -179,3 +179,33 @@
 border-style: solid;
     border-width: 3px;
 }
+
+.presetButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.presetButtons button {
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #222;
+    color: white;
+    border: 1px solid #444;
+}
+
+.customDuration {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.customDuration input,
+.customDuration select {
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #888;
+}
