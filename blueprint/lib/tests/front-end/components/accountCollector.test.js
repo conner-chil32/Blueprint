@@ -96,26 +96,4 @@ describe('AccountCollector component', () => {
         expect(screen.getByRole('button',{name:'Create'})).toHaveProperty('className','accountSubmit submit-button');
         expect(screen.getByRole('button',{name:'Create'})).toHaveProperty('type','submit');
     });
-    /*     
-    return (
-        <div className = {styles.userFieldContainer} data-testid="username">
-            <input name = "username" placeholder = "Enter Username" type = "text" className={styles.userField} id = "login_username"></input>
-        </div>
-    )
-
-    return (
-        <div className = {styles.passFieldContainer} data-testid="password">
-            <input name = "password" className={styles.passField} placeholder="Enter Password" type = "password" id = "login_username"></input>
-        </div>
-    );
-
-    return (
-        <button type = "submit" className={`${styles.accountSubmit} submit-button`} >{buttonMessage[path] ?? "ERROR"}</button>
-    );
-    const buttonMessage = {
-        "/login": "Login",
-        "/recovery": "Recover",
-        "/signup": "Create",
-    }
-    */
 });
