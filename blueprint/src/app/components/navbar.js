@@ -37,7 +37,7 @@ export default function Navbar() {
         <div className="navbar">
           {/* Left Side */}
           <div className="nav-left">
-            <CreateImage code="logo" />
+            <CreateImage code="logo" type="set" />
             <CreateButton code="features" />
             <CreateButton code="pricing" />
             <CreateButton code="canvas" />
@@ -45,7 +45,7 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="nav-right">
-            <CreateButton code="navtest" />
+            <CreateButton code="navtest" type="navtest-button" />
             <CreateButton code="login" />
 
             {/* Theme Toggle */}
