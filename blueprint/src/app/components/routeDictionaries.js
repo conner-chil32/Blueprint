@@ -81,8 +81,8 @@ const wordpress_test = {
 }
 
 const payment = {
-    label: "buy now",
-    href: "/payment"
+    label: "payment",
+    href: "/payment",
 }
 
 const account_recovery = {

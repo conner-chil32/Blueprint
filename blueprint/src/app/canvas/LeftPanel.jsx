@@ -29,6 +29,9 @@ export function LeftPanel({ createWidget }) {
 
           <div className={styles.sectionTitle}>Shapes</div>
           <button className={styles.categoryItem} onClick={() => createWidget('box')}>Box</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('circle')}>Circle</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('triangle')}>Triangle</button>
+          <button className={styles.categoryItem} onClick={() => createWidget('polygon')}>Polygon</button>
           <button className={styles.categoryItem}>Forms</button>
           <button className={styles.categoryItem}>Images</button>
         </div>

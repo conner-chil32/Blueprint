@@ -12,6 +12,7 @@ export default function History(parent) {
     let undoStack = [];
     let redoStack = [];
     let isApplyingHistory = false;
+    let savePagesToJSON = parent.savePagesToJSON;
 
     /** Christopher Parsons 10/9/2025
      * Create a snapshot by storing all state variables in a JSON.
@@ -37,6 +38,12 @@ export default function History(parent) {
             // Otherwise, reset redoStack and add this state to undoStack.
             redoStack.length = 0;
             undoStack.push(recordState());
+            
+            // Save to temp.json whenever history is pushed
+            // Use setTimeout to ensure React state updates have completed
+            if (savePagesToJSON) {
+                setTimeout(() => savePagesToJSON(), 0);
+            }
         }
     }
 
@@ -59,6 +66,11 @@ export default function History(parent) {
 
         redoStack.push(recordState());
         applyState(undoStack.pop());
+        
+        // Save to temp.json after undo
+        if (savePagesToJSON) {
+            savePagesToJSON();
+        }
     }
 
     /** Christopher Parsons 10/9/2025
@@ -70,6 +82,11 @@ export default function History(parent) {
 
         undoStack.push(recordState());
         applyState(redoStack.pop());
+        
+        // Save to temp.json after redo
+        if (savePagesToJSON) {
+            savePagesToJSON();
+        }
     }
 
     return {

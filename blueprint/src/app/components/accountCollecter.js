@@ -31,6 +31,21 @@ function PasswField() {
 }
 
 /*
+    EmailField: A component that renders a text input field for an email.
+    Input: none
+    Output: A div containing an input field for the email.
+    Date: 10/26/2025
+    Author: Angel Ramirez
+*/
+function EmailField() {
+    return (
+        <div className = {styles.userFieldContainer} data-testid="email">
+            <input name = "email" placeholder = "Enter Your Email Address" type = "email" className={styles.userField} id = "recover_email"></input>
+        </div>
+    )
+}
+
+/*
     AccountSubmit: A component that renders a submit button for the form.
     Input: none
     Output: A button element that submits the form when clicked.
@@ -40,7 +55,7 @@ function PasswField() {
 function AccountSubmit( { path } ) {
     const buttonMessage = {
         "/login": "Login",
-        "/recovery": "Recover",
+        "/recovery": "Send Reset Link", // <-- Updated button text
         "/signup": "Create",
     }
     return (
@@ -80,14 +95,16 @@ export default function AccountCollecter( { currentPage } ) {
                 )
                 : (currentPage == "/recovery") ? (
                     <>
-                        <UserField />
-                        <PasswField />
+                        <EmailField />
                         <AccountSubmit path={currentPage}/>
                     </>
-                ) : (currentPage == "/signup") ? (
+                ) 
+                
+                : (currentPage == "/signup") ? (
                     <>
                         <UserField />
                         <PasswField />
+                        <center><div className={`${styles.accountCreateLink} submit-button`}><a href="/account-recovery" >Forgot Username/Password?</a></div></center>
                         <AccountSubmit path={currentPage}/>
                     </>
                 ) : (
