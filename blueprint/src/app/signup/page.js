@@ -11,6 +11,9 @@ export default function SignUpPage() {
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  if (document.cookie.includes("UserCookie")) window.location.href = "/";
+  
+
   const infoBoxes = [
     {
       id: 'username',

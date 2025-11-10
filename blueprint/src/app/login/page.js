@@ -28,6 +28,9 @@ export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
+    if (window.document.cookie.includes("UserCookie")) window.location.href = "/";
+
+
     const infoBoxes = [
         {
             id: 'username',
@@ -38,6 +41,8 @@ export default function SignUpPage() {
             text: "Password"
         }
     ];
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
