@@ -71,11 +71,12 @@ export async function GET(request) {
             const s = await getSitesByUser(usr);
             return NextResponse.json(JSON.stringify(s));
         } else {
-            throw false;
+            return NextResponse.redirect(new URL("/ftu-main", request.url));
         }
     } catch (err) {
         console.log(err);
-        return new NextResponse({status: 500, error: "Something went wrong retrieving the site(s)..."});
+        return NextResponse.redirect(new URL("/ftu-main", request.url));
+
     }
 }
 
