@@ -53,15 +53,6 @@ describe('AccountCollector component', () => {
         expect(screen.getByRole('textbox',{name:''})).toHaveProperty('type','email');
         expect(screen.getByPlaceholderText('Enter Your Email Address')).toBeInTheDocument();
 
-/*        // Assert Passwordbox
-        expect(screen.getByTestId('password')).toBeInTheDocument();
-        expect(screen.getByTestId('password')).toHaveProperty('className','passFieldContainer');
-        expect(screen.getByPlaceholderText('Enter Password')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Enter Password')).toHaveProperty('name','password');
-        expect(screen.getByPlaceholderText('Enter Password')).toHaveProperty('className','passField');
-        expect(screen.getByPlaceholderText('Enter Password')).toHaveProperty('type','password');
-        expect(screen.getByPlaceholderText('Enter Password')).toHaveProperty('id','login_username');
-*/
         // Assert AccountSubmit
         expect(screen.getByText('Send Reset Link')).toBeInTheDocument(); //written on the button
         expect(screen.getByRole('button',{name:'Send Reset Link'})).toBeInTheDocument();

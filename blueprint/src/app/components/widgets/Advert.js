@@ -22,13 +22,13 @@ export function Advert(props) {
         />
     );
     // If static render, wrap in anchor tag
-    if (staticRender) {
-        return (
-            <a href={linkUrl} target="_blank" rel="noopener noreferrer" style={{ display: "block", width: "100%", height: "100%" }}>
-                {adContent}
-            </a>
-        );
-    }
+    // if (staticRender) {
+    //     return (
+    //         <a href={linkUrl} target="_blank" rel="noopener noreferrer" style={{ display: "block", width: "100%", height: "100%" }}>
+    //             {adContent}
+    //         </a>
+    //     );
+    // }
 
     return (
         <Widget
@@ -41,7 +41,9 @@ export function Advert(props) {
             }}
         >
             <div style={{ width: "100%", height: "100%", pointerEvents: "none" }}>
-                {adContent}
+                <a href={linkUrl} target="_blank" rel="noopener noreferrer" style={{ display: "block", width: "100%", height: "100%" }}>
+                    {adContent}
+                </a>
             </div>
         </Widget>
     );

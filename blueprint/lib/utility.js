@@ -1,5 +1,4 @@
 import { connection, closeConnection } from "./connection.js";
-import { getUserByID } from "./userQueries.js";
 import bcrypt from 'bcrypt';
 /*
     commit() - commits the current transaction to the database
