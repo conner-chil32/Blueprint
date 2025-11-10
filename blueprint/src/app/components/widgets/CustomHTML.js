@@ -28,8 +28,11 @@ function makeSrcDoc(html) {
 }
 
 export function CustomHTML({ scale, html, sandbox = true, ...props }) {
+  const { onDragStart, onDragStop, style: incomingStyle, ...restProps } = props;
+  const isSelected = restProps.isSelected;
   const srcDoc = useMemo(() => makeSrcDoc(html), [html]);
   const [isHandleVisible, setIsHandleVisible] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const hideHandleTimeoutRef = useRef(null);
 
   const clearHideTimeout = useCallback(() => {
@@ -53,24 +56,38 @@ export function CustomHTML({ scale, html, sandbox = true, ...props }) {
   }, [clearHideTimeout]);
 
   useEffect(() => {
-    if (props.isSelected) {
+    if (isSelected) {
       showHandle();
     } else {
       hideHandle();
     }
-  }, [props.isSelected, showHandle, hideHandle]);
+  }, [isSelected, showHandle, hideHandle]);
 
   useEffect(() => () => clearHideTimeout(), [clearHideTimeout]);
 
+  const handleDragStart = useCallback((...args) => {
+    setIsDragging(true);
+    onDragStart && onDragStart(...args);
+  }, [onDragStart]);
+
+  const handleDragStop = useCallback((...args) => {
+    setIsDragging(false);
+    onDragStop && onDragStop(...args);
+  }, [onDragStop]);
+
+  const blockIframeInteraction = !isSelected || isDragging;
+
   return (
     <Widget
-      {...props}
+      {...restProps}
       scale={scale}
+      onDragStart={handleDragStart}
+      onDragStop={handleDragStop}
       /*Stop the shared frame from drawing a border/outline */
       useOuterBorderFrame={false}
       /*Tell Widget/RND what the drag handle class is */
       dragHandleClassName="widget-drag-handle"
-      style={{ ...props.style, backgroundColor: "transparent" }}
+      style={{ ...(incomingStyle || {}), backgroundColor: "transparent" }}
       header={(
         // This thin bar is the drag handle
         <div
@@ -99,13 +116,20 @@ export function CustomHTML({ scale, html, sandbox = true, ...props }) {
         />
       )}
     >
-      <div
-        onMouseMove={showHandle}
-        onMouseLeave={() => hideHandle(800)}
-        onTouchStart={showHandle}
-        onTouchEnd={() => hideHandle(800)}
-        style={{ width: "100%", height: "100%" }}
-      >
+      <div style={{ width: "100%", height: "100%", position: "relative" }}>
+        <div
+          onMouseMove={showHandle}
+          onMouseLeave={() => hideHandle(800)}
+          onTouchStart={showHandle}
+          onTouchEnd={() => hideHandle(800)}
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 5,
+            background: "transparent",
+            pointerEvents: blockIframeInteraction ? "auto" : "none",
+          }}
+        />
         <iframe
           srcDoc={srcDoc}
           style={{
@@ -116,6 +140,8 @@ export function CustomHTML({ scale, html, sandbox = true, ...props }) {
             boxShadow: "none",
             display: "block",
             background: "transparent",
+            position: "relative",
+            zIndex: 1,
           }}
           sandbox={sandbox ? "allow-scripts allow-forms allow-pointer-lock allow-popups" : undefined}
         />
