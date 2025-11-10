@@ -129,6 +129,7 @@ export async function getAllUsers(limit_val = 4, offset_val = 0) {
                                             LIMIT ? OFFSET ?;`,
                                             [limit_val, offset_val] 
                                             );
+                                            
     return result;
 }
 
@@ -158,7 +159,7 @@ export async function updateUserNote(userId, note) {
  * updateUserPassword - Updates a user's password in the database.
  * Input: id - The ID of the user to update.
  * passwordHash - The new, pre-hashed password.
- * Output: object - The result of the query.
+ * Output: object - The [result] of the query.
  * Date: 10/26/2025
  * Author: Angel Ramirez
  * Dependencies: mysql
@@ -171,3 +172,146 @@ export async function updateUserPassword(userID, passwordHash) {
     );
     return result;
 }
+
+
+
+/**
+ * banUser - Bans a user based on their userID
+ * Input:   userId - ID of the user you want to ban.
+ *          duration - The duration of the ban.
+ * Output:  boolean - True if ban was successful.
+ * Date: 11/07/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function banUser(userId, duration) {
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query(
+        `UPDATE userAccounts SET bannedUntil = ? WHERE userID = ?;`,
+        [duration, userId]
+    );
+    return result;
+}
+
+
+/**
+ * isBanned - Returns true if the user is currently banned.
+ * Input:   userId - ID of the user you want to check ban status of.
+ * Output:  boolean - True if the user is currently banned.
+ * Date: 11/07/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function isBanned(userId) {
+    if (!await validateConnection()) return false;
+    const [rows] = await connection.query(`SELECT bannedUntil FROM userAccounts WHERE userID = ?;`, [userId]);
+    
+    const bannedUntil = rows[0]?.bannedUntil;
+    if (!bannedUntil) return false; // not banned
+
+    const now = new Date();
+    if (new Date(bannedUntil) < now) { //ban has expired
+        await banUser(userId, null);  // remove ban
+        return false;
+    }
+    
+    return true; // still banned
+}
+
+
+/**
+ * getAllLogins - Returns all the rows from the logins table
+ * Input:   limit_val - Limit of rows to be returned
+ *          offset_val - Which row to start at, useful if using pages to show results
+ * Output:  Object - UserID and loginTime columns for each returned row
+ * Date: 11/07/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function getAllLogins(limit_val = 10, offset_val = 0) {
+
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query(`SELECT userID, loginTime
+                                            FROM logins
+                                            ORDER BY loginTime DESC
+                                            LIMIT ? OFFSET ?;`,
+                                            [limit_val, offset_val]
+                                            );
+
+    return result;
+}
+
+
+/**
+ * getLoginsById - Returns all the rows from the logins table from a specified user
+ * Input:   limit_val - Limit of rows to be returned
+ *          offset_val - Which row to start at
+ * Output:  Object - UserID and loginTime columns for each returned row
+ * Date: 11/07/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function getLoginsById(userId, limit_val = 10, offset_val = 0) {
+
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query(`SELECT userID, loginTime
+                                            FROM logins
+                                            WHERE userID = ?
+                                            ORDER BY loginTime DESC
+                                            LIMIT ? OFFSET ?;`,
+                                            [userId, limit_val, offset_val]
+                                            );
+
+    return result;
+}
+
+
+/**
+ * createLoginById - Creates an entry in logins table from a user ID
+ * Input:   userId - User you want to create a login log for
+ * Output:  boolean - True if the entry was created.
+ * Date: 11/07/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function createLoginById(userId) {
+
+    if (!await validateConnection()) return false;
+    const [result] = await connection.query(`INSERT INTO logins (userID) VALUES (?)`,[userId]);
+    return result;
+}
+
+
+/**
+ * createLoginByUsername - Creates an entry in logins table from a username
+ * Input:   userName - Username you want to create a login log for
+ * Output:  boolean - True if the entry was created.
+ * Date: 11/07/2025
+ * Author: David Vigil
+ * Dependencies: mysql
+ */
+export async function createLoginByUsername(userName) {
+    if (!await validateConnection()) return false;
+
+    // Get the userID for this username
+    const [rows] = await connection.query(
+        `SELECT userID FROM userAccounts WHERE userName = ?`,
+        [userName]
+    );
+
+    if (!rows.length) {
+        throw new Error(`User "${userName}" not found`);
+    }
+
+    const userId = rows[0].userID;
+
+    // Insert into logins
+    const [result] = await connection.query(
+        `INSERT INTO logins (userID) VALUES (?)`,
+        [userId]
+    );
+
+    return result;
+}
+
+
