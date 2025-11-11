@@ -47,26 +47,17 @@ describe('AccountCollector component', () => {
         // Assert username box
         expect(screen.getByRole('textbox',{name:''})).toBeInTheDocument();
         expect(screen.getByRole('textbox',{name:''})).toHaveProperty('className','userField');
-        expect(screen.getByRole('textbox',{name:''})).toHaveProperty('id','login_username');
-        expect(screen.getByRole('textbox',{name:''})).toHaveProperty('name','username');
-        expect(screen.getByRole('textbox',{name:''})).toHaveProperty('placeholder','Enter Username');
-        expect(screen.getByRole('textbox',{name:''})).toHaveProperty('type','text');
-        expect(screen.getByPlaceholderText('Enter Username')).toBeInTheDocument();
-
-        // Assert Passwordbox
-        expect(screen.getByTestId('password')).toBeInTheDocument();
-        expect(screen.getByTestId('password')).toHaveProperty('className','passFieldContainer');
-        expect(screen.getByPlaceholderText('Enter Password')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Enter Password')).toHaveProperty('name','password');
-        expect(screen.getByPlaceholderText('Enter Password')).toHaveProperty('className','passField');
-        expect(screen.getByPlaceholderText('Enter Password')).toHaveProperty('type','password');
-        expect(screen.getByPlaceholderText('Enter Password')).toHaveProperty('id','login_username');
+        expect(screen.getByRole('textbox',{name:''})).toHaveProperty('id','recover_email');
+        expect(screen.getByRole('textbox',{name:''})).toHaveProperty('name','email');
+        expect(screen.getByRole('textbox',{name:''})).toHaveProperty('placeholder','Enter Your Email Address');
+        expect(screen.getByRole('textbox',{name:''})).toHaveProperty('type','email');
+        expect(screen.getByPlaceholderText('Enter Your Email Address')).toBeInTheDocument();
 
         // Assert AccountSubmit
-        expect(screen.getByText('Recover')).toBeInTheDocument(); //written on the button
-        expect(screen.getByRole('button',{name:'Recover'})).toBeInTheDocument();
-        expect(screen.getByRole('button',{name:'Recover'})).toHaveProperty('className','accountSubmit submit-button');
-        expect(screen.getByRole('button',{name:'Recover'})).toHaveProperty('type','submit');
+        expect(screen.getByText('Send Reset Link')).toBeInTheDocument(); //written on the button
+        expect(screen.getByRole('button',{name:'Send Reset Link'})).toBeInTheDocument();
+        expect(screen.getByRole('button',{name:'Send Reset Link'})).toHaveProperty('className','accountSubmit submit-button');
+        expect(screen.getByRole('button',{name:'Send Reset Link'})).toHaveProperty('type','submit');
     });
 
     test('Checking if /signup loads with all elements',()=>{
@@ -96,26 +87,4 @@ describe('AccountCollector component', () => {
         expect(screen.getByRole('button',{name:'Create'})).toHaveProperty('className','accountSubmit submit-button');
         expect(screen.getByRole('button',{name:'Create'})).toHaveProperty('type','submit');
     });
-    /*     
-    return (
-        <div className = {styles.userFieldContainer} data-testid="username">
-            <input name = "username" placeholder = "Enter Username" type = "text" className={styles.userField} id = "login_username"></input>
-        </div>
-    )
-
-    return (
-        <div className = {styles.passFieldContainer} data-testid="password">
-            <input name = "password" className={styles.passField} placeholder="Enter Password" type = "password" id = "login_username"></input>
-        </div>
-    );
-
-    return (
-        <button type = "submit" className={`${styles.accountSubmit} submit-button`} >{buttonMessage[path] ?? "ERROR"}</button>
-    );
-    const buttonMessage = {
-        "/login": "Login",
-        "/recovery": "Recover",
-        "/signup": "Create",
-    }
-    */
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import styles from './page.module.css';
+import styles from "./page.module.css";
 
 import Navbar from "../components/navbar";
 import { Canvas } from './Canvas';
@@ -23,7 +23,7 @@ export default function CanvasPage() {
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
-  const currentPage = pages.find(page => page.id === selectedPageID);
+  const currentPage = pages.find((page) => page.id === selectedPageID);
 
   // Creating widgets
   // If currentPage exists, widgets = currentPage.widgets : otherwise, empty array
@@ -217,8 +217,9 @@ export default function CanvasPage() {
         widgets: [],
         width: 800,
         height: 600,
-        backgroundColor: '#ffffff'
-      }])
+        backgroundColor: "#ffffff",
+      },
+    ]);
 
     setSelectedPageID(nextPageID);
     console.log('Created page', nextPageID);
@@ -240,13 +241,14 @@ export default function CanvasPage() {
    */
   const deletePage = (pageId) => {
     if (pages.length <= 1) {
-      console.log('Cannot delete the last page');
+      console.log("Cannot delete the last page");
       return;
     }
 
     setPages(prev => prev.filter(page => page.id !== pageId));
     if (selectedPageID === pageId) {
-      setSelectedPageID(pages[0].id);
+      const first = pages.find((p) => p.id !== pageId);
+      if (first) setSelectedPageID(first.id);
     }
 
     // Record state after updates
@@ -359,7 +361,6 @@ export default function CanvasPage() {
    *  e: MouseEvent
    * Outputs:
    *  pageMousePos: { x: number, y: number }
-   *  canvasMousePos: { x: number, y: number }
    * 
    * useEffect is essentially a hook that keeps track of actions performed on the page.
    * handleDocumentKeyDown keeps track of when something is clicked.
@@ -486,9 +487,9 @@ export default function CanvasPage() {
     if (!selectedWidgets || selectedWidgets.length === 0) return;
 
     // Re-select updated widget objects from the widgets array
-    const updatedSelection = selectedWidgets.map(sel =>
-      widgets.find(w => w.id === sel.id)
-    ).filter(Boolean); // Remove nulls in case of deletion
+    const updatedSelection = selectedWidgets
+      .map((sel) => widgets.find((w) => w.id === sel.id))
+      .filter(Boolean); // Remove nulls in case of deletion
 
     setSelectedWidgets(updatedSelection);
   }, [widgets]);
@@ -497,9 +498,14 @@ export default function CanvasPage() {
    * 
    * Triggers when the canvas page itself is clicked. If nothing
    * is clicked on aside from the canvas, deselects all widgets.
+   * Also disable editing on text widgets.
    */
   const handleCanvasClick = () => {
     deselectAllWidgets();
+
+    setWidgets(prev =>
+      prev.map(w => (w.type === 'text' && w.isEditing ? { ...w, isEditing: false } : w))
+    );
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -518,8 +524,10 @@ export default function CanvasPage() {
    * being resized.
    */
   const updateWidget = (widgetID, newX, newY, newSize = null) => {
-    const updatedWidgets = widgets.map(widget =>
-      widget.id === widgetID ? { ...widget, x: newX, y: newY, ...(newSize && { width: newSize.width, height: newSize.height }) } : widget
+    const updatedWidgets = widgets.map((widget) =>
+      widget.id === widgetID
+        ? { ...widget, x: newX, y: newY, ...(newSize && { width: newSize.width, height: newSize.height }) }
+        : widget
     );
     setWidgets(updatedWidgets);
   };
@@ -539,9 +547,9 @@ export default function CanvasPage() {
     const nextId = nextWidgetId;
 
     switch (typeToMake) {
-      case 'box':
+      case "box":
         newWidget = {
-          type: 'box',
+          type: "box",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -559,6 +567,7 @@ export default function CanvasPage() {
           borderStyle: "solid",
         };
         break;
+
       case 'circle':
         newWidget = {
           type: 'circle',
@@ -579,6 +588,7 @@ export default function CanvasPage() {
           borderStyle: "solid",
         };
         break;
+
       case 'triangle':
         newWidget = {
           type: 'triangle',
@@ -619,9 +629,10 @@ export default function CanvasPage() {
           borderStyle: "solid",
         };
         break;
+
       case 'video':
         newWidget = {
-          type: 'video',
+          type: "video",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -633,18 +644,18 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          videoUrl: '/images/DemoVideo.mp4',
+          videoUrl: "/images/DemoVideo.mp4",
           loop: false,
           muted: true,
           autoplay: true,
           controls: true,
-          objectFit: 'contain',
+          objectFit: "contain",
         };
         break;
       
       case 'dropdown':
         newWidget = {
-          type: 'dropdown',
+          type: "dropdown",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -656,17 +667,17 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          options: ['Option 1', 'Option 2', 'Option 3'],
-          value: 'Option 1',
+          options: ["Option 1", "Option 2", "Option 3"],
+          value: "Option 1",
           fontSize: 12,
-          textColor: '#111111',
-          bgColor: '#ffffff',
+          textColor: "#111111",
+          bgColor: "#ffffff",
         };
         break;
 
-      case 'advert':
+      case "advert":
         newWidget = {
-          type: 'advert',
+          type: "advert",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -678,19 +689,62 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          imageUrl: '/images/Blueprint.png',
-          linkUrl: 'http://localhost:3000/features',
-          alt: 'Advertisement',
-          objectFit: 'cover',
+          imageUrl: "/images/Blueprint.png",
+          linkUrl: "http://localhost:3000/features",
+          alt: "Advertisement",
+          objectFit: "cover",
           showBorder: true,
           borderColor: '#333333',
           adSnippet: '',
         };
         break;
 
-      case 'hyperlink':
+      case "text":
         newWidget = {
-          type: 'hyperlink',
+          type: "text",
+          id: nextId,
+          width: 300,
+          height: 80,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: "transparent",
+          pointerEventsNone: false,
+          rotation: 0,
+          text: "Edit me",
+          fontSize: 18,
+          color: "#111111",
+          fontFamily: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif",
+          fontWeight: 400,
+          textAlign: "left",
+          lineHeight: 1.35,
+          letterSpacing: 0,
+          padding: 8,
+        };
+        break;
+
+      case "image":
+        newWidget = {
+          type: "image",
+          id: nextId,
+          width: 320,
+          height: 200,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: "#ffffff",
+          pointerEventsNone: false,
+          rotation: 0,
+          imageUrl: "/images/pog_web_logo.png",
+          alt: "Logo",
+          objectFit: "contain",
+          showBorder: false,
+          borderRadius: 0,
+          showInlineUrlInput: false,
+        };
+        break;
+
+      case "hyperlink":
+        newWidget = {
+          type: "hyperlink",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -702,17 +756,17 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          text: 'Click Here',
-          url: 'http://localhost:3000/features',
+          text: "Click Here",
+          url: "http://localhost:3000/features",
           fontSize: 12,
-          textColor: '#0000ee',
+          textColor: "#0000ee",
           openInNewTab: true,
         };
         break;
 
-      case 'menuScroll':
+      case "menuScroll":
         newWidget = {
-          type: 'menuScroll',
+          type: "menuScroll",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -724,11 +778,11 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          items: ['Menu Item 1', 'Menu Item 2', 'Menu Item 3', 'Menu Item 4', 'Menu Item 5'],
+          items: ["Menu Item 1", "Menu Item 2", "Menu Item 3", "Menu Item 4", "Menu Item 5"],
           fontSize: 14,
-          textColor: '#333333',
+          textColor: "#333333",
           itemPadding: 8,
-          selectedValue: 'Menu Item 1', // Default to the first item
+          selectedValue: "Menu Item 1", // Default to the first item
         };
         break;
       
@@ -752,7 +806,7 @@ export default function CanvasPage() {
         };
       break;
       default:
-        console.warn('Warning: Unknown widget type: ' + typeToMake);
+        console.warn("Warning: Unknown widget type: " + typeToMake);
         return;
     }
 
@@ -810,7 +864,7 @@ export default function CanvasPage() {
    * with a modified attribute.
    */
   function changePageProperty(pageID, newProperties) {
-    const changedPages = pages.map(page =>
+    const changedPages = pages.map((page) =>
       // If this is the correct widget, then update the object
       page.id === pageID ? { ...page, ...newProperties }
         : page // Otherwise, leave it
@@ -942,7 +996,7 @@ export default function CanvasPage() {
  */
 function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage, isSaved }) {
   const [editingId, setEditingId] = useState(null);
-  const [editName, setEditName] = useState('');
+  const [editName, setEditName] = useState("");
 
   const startEdit = (page) => {
     setEditingId(page.id);

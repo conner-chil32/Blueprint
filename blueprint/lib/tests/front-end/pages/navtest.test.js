@@ -13,12 +13,12 @@ describe('Login Page', () => {
         expect(screen.queryAllByRole('link',{name:"features"}).length).toBe(2);
         expect(screen.queryAllByRole('link',{name:"pricing"}).length).toBe(2);
         expect(screen.queryAllByRole('link',{name:"canvas"}).length).toBe(2);
-        expect(screen.queryAllByRole('link',{name:"navtest"}).length).toBe(2);
+        expect(screen.queryAllByRole('link',{name:"!NAVTEST!"}).length).toBe(2); 
         expect(screen.queryAllByRole('link',{name:"login"}).length).toBe(2);
     });
 
     test('Checking if nonduplicate buttons load',()=>{
-        const known = ['features','pricing','canvas','navtest','login',undefined]
+        const known = ['features','pricing','canvas','!NAVTEST!','login',undefined]
         render(<Nav />);
 
         for(const i in library){    //iterate through everything in the library
