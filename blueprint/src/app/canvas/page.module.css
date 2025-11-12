@@ -172,4 +172,301 @@
       backdrop-filter: blur(8px);
     }
   }
-  
+
+  /* ---- Page Navigation Styling ---- */
+.pageNavContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.pageList {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.pageTab {
+  margin: 0 10px;
+  padding: 6px 14px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.pageTab:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.pageTabActive {
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: #000;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(114, 211, 96, 0.3);
+}
+
+.pageEditInput {
+  width: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.deleteIcon {
+  cursor: pointer;
+  margin-left: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.deleteIcon:hover {
+  color: var(--accent);
+}
+
+.newPageButton {
+  margin-left: 12px;
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.newPageButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
+}
+
+.saveStatus {
+  margin-left: auto;
+  padding-right: 20px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ---- Right Panel Polished Theme ---- */
+.widgetPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.9);
+  overflow-y: auto;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.widgetHeader {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.widgetContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.widgetContent p {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 6px 0 2px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.widgetContent input[type="text"],
+.widgetContent input[type="number"],
+.widgetContent select,
+.widgetContent textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.widgetContent input[type="text"]:focus,
+.widgetContent input[type="number"]:focus,
+.widgetContent select:focus,
+.widgetContent textarea:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.widgetContent input[type="color"] {
+  width: 100%;
+  height: 34px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.widgetContent input[type="range"] {
+  width: 100%;
+  accent-color: var(--light-blue);
+  margin-top: 6px;
+}
+
+.widgetContent button {
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.widgetContent button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
+}
+
+.widgetContent textarea {
+  resize: vertical;
+  min-height: 60px;
+  font-family: monospace;
+}
+
+.switchButton {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--light-blue), var(--accent));
+  color: black;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.switchButton:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
+}
+
+.deleteButton {
+  width: 100%;
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  color: #ff6b6b;
+  border-radius: 8px;
+  padding: 6px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.deleteButton:hover {
+  background: rgba(255, 80, 80, 0.25);
+  transform: scale(1.02);
+}
+
+/* ---- Page Settings Section ---- */
+.pageSettingsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.pageSettingsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pageSettingsGroup label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.3px;
+}
+
+.pageSettingsGroup input[type="number"],
+.pageSettingsGroup select {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.pageSettingsGroup input[type="number"]:focus,
+.pageSettingsGroup select:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.pageSettingsGroup input[type="color"] {
+  width: 100%;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.pageSelect {
+  width: 100%;
+}
+
+.pageSettingsDivider {
+  height: 1px;
+  margin: 8px 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.newPageButton,
+.downloadButton {
+  width: 100%;
+  margin-top: 6px;
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.newPageButton:hover,
+.downloadButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
+}
+

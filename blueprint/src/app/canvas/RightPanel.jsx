@@ -50,16 +50,37 @@ export function RightPanel({
    * Also return the controls.
    */
   return (
-    <div>
-      {/* Button to switch, always rendered. When clicked, invert buttonSelected */}
-      <button className={styles.switchButton} onClick={handleButtonClick}>Switch</button>
-
-      {/* False = widget properties. True = page properties */}
-      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} recordState={recordState} />
-        : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />}
+    <div className={styles.widgetPanel}>
+      <h2 className={styles.widgetHeader}>
+        {buttonSelected ? "Page Settings" : "Widget Settings"}
+      </h2>
+  
+      <button className={styles.switchButton} onClick={handleButtonClick}>
+        Switch
+      </button>
+  
+      {/* False = widget properties, True = page properties */}
+      {!buttonSelected ? (
+        <RightWidgetPanel
+          changeWidgetProperty={changeWidgetProperty}
+          selectedWidgets={selectedWidgets}
+          widgets={widgets}
+          deleteWidget={deleteWidget}
+          recordState={recordState}
+        />
+      ) : (
+        <RightPagePanel
+          pages={pages}
+          selectedPageID={selectedPageID}
+          setSelectedPageID={setSelectedPageID}
+          currentPage={currentPage}
+          createPage={createPage}
+          changePageProperty={changePageProperty}
+        />
+      )}
     </div>
-
   );
+  
 }
 
 function downloadMediaToDisk(url, filepath) {
@@ -82,7 +103,7 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
   if (selectedWidgets && selectedWidgets.length > 0) {
     // If something is selected
     return (
-      <div>
+      <div className={styles.widgetContent}>    
         <div>
           {/* Button for deleting widgets */}
           <button
@@ -808,77 +829,77 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
   }
 
   return (
-    <div className={styles.widgetOptions}>
-      {/* A view of all pages */}
-      <select value={selectedPageID} onChange={e => setSelectedPageID(Number(e.target.value))}>
-        {pages.map(page => (
-          <option key={page.id} value={page.id}>{page.name}</option>
-        ))}
-      </select>
-
-      {/* Buttons for editing pages */}
-      <button onClick={createPage}>+ New Page</button>
-
-      {/** Christopher Parsons, 9/18/2025
-       * An interface for changing the width, height, and background color
-       * of the currently selected page.
-       */}
-      <div>
-        <p>Width</p>
+    <div className={styles.pageSettingsContainer}>
+      <div className={styles.pageSettingsGroup}>
+        <label>Page:</label>
+        <select
+          value={selectedPageID}
+          onChange={e => setSelectedPageID(Number(e.target.value))}
+          className={styles.pageSelect}
+        >
+          {pages.map(page => (
+            <option key={page.id} value={page.id}>{page.name}</option>
+          ))}
+        </select>
+        <button className={styles.newPageButton} onClick={createPage}>+ New Page</button>
+      </div>
+  
+      <div className={styles.pageSettingsGroup}>
+        <label>Width</label>
         <input
-          type="input"
+          type="number"
           min="0"
           autoComplete="off"
           value={currentPage.width}
           onChange={e => {
-            if (e?.target.value === "") {
-              changePageProperty(selectedPageID, { width: 0 })
-            } else {
-              changePageProperty(selectedPageID, { width: parseInt(e.target.value, 10) })
-            }
-          }} />
-
-        <p>Height</p>
+            const val = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+            changePageProperty(selectedPageID, { width: val });
+          }}
+        />
+      </div>
+  
+      <div className={styles.pageSettingsGroup}>
+        <label>Height</label>
         <input
-          type="input"
+          type="number"
           min="0"
           autoComplete="off"
           value={currentPage.height}
           onChange={e => {
-            if (e?.target.value === "") {
-              changePageProperty(selectedPageID, { height: 0 })
-            } else {
-              changePageProperty(selectedPageID, { height: parseInt(e.target.value, 10) })
-            }
-          }}
-        />
-
-        <p>Background Color</p>
-        <input
-          type="color"
-          onChange={e => {
-            if (e?.target.value === "") {
-              changePageProperty(selectedPageID, { backgroundColor: '#ffffff' })
-            } else {
-              changePageProperty(selectedPageID, { backgroundColor: e.target.value })
-            }
+            const val = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+            changePageProperty(selectedPageID, { height: val });
           }}
         />
       </div>
-
-      {/* Download current page as HTML or JSON */}
-      <p>Download as:</p>
-      <select
-        value={downloadType}
-        onChange={e => setDownloadType(e.target.value)}>
-        {/* Download as HTML */}
-        <option value="html">HTML</option>
-        {/* Download as JSON */}
-        <option value="json">JSON</option>
-      </select>
-      <button onClick={() => handleDownloadBrowsers(downloadType)}>
+  
+      <div className={styles.pageSettingsGroup}>
+        <label>Background Color</label>
+        <input
+          type="color"
+          value={currentPage.backgroundColor}
+          onChange={e => changePageProperty(selectedPageID, { backgroundColor: e.target.value })}
+        />
+      </div>
+  
+      <div className={styles.pageSettingsDivider}></div>
+  
+      <div className={styles.pageSettingsGroup}>
+        <label>Download As:</label>
+        <select
+          value={downloadType}
+          onChange={e => setDownloadType(e.target.value)}
+          className={styles.pageSelect}
+        >
+          <option value="html">HTML</option>
+          <option value="json">JSON</option>
+        </select>
+        <button
+          className={styles.downloadButton}
+          onClick={() => handleDownloadBrowsers(downloadType)}
+        >
           Download
-      </button>
+        </button>
+      </div>
     </div>
   );
-}
+}  

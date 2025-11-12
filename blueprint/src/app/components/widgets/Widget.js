@@ -33,7 +33,7 @@ import { useState } from 'react';
  */
 export function Widget({ staticRender = false, id, x, y, width, height, isSelected, isMoving, rotation, style = {}, onClick, alertDragStop, children, pointerEventsNone,
   onDragStart, onDrag, onDragStop, scale, recordState, pageWidth, pageHeight, opacity, borderWidth, borderColor, borderStyle, useOuterBorderFrame, dragHandleClassName, header,
-  onDoubleClick, dragCancelSelector }) {
+  onDoubleClick, dragCancelSelector, isEditing }) {
   const [previousPosition, setPreviousPosition] = useState({ x: 0, y: 0 });
 
   const handleResize = (e, direction, refToElement, delta, position) => {
@@ -51,7 +51,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         size={{ width: width, height: height }}
         bounds="parent"
         enableResizing={isSelected ? undefined : false}
-        disableDragging={!isSelected}
+        disableDragging={!isSelected || isEditing}
         dragHandleClassName={dragHandleClassName}
         cancel={dragCancelSelector || undefined}
         // Update live
@@ -62,7 +62,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         }}
         onResizeStart={() => {
           // When the user starts resizing, record the page so undo is accurate
-          recordState();
+          setTimeout(() => recordState(), 0);
         }}
         // Finish resizing
         onResizeStop={(e, direction, refToElement, delta, position) => {
@@ -90,7 +90,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
             Math.abs(data.x - previousPosition.x) > 1 ||
             Math.abs(data.y - previousPosition.y) > 1
           ) {
-            recordState();
+            setTimeout(() => recordState(), 0);
           }
         }}
         scale={scale}
@@ -121,6 +121,10 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
             // Prevent click from bubbling up to the canvas
             e.stopPropagation();
             onClick && onClick(e);
+          }}
+          onDoubleClick={e => {
+            e.stopPropagation();
+            onDoubleClick && onDoubleClick(e);
           }}
         >
           {header}
@@ -181,10 +185,6 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
           // Prevent click from bubbling up to the canvas
           e.stopPropagation();
           onClick && onClick(e);
-        }}
-        onDoubleClick={e => {
-          e.stopPropagation();
-          onDoubleClick && onDoubleClick(e);
         }}
       >
         {children}
