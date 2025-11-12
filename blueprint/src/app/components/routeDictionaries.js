@@ -100,6 +100,12 @@ const navtest = {
     href: "/navtest"
 }
 
+const logout = {
+    label: "Logout",
+    href: "/api/logout",
+    className: "nav-button"
+}
+
 const library = {
     features: features,
     pricing: pricing,
@@ -118,6 +124,7 @@ const library = {
     account_recovery:account_recovery,
     admin_details:admin_details,
 
-    navtest:navtest
+    navtest:navtest,
+    logout:logout
 }
 export { library };

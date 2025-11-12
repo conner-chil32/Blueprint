@@ -1,6 +1,10 @@
 import { validateConnection } from "./utility.js";
 import { encryptString } from "./utility.js";
 import { connection } from "./connection.js";
+import { User } from "./user.js";
+import { getCookie } from "@root/api/CookieController.js";
+import { getSiteByID } from "./siteQueries.js";
+import { registerWordpress } from "./user.js";
 
 /**
  * getUserByEmail - Retrieves a user by their email address.
@@ -26,7 +30,7 @@ export async function getUserByEmail(email) {
  */
 export async function getUserByID(id) {
     if (!await validateConnection()) return false;
-    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE id = ?;`, [id]);
+    const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userID = ?;`, [id]);
     return result;
 }
 
@@ -60,7 +64,7 @@ export async function createAccount(user, password, email, securityQuestion, sec
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userWpName, userWpPassHash, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, user, loginHash, securityQuestion, securityAnswer]);
-    //registerWordpress(user, loginHash);
+    //await registerWordpress(user, loginHash, email);
     return result;
 }
 
@@ -93,7 +97,7 @@ export async function createAccountWithPhone(user, password, email, phone, secur
     const passwordHash = await encryptString(password);
     const loginHash = await encryptString(user+passwordHash);
     const [result] = await connection.query(`INSERT INTO userAccounts (userName, userPassHash, userEmail, userPhone, userWpName, userWpPassHash, userQuestion, userAnswer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [user, passwordHash, email, phone, user, loginHash, securityQuestion, securityAnswer]);
-    //registerWordpress(user, loginHash);
+    //registerWordpress(user, loginHash, email);
     return result;
 }
 
@@ -108,8 +112,59 @@ export async function createAccountWithPhone(user, password, email, phone, secur
 export async function getUserByUsername(username) {
     if (!await validateConnection()) return false;
     const [result] = await connection.query(`SELECT * FROM userAccounts WHERE userName = ?;`, [username]);
-    return result;
+    return new User (result[0]);
 }
+
+/**
+ * validateUser - retrieves the user id from cookie "UserCookie" if the id is valid
+ * Input: req - the http request object
+ * Ouput: string - the user primary key in the database
+ * Error: Exception - user validation failed
+ */
+export async function validateUser(request) {
+    //get user cookie and check database if user is seen in database
+    const user = getCookie(request, 'UserCookie');
+    if (user === null) throw "Could not validate user";
+    const validationCheck = ((await getUserByID(user)).length != 0);
+    
+    //if valid return the user id
+    if (validationCheck){
+        return user;
+    } else {
+        throw "Could not validate user";
+    }
+}
+
+/**
+ * validateUser - retrieves the user id from cookie "UserCookie" if the id is valid
+ * Input: site - the http request object
+ * Ouput: string - the id of the site
+ * Error: Exception - site validation failed
+ */
+export async function validateSite(site_id) {
+    var siteCount = (await getSiteByID(site_id))?.length;
+    try {
+        if (siteCount >= 1) { //checks if there are sites under the site's id
+            return site_id; //returns the id of the site
+        } else {
+            throw "Could not validate site";
+        }
+    } catch (err) {
+        console.log(err);
+        throw "Could not validate site";
+    }
+}
+
+export async function validateUserSite(user_id, site_id) {
+    try {
+        await validateSite(site_id);
+        await validateUser(user_id);
+        return true;
+    } catch {
+        throw "Could not validate the User Site"
+    }
+}
+
 
 /**
  * getAllUsers - Retrieves all users in database

@@ -1,105 +1,153 @@
-.accountViewButton{
-    /* Attempt to match back button */
-    font-size: 20px;
-    font-weight: 400;
-    height: 45px;
-    position: fixed;
-    top: 13px;
-    right: 150px;
-}
-.featuresButton{
-    font-size: 20px;
-    font-weight: 400;
-    position: fixed;
-    top: 20px;
-    left: 70px;
-}
-.pricingButton{
-    font-size: 20px;
-    font-weight: 400;
-    position: fixed;
-    top: 20px;
-    left: 170px;
-}
-.largeTitleText{
-    /* Fonts */
-    font-size: 70px;
-    font-weight: 700;
-    color: white;
-    /* Positioning */
-    position: fixed;
-    left: 30px;
-    top: 70px;
-}
-.linkButton {
-    /* Background color */
-    background-color: #099CAC;
-    
-    /* Text styling */
-    color: black;
-    font-size: 20px;
-    font-weight: 400;
-    
-    /* Button shape and size */
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: none;
-    
-    /* Button size */
-    width: 100%;
-    min-width: 160px;
-    
-    /* Transition for hover effect */
-    transition: background-color 0.3s ease;
-    
-    display: block;
-    text-align: center;
-
+.accountViewButton {
+  background-color: #f8f9fa; /* Light background from mock-up */
+  color: #333; /* Dark text */
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.linkButton:hover {
-    background-color: #096D78;
-    cursor: pointer;
+.accountViewButton:hover {
+  background-color: #e2e6ea;
 }
-/* Table styling */
-.tableContainer {
-    background-color: white;
-    border-radius: 20px;
-    position: fixed;
-    left: 30px;
-    top: 250px;
-  }
-  
-  .table {
-    color: black;
-    font-weight: 700;
-  }
-  
-  .tableHeader {
-    font-size: 50px;
-    padding-left: 20px;
-  }
-  
-  .tableData {
-    font-size: 50px;
-    padding-left: 20px;
-    padding-right:20px;
-  }
-  .generalButton {
-    /* Button Appearance */
-    border-radius: var(--border-weight);
+
+/* --- User Bar (Logged in as: User | Log Out) --- */
+.userBar {
+  display: flex;
+  justify-content: flex-end; /* Aligns content to the right */
+  align-items: center;
+  padding: 10px 40px;
+  color: white;
+  gap: 20px; /* Spacing between "Logged in as" and "Log Out" */
 }
-/*
-table{
-    background-color: white;
-    border-radius: 20px;
-    font-size: 70px;
-    font-weight: 700;
-    color: black;
-    position: fixed;
-    left: 30px;
-    top: 250px;
+
+.logOutButton {
+  background-color: #f8f9fa; /* Light background from mock-up */
+  color: #333; /* Dark text */
+  padding: 8px 16px;
+  border-radius: 5px;
+  border: none;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
 }
-th, tr, td{ padding-left: 20px; }
-th{ font-size: 50px; }
-td{ font-size: 50px; } */
+
+.logOutButton:hover {
+  background-color: #e2e6ea;
+}
+
+/* --- Main Page Container --- */
+.portalContainer {
+  padding: 0 40px 40px 40px; /* Padding for the main content area */
+  color: white;
+}
+
+/* --- Welcome / Your Websites Titles --- */
+/* These styles remove the old "position: fixed" */
+.largeTitleText {
+  font-size: 2.5rem; /* 40px */
+  font-weight: bold;
+  margin: 0;
+  color: #eee;
+  padding-top: 20px; /* Space from the user bar */
+}
+
+.mediumTitleText {
+  font-size: 1.5rem; /* 24px */
+  font-weight: normal;
+  color: #ccc;
+  margin-top: 5px;
+  margin-bottom: 30px; /* Space above the website list */
+}
+
+/* --- Website List & Cards --- */
+.websiteList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.websiteCard {
+  display: grid;
+  /* Columns: Preview | Info | Actions */
+  grid-template-columns: 200px 1fr 200px;
+  gap: 25px;
+  align-items: center;
+  background-color: #333; /* Dark card background */
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+
+.websitePreview {
+  width: 100%;
+  height: 120px;
+  background-color: #555; /* Placeholder color from mock-up */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  color: #ccc;
+  font-style: italic;
+  text-align: center;
+}
+
+.websiteInfo h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #eee;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.websiteInfo p {
+  margin: 8px 0;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+.websiteActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch; /* Make buttons full width of their column */
+}
+
+.actionButton {
+  background-color: #0d6efd; /* Blue from mock-up */
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  text-align: center;
+}
+
+.actionButton:hover {
+  background-color: #0b5ed7;
+}
+
+
+/* --- Create Button --- */
+.createButtonContainer {
+  margin-top: 40px;
+  border-top: 1px solid #444;
+  padding-top: 30px;
+}
+
+.createButton {
+  background-color: #198754; /* Green */
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.createButton:hover {
+  background-color: #157347;
+}

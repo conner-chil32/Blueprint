@@ -13,24 +13,24 @@ import {
 } from './userQueries.js';
 import { Website } from './website.js';
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'; 
+import { setCookie } from '@root/api/CookieController.js';
 
 export class User {
-    constructor() {
-        this.id = null;
-        this.userName = '';
-        this.userPassHash = '';
-        this.userWpName = '';
-        this.userWpPassHash = '';
-        this.userEmail = '';
-        this.userPhone = '';
-        this.userWebsites = 0;
-        this.userDateCreated = null;
-        this.userLastLogin = null;
-        this.isAdmin = false;
-        this.loggedIn = false;
-        this.userQuestion = '';
-        this.userAnswer = '';
+    constructor(result) {
+        this.id = result?.userID;
+        this.userName = result?.userName;
+        this.userPassHash = result?.userPassHash;
+        this.userWpName = result?.userWpName;
+        this.userWpPassHash = result?.userWpPassHash;
+        this.userEmail = result?.userEmail;
+        this.userPhone = result?.userPhone;
+        this.userWebsites = result?.userWebsites;
+        this.userDateCreated = result?.userDateCreated;
+        this.userLastLogin = result?.userLastLogin;
+        this.isAdmin = result?.isAdmin;
+        this.userQuestion = result?.userQuestion;
+        this.userAnswer = result?.userAnswer;
     }
 
     /**
@@ -245,13 +245,6 @@ export class User {
     }
 
     /**
-     * Check if user is already logged in
-     * @returns {boolean} true if logged in, false otherwise
-     */
-    isLoggedIn() {
-        return this.loggedIn;
-    }
-    /**
      * Handles errors from the database
      * @param {Error} error The error to handle
      * @returns {string} A not found message
@@ -268,9 +261,131 @@ export class User {
  * @param {string} password The password to authenticate
  * @returns {boolean} true if login is successful, false otherwise
  */
+export async function loginUser(username, password) {
+    // try {
+    //     const rows = await getUserByUsername(username);
+    //     const user = Array.isArray(rows) ? rows[0] : rows;
+
+
+    //     if (user == undefined || user.id == undefined) throw "Invalid Username or Password"; // If user not found, return false
+
+    //     // const storedUsername = user.userName;
+    //     // const storedPassword = user.userPassHash;
+
+    //     // const match = await bcrypt.compare(password,storedPassword);
+
+    //     // if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
+    //     //     this.loggedIn = true; 
+    //     //     return true;
+    //     // } else {
+    //     //     return false;
+    //     // }
+
+    //     if (!user) throw false;
+    //     const match = await bcrypt.compare(password, user.userPassHash);
+    //     return user.userName === username && match;
+
+    // } catch (err) {
+    //     throw {error: err};
+    // }
+    // export async function loginUser(username, password) {
+    try {
+        const user = await getUserByUsername(username);
+
+
+        if (user == undefined || user.id == undefined) throw "Invalid Username or Password"; // If user not found, return false
+
+        const storedUsername = user.userName;
+        const storedPassword = user.userPassHash;
+
+
+        const match = await bcrypt.compare(password,storedPassword);
+
+        console.log(match);
+
+        if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
+            return user.id;
+        } else {
+            throw "Invalid Username or Password"
+        }
+    } catch (err) {
+        throw {error: err};
+    }
+// }
+}
+
+const wordpressBase = 'http://wordpress';
+
+export async function registerWordpress(username, password, email) {
+    console.log("[WP] Registering Wordpress");
+
+    // Wordpress API only accepts lowercase usernames
+    username = username.toLowerCase();
+    
+    try {
+        // Log in with admin credentials; they are now in the enviornment from runtime
+        const response = await fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({username: process.env.WORDPRESS_DATABASE_USER, password: process.env.WORDPRESS_DATABASE_PASSWORD}),
+            redirect: "follow"
+        });
+
+        if (!response.ok) {
+            throw new Error(`[WP] Response error: Status ${response.status}, Error: ${await response.text().catch(() => "")}`);
+        }
+
+        const { token } = await response.json();
+
+        // Create a response to send to create the WP account to create a user
+        const responseContent = await fetch(`${wordpressBase}/wp-json/wp/v2/users`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, email, password })
+        });
+
+        if (!responseContent.ok) {
+            throw new Error(`[WP] User creation failed, ${responseContent.status}, Error: ${await responseContent.text().catch(() => "")}`);
+        }
+        
+        console.log('[WP] User created');
+        return true;
+
+    } catch (e) {
+        console.error(`[WP] Wordpress Registration Error: ${e.message}`);
+        throw e;
+    }
+}
+
+export async function loginWordpress(username, password) {
+
+    const response = await fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, {
+        method: "POST",
+        body: new URLSearchParams({ username, password }),
+        redirect: "follow"
+    });
+
+    const data = await response.json();
+    if (!data.token) throw new Error("[WP] Error: No WP token.");
+
+    return data.token;
+
+    // fetch(`${wordpressBase}/wp-json/jwt-auth/v1/token`, requestOptions)
+    // .then((response) => response.json())
+    // .then((result) => {
+    //     sessionStorage.setItem("WP_TOKEN", result["token"])
+    //     console.log("token set")
+    // })
+    // .catch((error) => console.error(error));
+}
+
 export async function encryptData(username, password) {
     try {
-        if (this.isLoggedIn()) return true; //If user already logged in
         
         const user = await getUserByUsername(username);
 
@@ -282,7 +397,6 @@ export async function encryptData(username, password) {
         const match = await bcrypt.compare(password,storedPassword);
 
         if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
-            this.loggedIn = true; 
             return true;
         } else {
             return false;
@@ -291,49 +405,6 @@ export async function encryptData(username, password) {
         console.error(err);
         return false;
     }
-}
-
-export async function registerWordpress(username, password, email) {
-    console.log("[WP] Registering Wordpress");
-
-
-    await fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${process.env.DB_USER}&password=${process.env.DB_PASSWORD}`, {
-        method: "POST",
-        redirect: "follow"
-    })
-        .then((response) => response.json())
-        .then((result) => {
-            console.log(result["token"]);
-            const myHeaders = new Headers();
-            myHeaders.append("Authorization", `Bearer ${result["token"]}`);
-            const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            redirect: "follow"
-            };
-            fetch(`http://wordpress:80/wp-json/wp/v2/users?${username}=&password=${password}&email=${email}`, requestOptions)
-            .then((response) => {
-                console.log(`root token successful, User Created.\n Response ${response}`);
-            })
-            .catch((error) => {throw false;});
-        })
-        .catch((error) => {throw false;});
-        
-}
-
-export async function loginWordpress(username, password) {
-    const requestOptions = {
-        method: "POST",
-        redirect: "follow"
-    };
-
-    fetch(`http://wordpress:80/wp-json/jwt-auth/v1/token?username=${username}&password=${password}`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => {
-        sessionStorage.setItem("WP_TOKEN", result["token"])
-        console.log("token set")
-    })
-    .catch((error) => console.error(error));
 }
 
 

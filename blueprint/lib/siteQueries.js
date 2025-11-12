@@ -1,5 +1,6 @@
 import { commit, validateConnection } from "./utility.js";
 import { connection } from "./connection.js"
+import { validateSite } from "./userQueries.js";
 
 /**
     getSites() - Retrieves all sites from the database.
@@ -34,6 +35,7 @@ export async function getSiteByID(id) {
         await validateConnection();
         [result] = await connection.query(`SELECT * FROM userWebsites WHERE siteID = ?;`, [id]);
     } catch (err) {
+        console.log(err);
         throw undefined;
     }
     return result;
@@ -84,18 +86,18 @@ export async function getSitesByUser(userId) {
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function getSiteCount() {
+export async function getSiteCount(id) {
     var result;
+    console.log(id);
     try {
         await validateConnection();
-        [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites;`);
+        [result] = await connection.query(`SELECT COUNT(*) as 'siteCount' FROM userWebsites WHERE userID=?;`, [id]);
     } catch (err) {
+        console.log(err);
         throw undefined;
     }
-    return result;
-    // if (!await validateConnection()) return false;
-    // const [result] = await connection.query(`SELECT COUNT(*) FROM userWebsites;`)
-    // return result;
+    console.log(result[0]?.siteCount);
+    return result[0]?.siteCount;
 }
 
 /**
@@ -108,13 +110,16 @@ export async function getSiteCount() {
  */
 export async function createSite(name, userId) {
     try {
-        await validateConnection()
+        await validateConnection();
         await connection.query(`INSERT INTO userWebsites (websiteName, userID) VALUES (?, ?);`, [name, userId]);
-        await commit(connection);
+        
+        const siteId = await connection.query(`SELECT siteID from userWebsites WHERE websiteName = '${name}' AND userID = '${userId}'`);
+        
+        return siteId[0][0]?.siteID;
     } catch (err) {
+        console.log(err);
         throw false;
     }
-    return true;
     // if (!await validateConnection()) return false;
     // await connection.query(`INSERT INTO userWebsites (websiteName, website_user_id) VALUES (?, ?);`, [name, userId]);
     // return await commit(connection);
@@ -145,13 +150,14 @@ export async function deleteSite(siteId) {
 /**
  * updateSite(id, data) - Updates a site in the database by its ID.
  * Input: id - The ID of the site to update.
+ * siteName - The you want to change the site to
  * data - The data to update the site with.
  * Output: boolean - true if the site was updated successfully, false otherwise.
  * Date: 4/14/2025
  * Author: Lydell Jones
  * Dependencies: mysql
  */
-export async function updateSite(id, name) {
+export async function updateSite(id, siteName, json = {}) {
     try {
         await validateConnection();
         await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateUpdated=NOW()  WHERE siteID = ?;`, [name, id]);
@@ -264,10 +270,11 @@ export async function deleteMedia(id, siteId) {
  */
 export async function createPage(siteId, path, data) {
     try {
-        await validateConnection()
-        await connection.query(`INSERT INTO sitePages (siteID, pagePath, pageData) VALUES (?, ?, ?);`,
+        await validateConnection();
+        await connection.query(`INSERT INTO sitePages (siteID, pagePath, pageData) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE pageData = VALUES(pageData)`,
             [siteId, path, data]);
     } catch (err) {
+        console.log(err);
         throw false;
     }
     return true;

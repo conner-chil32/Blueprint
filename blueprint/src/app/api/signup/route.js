@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createAccount, createAccountWithPhone } from '@lib/userQueries';
 import { validateConnection } from '@lib/utility';
 import { registerWordpress } from '@lib/user';
+import { setCookie } from "@root/api/CookieController";
+
 
 export async function POST(request) {//Handles sending user form data to database via user queries calls, is called in /signup/page.js  
   try {
@@ -36,7 +38,8 @@ export async function POST(request) {//Handles sending user form data to databas
     
 
     // User is assumed to have logged in by this point, store Wordpress session key.
-    //await registerWordpress(username, password);
+    console.log("[WP] Registering user to Wordpress:", username, password, email);
+    await registerWordpress(username, password, email);
 
     return NextResponse.json({ success: true, result });//return if successful
   } catch (err) {

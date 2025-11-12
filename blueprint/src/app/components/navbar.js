@@ -5,11 +5,17 @@ import CreateImage from "./CreateRouteImage.js";
 import { useState, useEffect } from "react";
 
 export default function Navbar() {
+  const [loginStatus, setloginStatus] = useState(false);
   const [theme, setTheme] = useState("dark");
 
   // Load saved theme
   useEffect(() => {
+    const cookies = document.cookie.split("; ");
+    const loggedInCookie = cookies.find(cookie => cookie.startsWith("UserCookie"));
     const savedTheme = localStorage.getItem("theme");
+
+    if (loggedInCookie) setloginStatus(true);
+    
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.setAttribute("data-theme", savedTheme);
@@ -18,12 +24,11 @@ export default function Navbar() {
     }
   }, []);
 
-  // Apply & persist theme
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
-
+  
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
@@ -45,8 +50,8 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="nav-right">
-            <CreateButton code="navtest" type="navtest-button" />
-            <CreateButton code="login" />
+            <CreateButton code="navtest" />
+            <CreateButton code={loginStatus ? 'logout' : 'login'} />
 
             {/* Theme Toggle */}
             <div className="theme-toggle">

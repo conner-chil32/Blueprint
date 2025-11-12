@@ -325,15 +325,18 @@ export default function CanvasPage() {
    */
   const saveToDatabase = async () => {
     try {
-      const userId = getCookieValue('UserCookie') || '1';
-
+    //   const userId = getCookieValue('UserCookie') || '1';
+      const siteID = getCookieValue('CurrentSite') || '1';
+      
       // TODO: Replace '%SITEID%' with actual site ID
-      const response = await fetch(`api/website?site_id=%SITEID%`, {
+      console.log(pages[0]);
+      const response = await fetch(`api/website?site_id=${siteID}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(pages)
+        body: JSON.stringify(pages),
+        redirect: 'manual'
       });
 
       const result = await response.json();
@@ -450,7 +453,7 @@ export default function CanvasPage() {
         console.log("Manual save triggered");
         e.preventDefault();
         // Save pages data to database
-        // saveToDatabase();
+        saveToDatabase();
       }
 
       // Prevent browser back navigation in some contexts.
@@ -988,9 +991,6 @@ export default function CanvasPage() {
   }
 }
 
-/** 
- * 
- */
 function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage, isSaved }) {
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
@@ -1001,54 +1001,36 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
   };
 
   const saveEdit = (id) => {
-    if (editName.trim()) {
-      updatePageName(id, editName.trim());
-    }
+    if (editName.trim()) updatePageName(id, editName.trim());
     setEditingId(null);
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this page?")) {
-      deletePage(id);
-    }
+    if (window.confirm("Are you sure you want to delete this page?")) deletePage(id);
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflowX: 'auto', padding: '10px 0' }}>
-      <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto' }}>
-        {pages.map(page => (
+    <div className={styles.pageNavContainer}>
+      <div className={styles.pageList}>
+        {pages.map((page) => (
           <div
             key={page.id}
-            style={{
-              margin: '0 10px',
-              padding: '5px 10px',
-              cursor: 'pointer',
-              backgroundColor: page.id === selectedPageID ? '#e2e8f0' : 'transparent',
-              borderRadius: '4px',
-              fontWeight: page.id === selectedPageID ? 'bold' : 'normal',
-              display: 'flex',
-              alignItems: 'center',
-            }}
+            className={`${styles.pageTab} ${page.id === selectedPageID ? styles.pageTabActive : ""}`}
             onMouseDown={() => {
-              if (editingId !== page.id) {
-                setSelectedPageID(page.id);
-              }
+              if (editingId !== page.id) setSelectedPageID(page.id);
             }}
           >
             {editingId === page.id ? (
               <input
                 value={editName}
-                onChange={e => setEditName(e.target.value)}
+                onChange={(e) => setEditName(e.target.value)}
                 onBlur={() => saveEdit(page.id)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    saveEdit(page.id);
-                  } else if (e.key === 'Escape') {
-                    setEditingId(null);
-                  }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveEdit(page.id);
+                  if (e.key === "Escape") setEditingId(null);
                 }}
                 autoFocus
-                style={{ width: '100px' }}
+                className={styles.pageEditInput}
               />
             ) : (
               <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
@@ -1058,23 +1040,20 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
                 e.stopPropagation();
                 handleDelete(page.id);
               }}
-              style={{ cursor: 'pointer', marginLeft: '5px' }}
+              className={styles.deleteIcon}
             >
               🗑️
             </span>
           </div>
         ))}
-        <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+        <button onClick={createPage} className={styles.newPageButton}>
+          + New Page
+        </button>
       </div>
-      <div style={{
-        marginLeft: 'auto',
-        paddingRight: '20px',
-        fontSize: '14px',
-        color: isSaved ? '#10b981' : '#f59e0b',
-        fontWeight: '500'
-      }}>
-        {isSaved ? '✓ Saved' : '● Unsaved changes'}
+      <div className={styles.saveStatus}>
+        {isSaved ? "✓ Saved" : "● Unsaved changes"}
       </div>
     </div>
   );
 }
+
