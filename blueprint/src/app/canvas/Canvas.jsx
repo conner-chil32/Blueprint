@@ -27,6 +27,7 @@ export function Canvas({ widgets, recordState, changeWidgetProperty, isDragging,
     // Dragging reference
     const dragSnapshot = useRef(null); // { headId, byId: { [id]: {x, y} } }
     const suppressNextClick = useRef(false);
+    const isAnyEditing = Array.isArray(widgets) && widgets.some(w => w?.isEditing);
 
     // When dragging, identify what is being dragged
     const startGroupDrag = (headId) => {
@@ -83,10 +84,11 @@ export function Canvas({ widgets, recordState, changeWidgetProperty, isDragging,
         /* The wrapper that applies react-zoom-pan-pinch's attributes to the draggable component */
         <TransformWrapper
             initialScale={1}
-            disabled={isDragging}
+            disabled={isDragging || isAnyEditing}
             limitToBounds={false}
-            panning={{ velocityDisabled: true }}
+            panning={{ disabled: isAnyEditing, velocityDisabled: true }}
             minScale={0.05}
+            doubleClick={{ disabled: true }}
             // Keep track of scale
             onTransformed={({ state }) => {
                 setScale(state.scale);
@@ -111,6 +113,7 @@ export function Canvas({ widgets, recordState, changeWidgetProperty, isDragging,
                         {/* The page itself is its own component here */}
                         <div className={styles.pages}
                             style={{
+                                position: "relative",
                                 width: currentPage?.width + "px",
                                 height: currentPage?.height + "px",
                                 backgroundColor: currentPage.backgroundColor,
