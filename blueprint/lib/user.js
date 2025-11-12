@@ -386,7 +386,6 @@ export async function loginWordpress(username, password) {
 
 export async function encryptData(username, password) {
     try {
-        // if (this.isLoggedIn()) return true; //If user already logged in
         
         const user = await getUserByUsername(username);
 
@@ -398,7 +397,6 @@ export async function encryptData(username, password) {
         const match = await bcrypt.compare(password,storedPassword);
 
         if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
-            this.loggedIn = true; 
             return true;
         } else {
             return false;
