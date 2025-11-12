@@ -262,33 +262,56 @@ export class User {
  * @returns {boolean} true if login is successful, false otherwise
  */
 export async function loginUser(username, password) {
+    // try {
+    //     const rows = await getUserByUsername(username);
+    //     const user = Array.isArray(rows) ? rows[0] : rows;
+
+
+    //     if (user == undefined || user.id == undefined) throw "Invalid Username or Password"; // If user not found, return false
+
+    //     // const storedUsername = user.userName;
+    //     // const storedPassword = user.userPassHash;
+
+    //     // const match = await bcrypt.compare(password,storedPassword);
+
+    //     // if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
+    //     //     this.loggedIn = true; 
+    //     //     return true;
+    //     // } else {
+    //     //     return false;
+    //     // }
+
+    //     if (!user) throw false;
+    //     const match = await bcrypt.compare(password, user.userPassHash);
+    //     return user.userName === username && match;
+
+    // } catch (err) {
+    //     throw {error: err};
+    // }
+    // export async function loginUser(username, password) {
     try {
         const user = await getUserByUsername(username);
 
 
         if (user == undefined || user.id == undefined) throw "Invalid Username or Password"; // If user not found, return false
 
-        // const storedUsername = user.userName;
-        // const storedPassword = user.userPassHash;
+        const storedUsername = user.userName;
+        const storedPassword = user.userPassHash;
 
-        // const match = await bcrypt.compare(password,storedPassword);
 
-        // if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
-        //     this.loggedIn = true; 
-        //     return true;
-        // } else {
-        //     return false;
-        // }
+        const match = await bcrypt.compare(password,storedPassword);
 
-        const rows = await getUserByUsername(username);
-        const user = Array.isArray(rows) ? rows[0] : rows;
-        if (!user) throw false;
-        const match = await bcrypt.compare(password, user.userPassHash);
-        return user.userName === username && match;
+        console.log(match);
 
+        if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
+            return user.id;
+        } else {
+            throw "Invalid Username or Password"
+        }
     } catch (err) {
         throw {error: err};
     }
+// }
 }
 
 const wordpressBase = 'http://wordpress';
@@ -359,6 +382,31 @@ export async function loginWordpress(username, password) {
     //     console.log("token set")
     // })
     // .catch((error) => console.error(error));
+}
+
+export async function encryptData(username, password) {
+    try {
+        // if (this.isLoggedIn()) return true; //If user already logged in
+        
+        const user = await getUserByUsername(username);
+
+        if (!user) return false; // If user not found, return false
+
+        const storedUsername = user.userName;
+        const storedPassword = user.userPassHash;
+
+        const match = await bcrypt.compare(password,storedPassword);
+
+        if (storedUsername === username && match) {//.compare Hashes and checks new password against db hash
+            this.loggedIn = true; 
+            return true;
+        } else {
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
 }
 
 

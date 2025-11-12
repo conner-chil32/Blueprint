@@ -2,10 +2,9 @@ import { NextResponse } from 'next/server';
 import { createLoginByUsername, createAccount, createAccountWithPhone, getUserByUsername } from '@lib/userQueries';
 import { openConnection, closeConnection, connection } from '@lib/connection'; 
 import { validateConnection } from '@lib/utility';
-import { loginUser, loginWordpress, User, setLoginCookie} from '@lib/user';
+import { loginUser, loginWordpress, encryptData } from '@lib/user';
 import { getCookie, setCookie } from '../CookieController';
-import { encryptData, loginWordpress } from '@lib/user';
-import { User } from '@lib/user';
+
 import bcrypt from 'bcrypt';
 
 export async function POST(request) {//Handles sending user form data to database via user queries calls, is called in /signup/page.js
@@ -15,23 +14,29 @@ export async function POST(request) {//Handles sending user form data to databas
 
     await validateConnection(); //if connection is not valid, catch is executed
 
-    const user = await loginUser(username,password); //check if the password matches the user in database
+    const user_id = await loginUser(username,password); //check if the password matches the user in database
 
+    // Get a "user" object
+    const rows = await getUserByUsername(username);
+    const user = Array.isArray(rows) ? rows[0] : rows;
+
+    // Construct the hash
+    const hash = `${user.userName}${user.userPassHash}`;
+    const passWPCompare = await bcrypt.compare(hash, user.userWpPassHash);
+    // const response = NextResponse.json({ success: true, result: true });
+    
     
     //user is assumed to have logged in successfully
      //set user cookie to id of user
 
     // loginWordpress(request, username, password);
     let result = await encryptData(username,password);
+
     if (!result) {
       return NextResponse.json({ success: false, error: "Invalid login credentials." }, { status: 401 });
     }
-
-    // Get a "user" object
-    const rows = await getUserByUsername(username);
-    const user = Array.isArray(rows) ? rows[0] : rows;
     
-    switch (getCookie(request, 'TempCookie')) {
+    switch (getCookie(request, 'TempCookie')) { //examine the cookies
       case 'LoggedAgain':
         break;
       case 'LoggedIn':
@@ -39,19 +44,15 @@ export async function POST(request) {//Handles sending user form data to databas
         break;
       default: //if there exists 
         setCookie(response, 'TempCookie', 'LoggedIn');
-        setCookie(response, 'UserCookie', user);
+        setCookie(response, 'UserCookie', user_id);
         break;
     } 
 
-    // Construct the hash
-    const hash = `${user.userName}${user.userPassHash}`;
-    const passWPCompare = await bcrypt.compare(hash, user.userWpPassHash);
+    const token = await loginWordpress(username, password);
+
     if (!passWPCompare) {
       return NextResponse.json({ success: false, error: "[WP] Key mismatch." }, { status: 401 });
     }
-
-    const token = await loginWordpress(username, password);
-    //const response = NextResponse.json({ success: true, result: true });
 
     // Create a WP cookie
     response.cookies.set('WP_Token', token, {
