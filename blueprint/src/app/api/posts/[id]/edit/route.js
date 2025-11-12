@@ -1,6 +1,6 @@
 // Updates a post in the wordpress database
 
-export async function PUT(req, { params }) {
+export async function PUT(req) {
   const body = await req.json();
   const { id } = params;
 

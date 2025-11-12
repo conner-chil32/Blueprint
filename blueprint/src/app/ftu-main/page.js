@@ -28,12 +28,13 @@ export default function RawHTMLPage() {
             <p className={`${styles.p}`}>With Blueprint, you will be on your way to creating your dream website in no time.</p>
             <h1><br /></h1>
 
-            <a href="./canvas">
+            <form action="/api/website" method="POST">
+                <input type="text" id="name" name="name"></input>
                 <button className={`${styles.createButton}`}>
                     Create New Website<br />
                     <b>+</b>
                 </button>
-            </a>
+            </form>
 
             {/* Button to open WordPress Dashboard */}
             <div style={{ marginTop: "2rem" }}>

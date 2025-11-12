@@ -20,11 +20,16 @@ export default function Login() {
 import Navbar from "../components/navbar"
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { NextResponse } from "next/server";
+import { redirect } from "next/navigation";
 
 export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    useEffect(()=>{
+        if (window.document.cookie.includes("UserCookie")) window.location.href = "/";
+    })
 
     const infoBoxes = [
         {
@@ -36,6 +41,8 @@ export default function SignUpPage() {
             text: "Password"
         }
     ];
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -60,7 +67,9 @@ export default function SignUpPage() {
       const data = await res.json();
       if (data.success) {//debug messages can remove later or simplify for end user
         setMessage("Logged in successfully!");
-        e.target.reset();
+        setTimeout(5000); //in this time, cookies are set to denote user has signed in
+        window.location.href = "/";
+        //redirect to set cookie
       } else {
         setMessage("Failed: " + (data.error || "Unknown error"));
       }

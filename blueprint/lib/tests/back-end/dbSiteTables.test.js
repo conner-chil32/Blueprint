@@ -1,4 +1,4 @@
-// use this command 'docker-compose exec web-app node ./lib/tests/back-end/dbSiteTables.test.js'
+// use this command 'docker-compose exec web-app node ./lib/test/databaseSiteTables.test.js'
 // At least 3 users should exist in DB
 import { closeConnection } from '../../connection.js';
 import * as SQ from '../../siteQueries.js';

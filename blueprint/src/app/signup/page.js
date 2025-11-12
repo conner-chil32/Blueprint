@@ -3,12 +3,18 @@
 import Navbar from "../components/navbar"
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { setCookie } from "@root/api/CookieController";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+      if (document.cookie.includes("UserCookie")) window.location.href = "/";
+  });
+  
 
   const infoBoxes = [
     {

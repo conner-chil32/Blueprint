@@ -1,3 +1,4 @@
+import { getSitesByUser } from "@lib/siteQueries";
 import Navbar from "../components/navbar";  
 import styles from "./page.module.css";
 // We need the `getSitesByUser` function to fetch the websites
@@ -23,87 +24,46 @@ export default async function PortalPage() {
         // Don't crash the page; just show an empty list
     }
 
+export default function RawHTMLPage() {
+
     return (
         <div>
             {/* The Navbar floats on top, so we add padding to the content below */}
             <Navbar /> 
             
-            {/* This new div wrapper pushes all content down by 70px to fix the overlap */}
-            <div style={{ paddingTop: '70px' }}>
-            
-                {/* 1. "Logged in as" / "Log Out" Bar */}
-                <div className={styles.userBar}>
-                    {/* Per requirements, skip `validateUser` and just put "Logged in" */}
-                    <span>Logged in as: User</span>
-                    
-                    {/* ===== START: ADDED ACCOUNT VIEW BUTTON ===== */}
-                    <a href="/account" className={styles.accountViewButton}>
-                        Account View
-                    </a>
-                    {/* ===== END: ADDED ACCOUNT VIEW BUTTON ===== */}
+            <div id="websites">
+                <div className={styles.tableContainer}>
+                    <table className={styles.table}>
+                        {
 
-                    {/* Per requirements, link Log Out to /api/logout */}
-                    <a href="/api/logout" className={styles.logOutButton}>
-                        Log Out
-                    </a>
-                </div>
-
-                {/* 2. Main Portal Content */}
-                <div className={styles.portalContainer}>
-                    <div id="welcome">
-                        <h1 className={styles.largeTitleText}>Welcome</h1> 
-                        <h2 className={styles.mediumTitleText}>Your Websites</h2> 
-                    </div>
-                    
-                    {/* 3. Dynamic Website List */}
-                    <div className={styles.websiteList}>
-                        {websites.length > 0 ? (
-                            websites.map(site => (
-                                <div key={site.siteID} className={styles.websiteCard}>
-                                    {/* Preview Box */}
-                                    <div className={styles.websitePreview}>
-                                        Website Preview
-                                    </div>
-                                    
-                                    {/* Info Section */}
-                                    <div className={styles.websiteInfo}>
-                                        <h3>{site.websiteName}</h3>
-                                        <p>Website Status: Live</p>
-                                        <p>Description: {site.description || "No description."}</p>
-                                    </div>
-                                    
-                                    {/* Actions Section */}
-                                    <div className={styles.websiteActions}>
-                                        {/* Per requirements, link to /api/website/<id> */}
-                                        <a href={`/api/website/${site.siteID}`} className={styles.actionButton}>
-                                            Change Website
-                                        </a>
-
-                                        {/* ===== START: ADDED BACKEND/DETAILS BUTTONS ===== */}
-                                        <a href="#" className={styles.actionButton}>
+                            <tbody>
+                            <tr>
+                                <th rowSpan="3" align="center" className={styles.tableHeader}>Website Preview image</th>
+                                <td className={styles.tableData}>Statistics</td>
+                                <td className={styles.tableData}>
+                                    <Link href="/api/website?site_id=1">
+                                        <button className={styles.linkButton}>
+                                            Website
+                                        </button>
+                                    </Link>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className={styles.tableData}>Status</td>
+                                <td className={styles.tableData}>
+                                    <Link href="/userwebbackend">
+									<button className={styles.linkButton}>
                                             Website Backend
                                         </a>
                                         <a href="#" className={styles.actionButton}>
                                             Website Details
-                                        </a>
-                                        {/* ===== END: ADDED BACKEND/DETAILS BUTTONS ===== */}
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <p>You don't have any websites yet.</p>
-                        )}
-                    </div>
-
-                    {/* 4. "Create New Website" Button */}
-                    <div className={styles.createButtonContainer}>
-                        {/* Per requirements, links to a POST request */}
-                        <form action="/api/create-website" method="POST">
-                            <button type="submit" className={styles.createButton}>
-                                Create New Website
-                            </button>
-                        </form>
-                    </div>
+                                        </button>
+                                    </Link>
+                                </td>
+                            </tr>
+                        </tbody>
+                        }
+                    </table>
                 </div>
             </div> {/* This closes the new paddingTop div */}
         </div>
