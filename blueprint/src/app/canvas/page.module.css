@@ -233,6 +233,25 @@
   color: var(--accent);
 }
 
+.importIcon {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  margin-left: 6px;
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.importIcon:hover {
+  transform: scale(1.2);
+  color: var(--accent);
+}
+
+.importIcon:active {
+  transform: scale(1.1);
+}
+
 .newPageButton {
   margin-left: 12px;
   background: linear-gradient(90deg, var(--accent), var(--light-blue));

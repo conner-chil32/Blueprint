@@ -15,7 +15,7 @@ export default function Navbar() {
     const savedTheme = localStorage.getItem("theme");
 
     if (loggedInCookie) setloginStatus(true);
-    
+
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.setAttribute("data-theme", savedTheme);
@@ -28,7 +28,7 @@ export default function Navbar() {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
-  
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
@@ -50,20 +50,22 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="nav-right">
-            <CreateButton code="navtest" />
+            {/*<CreateButton code="navtest" />*/}
+
             <CreateButton code={loginStatus ? 'logout' : 'login'} />
 
             {/* Theme Toggle */}
             <div className="theme-toggle">
-              <input
-                type="checkbox"
-                id="theme-switch"
-                checked={theme === "light"}
-                onChange={toggleTheme}
-              />
               <label htmlFor="theme-switch" className="toggle-label">
-                <span className="toggle-knob">
-                  {theme === "light" ? "🌅" : "🌌"}
+                <input
+                  type="checkbox"
+                  id="theme-switch"
+                  checked={theme === "light"}
+                  onChange={toggleTheme}
+                  className="toggle-input"
+                />
+                <span className="toggle-track">
+                  <span className="toggle-knob" />
                 </span>
               </label>
             </div>
