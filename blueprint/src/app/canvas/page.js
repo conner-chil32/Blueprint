@@ -25,6 +25,33 @@ export default function CanvasPage() {
   // .find() searches through each element of an array for a matching value
   const currentPage = pages.find((page) => page.id === selectedPageID);
 
+  // Import a JSON file and replace the entire pages array.
+  const importPagesFromJSON = (imported) => {
+    try {
+      const pagesArr = Array.isArray(imported) ? imported : (imported && Array.isArray(imported.pages) ? imported.pages : null);
+      if (!Array.isArray(pagesArr)) {
+        throw new Error("JSON must be an array of pages or an object with a 'pages' array.");
+      }
+      const normalized = pagesArr.map((p, idx) => ({
+        id: typeof p.id === 'number' ? p.id : idx,
+        name: (typeof p.name === 'string' && p.name.trim()) ? p.name : `Page ${idx}`,
+        width: p && p.width != null ? p.width : 800,
+        height: p && p.height != null ? p.height : 600,
+        backgroundColor: (p && p.backgroundColor) || '#ffffff',
+        widgets: Array.isArray(p && p.widgets) ? p.widgets : [],
+      }));
+      setPages(normalized);
+      const firstId = normalized.length > 0 ? normalized[0].id : 0;
+      setSelectedPageID(firstId);
+      const maxId = normalized.reduce((m, pg) => (typeof pg.id === 'number' ? Math.max(m, pg.id) : m), -1);
+      setNextPageID(maxId + 1);
+      console.log("✅ Imported pages from JSON:", normalized.length, "pages");
+      recordState && recordState();
+    } catch (err) {
+      console.error("❌ Failed to import pages JSON:", err);
+    }
+  };
+
   // Creating widgets
   // If currentPage exists, widgets = currentPage.widgets : otherwise, empty array
   const widgets = currentPage ? currentPage.widgets : [];
@@ -903,6 +930,7 @@ export default function CanvasPage() {
               updatePageName={updatePageName}
               deletePage={deletePage}
               isSaved={isSaved}
+              importPagesFromJSON={importPagesFromJSON}
             />
           </header>
 
@@ -991,7 +1019,7 @@ export default function CanvasPage() {
   }
 }
 
-function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage, isSaved }) {
+function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage, isSaved, importPagesFromJSON }) {
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
 
@@ -1008,10 +1036,39 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this page?")) deletePage(id);
   };
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json,.json';
+    input.onchange = async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        importPagesFromJSON(data);
+      } catch (err) {
+        console.error("❌ Failed to import pages JSON:", err);
+        alert("Invalid JSON file. Please select a valid JSON export.");
+      }
+      e.target.value = "";
+    };
+    input.click();
+  };
+
 
   return (
     <div className={styles.pageNavContainer}>
       <div className={styles.pageList}>
+        <button
+          type="button"
+          className={styles.importIcon}
+          onClick={() => handleImport()}
+          title="Import pages from JSON"
+          aria-label="Import pages from JSON"
+        >
+          📥
+        </button>
         {pages.map((page) => (
           <div
             key={page.id}
