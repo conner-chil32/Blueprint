@@ -267,29 +267,62 @@ body::after {
 .toggle-label {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 20px;
-  background-color: #ccc;
-  border-radius: 34px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  width: 64px;
+  height: 34px;
 }
-.toggle-label::before {
-  content: '';
+
+/* hide native checkbox */
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* track: default = dark mode */
+.toggle-track {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #888; /* gray for dark mode */
+  border-radius: 999px;
+  transition: background 0.3s ease;
+}
+
+/* knob setup */
+.toggle-knob {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  background-color: white;
+  top: 4px;
+  left: 4px;
+  width: 26px;
+  height: 26px;
+  background: #fff;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
   transition: transform 0.3s ease;
 }
-.theme-toggle input:checked + .toggle-label {
-  background-color: var(--accent);
+
+/* emoji inside knob (default = dark mode 🌌) */
+.toggle-knob::before {
+  content: "🌌";
+  background: transparent;
+  transition: content 0.3s ease;
 }
-.theme-toggle input:checked + .toggle-label::before {
-  transform: translateX(20px);
+
+/* light mode styles */
+.toggle-input:checked + .toggle-track {
+  background: #f3b664; /* faint orange for light mode */
+}
+
+.toggle-input:checked + .toggle-track .toggle-knob {
+  transform: translateX(30px);
+}
+
+.toggle-input:checked + .toggle-track .toggle-knob::before {
+  content: "🌅";
 }
 
 /* RESPONSIVE NAV */

@@ -24,7 +24,7 @@ export async function GET(req) {
 
         if (cookieValue === 'LoggedIn' || cookieValue === 'LoggedAgain') {
             if (count > 0) {
-                return NextResponse.redirect(new URL('/portal', req.url));
+                return NextResponse.redirect(new URL('/features', req.url));
             } else {
                 return NextResponse.redirect(new URL('/ftu-main', req.url));
             }
