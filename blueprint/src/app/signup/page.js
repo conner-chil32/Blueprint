@@ -3,12 +3,18 @@
 import Navbar from "../components/navbar"
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { setCookie } from "@root/api/CookieController";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+      if (document.cookie.includes("UserCookie")) window.location.href = "/";
+  });
+  
 
   const infoBoxes = [
     {
@@ -139,12 +145,19 @@ export default function SignUpPage() {
                 /> Show Password
               </label>
             </div>
+            <div>
             <input type="checkbox" id="marketing" name="marketing" value="Yes"/>
-            <label> I am interested in future marketing</label><br />
+              <label> I am interested in future marketing</label><br />
+            </div>
             <button className="submit-button" type="submit" disabled={loading}>
               {loading ? "Creating..." : <>CREATE <br/> ACCOUNT</>}
             </button>
             {message && <div className={styles.message}>{message}</div>}
+            <div style={{ textAlign: 'center', marginTop: '15px' }}>
+              <a href="/account-recovery" style={{ color: 'white', textDecoration: 'underline' }}>
+                Forgot Username/Password?
+              </a>
+            </div>
           </form>
         </div>
         <div className={`${styles.bodySection} ${styles.reqsSection}`}>

@@ -1,78 +1,198 @@
-/* global.css */
+/*
+   GLOBAL.CSS
+   Dependencies: TailwindCSS (base, components, utilities)
+*/
+
 @import "tailwindcss";
 
-/* Global variables */
+/* ROOT VARIABLES */
 :root {
-  --border-weight: 20px;
   --lime-green: #72D360;
   --dark-grey: #282828;
   --dark-blue: #1E4356;
   --light-blue: #099CAC;
   --light-grey: #c0c0c0;
-  --text-background: #d9d9d9;
+
+  --border-weight: 20px;
   --min-margin: 10px;
   --global-font: 'OpenDyslexic';
-  --bg-color: #555; /* Default dark */
+
+  /* --- Default Theme (Galaxy Mode) --- */
+  --bg-color: #555;
   --text-color: white;
   --card-bg: white;
   --card-text: black;
   --accent: var(--lime-green);
+  --gradient-start: var(--dark-blue);
+  --gradient-end: #0a0f2c;
 }
 
+/* 🌤️ DAWN MODE VARIABLES — Dimmer, Softer, Easier on Eyes */
 [data-theme="light"] {
-  --bg-color: #f0f0f0;
-  --text-color: black;
-  --card-bg: #e0e0e0;
-  --card-text: black;
-  --accent: var(--light-blue);
+  --bg-color: #dcd8d2;              /* muted beige-gray base */
+  --text-color: #222222;            /* darker text for contrast */
+  --card-bg: #ece9e4;               /* warm gray-ivory */
+  --card-text: #2a2a2a;
+  --accent: #dca85c;                /* toned-down gold */
+
+  --gradient-start: #e9d8be;        /* soft peach-beige */
+  --gradient-end: #cfd8e2;          /* pale cloudy blue */
+
+  --dark-grey: #f2efea;
+  --light-blue: #6aa0c6;
+  --light-grey: #bbb;
 }
 
-/* Font import */
+/* FONT IMPORT */
 @font-face {
   font-family: 'OpenDyslexic';
   src: url('/fonts/OpenDyslexic3-Regular.ttf') format('truetype');
 }
 
+/* BASE PAGE STYLES */
+html,
 body {
-  font-family: var(--global-font), sans-serif;
-  background-color: var(--bg-color); /* Fallback, but overridden in page.module.css */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  color: var(--text-color);
-}
-
-/* Delete the body above and add this when we fix canvas page
-html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+}
+
+html {
+  transition: background 0.8s ease-in-out, color 0.6s ease-in-out;
 }
 
 body {
   font-family: var(--global-font), sans-serif;
-  background: linear-gradient(to right, var(--dark-blue), var(--bg-color));
+  background: linear-gradient(120deg, var(--gradient-start), var(--gradient-end));
   background-attachment: fixed;
   background-size: cover;
-  text-align: center;
   color: var(--text-color);
-} */
-
-.generalText {
-  font-family: var(--global-font), sans-serif;
+  text-align: center;
+  transition: background 0.8s ease-in-out, color 0.6s ease-in-out;
+  z-index: 0;
 }
 
-/* Debug (keep as is) */
-.debug {
-  border-style: dotted;
-  border-color: red;
+/* 🌌 STARFIELD BACKGROUND (Dark Mode Only) */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300%;
+  height: 300%;
+  pointer-events: none;
+  background-repeat: repeat;
+  mix-blend-mode: screen;
+  z-index: -1;
+  will-change: transform, opacity;
 }
 
-/* Navbar Styles */
+/* Layer 1: Small stars */
+body::before {
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.8) 50%, transparent 50%),
+    radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,0.7) 50%, transparent 50%),
+    radial-gradient(1px 1px at 70% 50%, rgba(255,255,255,0.6) 50%, transparent 50%),
+    radial-gradient(1px 1px at 90% 90%, rgba(255,255,255,0.5) 50%, transparent 50%);
+  background-size: 120px 120px;
+  opacity: 0.8;
+  animation: starTwinkle 6s infinite ease-in-out alternate,
+             starDriftFast 180s linear infinite;
+}
+
+/* Layer 2: Larger stars */
+body::after {
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.6) 50%, transparent 50%),
+    radial-gradient(3px 3px at 60% 70%, rgba(255,255,255,0.5) 50%, transparent 50%),
+    radial-gradient(2px 2px at 80% 40%, rgba(255,255,255,0.8) 50%, transparent 50%),
+    radial-gradient(2px 2px at 40% 90%, rgba(255,255,255,0.4) 50%, transparent 50%);
+  background-size: 220px 220px;
+  opacity: 0.5;
+  animation: starTwinkle 10s infinite ease-in-out alternate,
+             starDriftMedium 300s linear infinite;
+}
+
+/* ☁️ CLOUD + VIGNETTE LAYERS (Light Mode Only) */
+.cloud-layer {
+  display: none;
+}
+
+[data-theme="light"] .cloud-layer {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: -2;
+  background-image:
+    radial-gradient(circle at 30% 50%, rgba(255, 240, 220, 0.25), transparent 70%),
+    radial-gradient(circle at 70% 40%, rgba(255, 255, 255, 0.25), transparent 70%),
+    radial-gradient(circle at 40% 80%, rgba(230, 240, 255, 0.25), transparent 70%);
+  background-size: 900px 900px;
+  opacity: 0.4;
+  animation: cloudFloat 320s linear infinite;
+  filter: brightness(1.02) saturate(1.05);
+}
+
+/* ✨ Soft vignette around edges in dawn mode */
+[data-theme="light"] body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0) 65%,
+    rgba(0, 0, 0, 0.05) 85%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+}
+
+/* Hide galaxy stars in Dawn Mode */
+[data-theme="light"] body::after {
+  display: none !important;
+}
+
+/* ✨ ANIMATIONS */
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+@keyframes starDriftFast {
+  0% { transform: translate(0%, 0%); }
+  50% { transform: translate(-3%, -3%); }
+  100% { transform: translate(0%, 0%); }
+}
+@keyframes starDriftMedium {
+  0% { transform: translate(0%, 0%); }
+  50% { transform: translate(2%, 3%); }
+  100% { transform: translate(0%, 0%); }
+}
+@keyframes cloudFloat {
+  0% { transform: translate(0%, 0%); }
+  50% { transform: translate(5%, -3%); }
+  100% { transform: translate(0%, 0%); }
+}
+
+/* Accessibility — disable motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* 🧭 NAVBAR */
 .topBarBackground {
   background-color: var(--dark-grey);
   width: 100%;
@@ -81,8 +201,24 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   z-index: 1000;
+  transition: background-color 0.6s ease-in-out;
+}
+
+/* Dawn Mode Navbar */
+[data-theme="light"] .topBarBackground {
+  background: rgba(245, 240, 230, 0.45);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .nav-button {
+  color: #2b2b2b;
+}
+[data-theme="light"] .nav-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--accent);
 }
 
 .navbar {
@@ -91,301 +227,139 @@ body {
   align-items: center;
   padding: 15px 30px;
   max-width: 1200px;
-  margin: 0 auto; /* Center content */
+  margin: 0 auto;
 }
 
-.nav-left {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+.nav-left { display: flex; gap: 15px; align-items: center; }
+.nav-right { display: flex; align-items: center; gap: 15px; }
 
 .logoStyle {
   height: 40px;
   cursor: pointer;
-  transition: transform 0.3s;
+  transition: transform 0.3s ease;
 }
-
-.logoStyle:hover {
-  transform: scale(1.1);
-}
+.logoStyle:hover { transform: scale(1.1); }
 
 .nav-button {
   background-color: transparent;
   border: none;
   padding: 10px 15px;
   font-size: 16px;
-  border-radius: 4px; /* Softer corners */
+  border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
   text-decoration: none;
   color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
-  display: inline-block;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
-
 .nav-button:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Subtle hover background */
+  background-color: rgba(255, 255, 255, 0.1);
   color: var(--accent);
 }
 
-/* Theme Toggle Styles */
+/* 🌗 THEME TOGGLE SWITCH */
 .theme-toggle {
   display: inline-flex;
   align-items: center;
 }
-
-.theme-toggle input {
-  display: none;
-}
+.theme-toggle input { display: none; }
 
 .toggle-label {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 20px;
-  background-color: #ccc;
-  border-radius: 34px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  width: 64px;
+  height: 34px;
 }
 
-.toggle-label::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  background-color: white;
-  border-radius: 50%;
-  transition: transform 0.3s;
+/* hide native checkbox */
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.theme-toggle input:checked + .toggle-label {
-  background-color: var(--accent);
+/* track: default = dark mode */
+.toggle-track {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #888; /* gray for dark mode */
+  border-radius: 999px;
+  transition: background 0.3s ease;
 }
 
-.theme-toggle input:checked + .toggle-label::before {
-  transform: translateX(20px);
-}
-
+/* knob setup */
 .toggle-knob {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
+  top: 4px;
+  left: 4px;
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  transition: transform 0.3s, color 0.3s;
-  color: gray; /* Off state */
+  font-size: 18px;
+  transition: transform 0.3s ease;
 }
 
-.theme-toggle input:checked ~ .toggle-label .toggle-knob {
-  transform: translateX(20px);
-  color: yellow; /* On state, bright bulb */
+/* emoji inside knob (default = dark mode 🌌) */
+.toggle-knob::before {
+  content: "🌌";
+  background: transparent;
+  transition: content 0.3s ease;
 }
 
-/* Other global elements */
-.homeButton {
-  font-size: 15px;
-  font-weight: 400;
-  border-radius: var(--border-weight);
-  width: 200px;
-  height: 70px;
-  position: absolute;
-  top: 10px;
-  left: 10px;
+/* light mode styles */
+.toggle-input:checked + .toggle-track {
+  background: #f3b664; /* faint orange for light mode */
 }
 
-.largeTitleText {
-  font-size: 70px;
-  font-weight: 700;
-  color: var(--text-color);
-  position: fixed;
-  left: 30px;
-  top: 40px;
+.toggle-input:checked + .toggle-track .toggle-knob {
+  transform: translateX(30px);
 }
 
-.mediumTitleText {
-  font-size: 30px;
-  font-weight: 500;
-  color: var(--text-color);
-  position: fixed;
-  left: 30px;
-  top: 150px;
+.toggle-input:checked + .toggle-track .toggle-knob::before {
+  content: "🌅";
 }
 
-.generalButton {
-  border-radius: var(--border-weight);
-}
-
-.logoutButton {
-  font-size: 15px;
-  font-weight: 400;
-  width: 110px;
-  height: 45px;
-  position: fixed;
-  top: 13px;
-  right: 15px;
-}
-
-.loginContianer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.pageTitle {
-  font-size: 20px;
-  font-weight: 700;
-  color: #000000;
-  text-align: center;
-  margin-top: 50px;
-}
-
-/* Account forms stylings */
-.account-box {
-  background-color: #ffffff;
-  border-radius: 15px;
-  padding: 30px;
-  width: 400px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #c0c0c0;
-  font-family: var(--global-font), sans-serif;
-  box-sizing: border-box;
-}
-
-.submit-button {
-  font-family: var(--global-font), sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  background-color: #404040;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 15px 0;
-  width: 100%;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.submit-button:hover {
-  background-color: var(--light-blue);
-}
-
-.title {
-  font-size: 32px;
-  font-weight: 600;
-  margin: 30px 0;
-}
-
-.plans {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding: 20px;
-}
-
-.plan {
-  background-color: white;
-  color: black;
-  padding: 20px;
-  border-radius: 10px;
-  width: 250px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  font-weight: 400;
-}
-
-.plan h2 {
-  margin: 10px 0;
-  font-weight: 600;
-}
-
-.plan ul {
-  list-style: none;
-  padding: 0;
-}
-
-.plan ul li {
-  margin-bottom: 15px;
-}
-
-.uppercase {
-  text-transform: uppercase;
-}
-
-.lowercase {
-  text-transform: lowercase;
-}
-
-.capitalize {
-  text-transform: capitalize;
-}
-
-/* Media Queries for Navbar Responsiveness */
+/* RESPONSIVE NAV */
 @media (max-width: 768px) {
-  .nav-left {
-    gap: 15px;
-  }
+  .nav-left { gap: 15px; }
+  .nav-right { gap: 10px; }
+  .nav-button { padding: 8px 10px; font-size: 14px; }
+  .toggle-label { width: 36px; height: 18px; }
+  .toggle-label::before { width: 14px; height: 14px; }
+}
 
-  .nav-right {
-    gap: 10px;
-  }
+/* 🪞 LIGHT MODE CARD STYLE */
+[data-theme="light"] .feature-card {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+}
 
-  .nav-button {
-    padding: 8px 10px;
-    font-size: 14px;
-  }
+/* ✨ LIGHT MODE GRADIENT TITLES */
+[data-theme="light"] .title-gradient {
+  background: linear-gradient(90deg, #dca85c, #6aa0c6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-  .toggle-label {
-    width: 36px;
-    height: 18px;
-  }
-
-  .toggle-label::before {
-    width: 14px;
-    height: 14px;
-  }
-
-  .toggle-knob {
-    width: 14px;
-    height: 14px;
-    font-size: 9px;
-  }
-
-  .theme-toggle input:checked + .toggle-label::before {
-    transform: translateX(18px);
-  }
-
-  .theme-toggle input:checked ~ .toggle-label .toggle-knob {
-    transform: translateX(18px);
-  }
+/* ☀️ LIGHT MODE BUTTONS */
+[data-theme="light"] button,
+[data-theme="light"] .btn-accent {
+  background: linear-gradient(90deg, #e3b76b, #8db7d2);
+  color: #1f1f1f;
+  border: none;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+[data-theme="light"] button:hover,
+[data-theme="light"] .btn-accent:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 0 10px rgba(220, 168, 92, 0.3);
 }
