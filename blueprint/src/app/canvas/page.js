@@ -352,9 +352,9 @@ export default function CanvasPage() {
    */
   const saveToDatabase = async () => {
     try {
-    //   const userId = getCookieValue('UserCookie') || '1';
+      //   const userId = getCookieValue('UserCookie') || '1';
       const siteID = getCookieValue('CurrentSite') || '1';
-      
+
       // TODO: Replace '%SITEID%' with actual site ID
       console.log(pages[0]);
       const response = await fetch(`api/website?site_id=${siteID}`, {
@@ -679,7 +679,7 @@ export default function CanvasPage() {
           objectFit: "contain",
         };
         break;
-      
+
       case 'dropdown':
         newWidget = {
           type: "dropdown",
@@ -812,7 +812,7 @@ export default function CanvasPage() {
           selectedValue: "Menu Item 1", // Default to the first item
         };
         break;
-      
+
       case 'html':
         newWidget = {
           type: 'html',
@@ -831,7 +831,7 @@ export default function CanvasPage() {
           html: "<div style='padding:12px;border:2px dashed #555;background:#fafafa;border-radius:8px'>Inline <b>HTML</b> works here.</div>",
           sandbox: false, // toggle to true for iframe isolation
         };
-      break;
+        break;
       default:
         console.warn("Warning: Unknown widget type: " + typeToMake);
         return;
@@ -921,7 +921,7 @@ export default function CanvasPage() {
 
         <main className={styles.centerColumn}>
           {/* Page navigation bar above the canvas */}
-          <header className={styles.pageNavBar} style={{ top: '70px' }}>
+          <header className={styles.pageNavBar}>
             <PageNavigation
               pages={pages}
               selectedPageID={selectedPageID}
@@ -1059,7 +1059,7 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
 
   return (
     <div className={styles.pageNavContainer}>
-      <div className={styles.pageList}>
+      <div className={styles.leftControls}>
         <button
           type="button"
           className={styles.importIcon}
@@ -1067,48 +1067,57 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
           title="Import pages from JSON"
           aria-label="Import pages from JSON"
         >
-          📥
+          📥Import
         </button>
-        {pages.map((page) => (
-          <div
-            key={page.id}
-            className={`${styles.pageTab} ${page.id === selectedPageID ? styles.pageTabActive : ""}`}
-            onMouseDown={() => {
-              if (editingId !== page.id) setSelectedPageID(page.id);
-            }}
-          >
-            {editingId === page.id ? (
-              <input
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                onBlur={() => saveEdit(page.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") saveEdit(page.id);
-                  if (e.key === "Escape") setEditingId(null);
-                }}
-                autoFocus
-                className={styles.pageEditInput}
-              />
-            ) : (
-              <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
-            )}
-            <span
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                handleDelete(page.id);
+      </div>
+
+      <div className={styles.pageScroller}>
+        <div className={styles.pageList}>
+          {pages.map((page) => (
+            <div
+              key={page.id}
+              className={`${styles.pageTab} ${page.id === selectedPageID ? styles.pageTabActive : ""}`}
+              onMouseDown={() => {
+                if (editingId !== page.id) setSelectedPageID(page.id);
               }}
-              className={styles.deleteIcon}
             >
-              🗑️
-            </span>
-          </div>
-        ))}
+              {editingId === page.id ? (
+                <input
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  onBlur={() => saveEdit(page.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveEdit(page.id);
+                    if (e.key === "Escape") setEditingId(null);
+                  }}
+                  autoFocus
+                  className={styles.pageEditInput}
+                />
+              ) : (
+                <span className={styles.pageTabLabel} onDoubleClick={() => startEdit(page)}>{page.name}</span>
+              )}
+              <span
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  handleDelete(page.id);
+                }}
+                className={styles.deleteIcon}
+              >
+                🗑️
+              </span>
+            </div>
+          ))}
+
+        </div>
+      </div>
+
+      <div className={styles.rightControls}>
         <button onClick={createPage} className={styles.newPageButton}>
           + New Page
         </button>
-      </div>
-      <div className={styles.saveStatus}>
-        {isSaved ? "✓ Saved" : "● Unsaved changes"}
+        <div className={styles.saveStatus}>
+          {isSaved ? "✓ Saved" : "● Unsaved changes"}
+        </div>
       </div>
     </div>
   );
