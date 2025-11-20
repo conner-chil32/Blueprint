@@ -15,6 +15,7 @@ export function LeftPanel({ createWidget }) {
       <div className={styles.sectionTitle}>Objects</div>
       <button className={styles.categoryItem} onClick={() => createWidget('text')}>Text Box</button>
       <button className={styles.categoryItem} onClick={() => createWidget('image')}>Image</button>
+      <button className={styles.categoryItem} onClick={() => createWidget('html')}>HTML Block</button>
       <div className={styles.divider}></div>
 
       <div className={styles.sectionTitle}>Widgets</div>
@@ -31,7 +32,6 @@ export function LeftPanel({ createWidget }) {
       <button className={styles.categoryItem} onClick={() => createWidget('circle')}>Circle</button>
       <button className={styles.categoryItem} onClick={() => createWidget('triangle')}>Triangle</button>
       <button className={styles.categoryItem} onClick={() => createWidget('polygon')}>Polygon</button>
-      <button className={styles.categoryItem} onClick={() => createWidget('html')}>HTML Block</button>
     </div>
   );
 }
