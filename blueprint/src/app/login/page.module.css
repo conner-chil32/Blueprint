@@ -173,6 +173,12 @@
     text-shadow: 0 0 5px rgba(255, 77, 77, 0.3);
   }
   
+  .infoBox input.invalidInput {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.6);
+    background-color: rgba(255, 0, 0, 0.08);
+  }
+  
   /* Logo */
   .logo {
     width: 180px;
@@ -214,4 +220,3 @@
       width: 90%;
     }
   }
-  
