@@ -29,7 +29,12 @@ export default function SignUpPage() {
     const [message, setMessage] = useState("");
     useEffect(()=>{
         if (window.document.cookie.includes("UserCookie")) window.location.href = "/";
-    })
+    });
+    const [invalidInputs, setInvalidInputs] = useState({
+      username: false,
+      password1: false,
+    });
+    const [isError, setIsError] = useState(false);
 
     const infoBoxes = [
         {
@@ -47,6 +52,8 @@ export default function SignUpPage() {
     e.preventDefault();
     setMessage("");
     setLoading(true);
+    setIsError(false);
+    setInvalidInputs({ username: false, password1: false });
 
     const formData = new FormData(e.target);
     const username = formData.get("username");
@@ -67,14 +74,18 @@ export default function SignUpPage() {
       const data = await res.json();
       if (data.success) {//debug messages can remove later or simplify for end user
         setMessage("Logged in successfully!");
+        setIsError(false);
         setTimeout(5000); //in this time, cookies are set to denote user has signed in
         window.location.href = "/";
         //redirect to set cookie
       } else {
-        setMessage("Failed: " + (data.error || "Unknown error"));
+        setIsError(true);
+        setMessage((data.error || "Unknown error"));
+        setInvalidInputs({ username: true, password1: true });
       }
     } catch (err) {
       console.error(err);
+      setIsError(true);
       setMessage("Server error, please try again later.");
     }
 
@@ -87,22 +98,31 @@ export default function SignUpPage() {
       <div className={styles.body}>
         <div className={`${styles.bodySection} ${styles.createSection}`}>
           <form onSubmit={handleSubmit}>
-            {infoBoxes.map((box) => (
-              <div key={box.id} className={styles.infoBox}>
-                <input
-                  type={
-                    box.id.includes("password")
-                      ? "password"
-                      : box.id === "email"
-                      ? "email"
-                      : "text"
-                  }
-                  name={box.id}
-                  placeholder={box.text}
-                  required={box.id !== "phone"}
-                />
-              </div>
-            ))}
+            {infoBoxes.map((box) => {
+              const isInvalid = Boolean(invalidInputs[box.id]);
+
+              return(
+                <div key={box.id} className={styles.infoBox}>
+                  <input
+                    type={
+                      box.id.includes("password")
+                        ? "password"
+                        : box.id === "email"
+                        ? "email"
+                        : "text"
+                    }
+                    name={box.id}
+                    placeholder={box.text}
+                    required={box.id !== "phone"}
+                    className={isInvalid ? styles.invalidInput : ""}
+                    onInput={() =>
+                      setInvalidInputs((prev) => ({ ...prev, [box.id]: false }))
+                    }
+                    aria-invalid={isInvalid ? "true" : "false"}
+                  />
+                </div>
+              );
+            })}
 
 
             <button className="submit-button" type="submit" disabled={loading}>
@@ -110,7 +130,7 @@ export default function SignUpPage() {
             </button>
           </form>
 
-          {message && <p className={styles.message}>{message}</p>}
+          {message && <p className={`${styles.message} ${isError ? styles.messageError : styles.messageSuccess}`}>{message}</p>}
         </div>
 
         <div className={`${styles.bodySection} ${styles.reqsSection}`}>
