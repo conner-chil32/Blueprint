@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import Nav from '@/app/navtest/page'
 import {library} from '@/app/components/routeDictionaries'
 
-describe('Login Page', () => {
+describe('Navtest Page', () => {
     test('Checking to see if navbar loads',()=>{
         render(<Nav />);
         expect(screen.getByAltText("Blueprint Logo",{exact:false})).toBeInTheDocument();
@@ -13,7 +13,7 @@ describe('Login Page', () => {
         expect(screen.queryAllByRole('link',{name:"features"}).length).toBe(2);
         expect(screen.queryAllByRole('link',{name:"pricing"}).length).toBe(2);
         expect(screen.queryAllByRole('link',{name:"canvas"}).length).toBe(2);
-        expect(screen.queryAllByRole('link',{name:"!NAVTEST!"}).length).toBe(2); 
+        expect(screen.queryAllByRole('link',{name:"!NAVTEST!"}).length).toBe(1); //removed from navbar 
         expect(screen.queryAllByRole('link',{name:"login"}).length).toBe(2);
     });
 
