@@ -1,15 +1,15 @@
-import { Box } from '../components/widgets/Box';
-import { Circle } from '../components/widgets/Circle';
-import { Polygon } from '../components/widgets/Polygon';
-import { Triangle } from '../components/widgets/Triangle';
-import { Video } from "../components/widgets/video";
-import { Dropdown } from "../components/widgets/Dropdown";
-import { Advert } from "../components/widgets/Advert";
-import { Image as ImageWidget } from "../components/widgets/Image";
-import { Text } from "../components/widgets/Text";
-import { Hyperlink } from "../components/widgets/Hyperlink";
-import { MenuScroll } from "../components/widgets/MenuScroll";
-import { CustomHTML } from "../components/widgets/CustomHTML";
+import { Box } from '../components/widgets/Box.jsx';
+import { Circle } from '../components/widgets/Circle.jsx';
+import { Polygon } from '../components/widgets/Polygon.jsx';
+import { Triangle } from '../components/widgets/Triangle.jsx';
+import { Video } from "../components/widgets/video.jsx";
+import { Dropdown } from "../components/widgets/Dropdown.jsx";
+import { Advert } from "../components/widgets/Advert.jsx";
+import { Image as ImageWidget } from "../components/widgets/Image.jsx";
+import { Text } from "../components/widgets/Text.jsx";
+import { Hyperlink } from "../components/widgets/Hyperlink.jsx";
+import { MenuScroll } from "../components/widgets/MenuScroll.jsx";
+import { CustomHTML } from "../components/widgets/CustomHTML.jsx";
 
 /** Christopher Parsons, 9/18/2025
  *  Angel Ramirez

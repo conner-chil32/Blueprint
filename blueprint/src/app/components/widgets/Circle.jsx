@@ -1,5 +1,5 @@
-import { Widget } from './Widget';
-import { getShapeVariantStyles } from './shapeStyles';
+import { Widget } from '@/components/widgets/Widget.jsx';
+import { getShapeVariantStyles } from './shapeStyles.js';
 
 export function Circle({ scale, boxStyle = 'default', ...props }) {
   const variant = getShapeVariantStyles(boxStyle, props);

@@ -1,16 +1,7 @@
 import React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { MenuScroll } from "@/components/widgets/MenuScroll";
-
-// Mock the Widget so we can detect its render
-jest.mock("@/components/widgets/Widget.js", () => ({
-  Widget: ({ children, style }) => (
-    <div data-testid="widget" style={style}>
-      {children}
-    </div>
-  ),
-}));
+import { MenuScroll } from "@/components/widgets/MenuScroll.jsx";
 
 describe("MenuScroll", () => {
   test("renders inside the canvas with items and default background", () => {
