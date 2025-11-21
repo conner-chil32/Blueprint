@@ -19,6 +19,14 @@ const templates = [
     {
         name: "gallery",
         location: "templates/gallery"
+    },
+    {
+        name: "dark",
+        location: "templates/dark"
+    },
+    {
+        name: "light",
+        location: "templates/light"
     }
 ];
 export { templates };
