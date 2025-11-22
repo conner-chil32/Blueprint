@@ -10,7 +10,7 @@ on:
           run_frontend:
             description: "run the frontend tests"
             type: boolean
-            default: false
+            default: true
           run_backend:
             description: "run the backend tests"
             type: boolean

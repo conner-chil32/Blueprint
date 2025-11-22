@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import styles from './page.module.css';
+import styles from "./page.module.css";
 
 import Navbar from "../components/navbar";
 import { Canvas } from './Canvas';
@@ -23,7 +23,34 @@ export default function CanvasPage() {
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
-  const currentPage = pages.find(page => page.id === selectedPageID);
+  const currentPage = pages.find((page) => page.id === selectedPageID);
+
+  // Import a JSON file and replace the entire pages array.
+  const importPagesFromJSON = (imported) => {
+    try {
+      const pagesArr = Array.isArray(imported) ? imported : (imported && Array.isArray(imported.pages) ? imported.pages : null);
+      if (!Array.isArray(pagesArr)) {
+        throw new Error("JSON must be an array of pages or an object with a 'pages' array.");
+      }
+      const normalized = pagesArr.map((p, idx) => ({
+        id: typeof p.id === 'number' ? p.id : idx,
+        name: (typeof p.name === 'string' && p.name.trim()) ? p.name : `Page ${idx}`,
+        width: p && p.width != null ? p.width : 800,
+        height: p && p.height != null ? p.height : 600,
+        backgroundColor: (p && p.backgroundColor) || '#ffffff',
+        widgets: Array.isArray(p && p.widgets) ? p.widgets : [],
+      }));
+      setPages(normalized);
+      const firstId = normalized.length > 0 ? normalized[0].id : 0;
+      setSelectedPageID(firstId);
+      const maxId = normalized.reduce((m, pg) => (typeof pg.id === 'number' ? Math.max(m, pg.id) : m), -1);
+      setNextPageID(maxId + 1);
+      console.log("✅ Imported pages from JSON:", normalized.length, "pages");
+      recordState && recordState();
+    } catch (err) {
+      console.error("❌ Failed to import pages JSON:", err);
+    }
+  };
 
   // Creating widgets
   // If currentPage exists, widgets = currentPage.widgets : otherwise, empty array
@@ -42,6 +69,9 @@ export default function CanvasPage() {
   // Scaling managment
   const [scale, setScale] = useState(1);
 
+  // Clipboard
+  let clipboard = useRef([]);
+
   // History
   const history = useRef(null);
   const varState = useRef({
@@ -51,6 +81,69 @@ export default function CanvasPage() {
     nextPageID,
     nextWidgetId,
   });
+
+  // Save status tracking
+  const [isSaved, setIsSaved] = useState(true);
+
+  // Ref to hold the savePagesToJSON function
+  const savePagesToJSONRef = useRef(null);
+
+  // Helper function to get cookie value by name
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  };
+
+  /** Conner Childers, 10/29/2025
+   * Loads temp.json if it exists when the page first loads.
+   * This restores the user's previous work session.
+   */
+  const loadTempJSON = async () => {
+    try {
+      const userId = getCookieValue('UserCookie') || 'user';
+
+      // TODO: Replace with actual API endpoint to read temp.json
+      const response = await fetch(`/api/load-canvas?userId=${userId}&filename=temp`);
+
+      if (!response.ok) {
+        // If temp.json doesn't exist or there's an error, just use default state
+        console.log('No temp.json found or error loading, using default state');
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.pages && Array.isArray(data.pages) && data.pages.length > 0) {
+        console.log('Loaded temp.json successfully');
+        setPages(data.pages);
+
+        // Restore other state if available
+        if (data.selectedPageID !== undefined) {
+          setSelectedPageID(data.selectedPageID);
+        }
+        if (data.nextPageID !== undefined) {
+          setNextPageID(data.nextPageID);
+        }
+        if (data.nextWidgetId !== undefined) {
+          setNextWidgetId(data.nextWidgetId);
+        }
+
+        setIsSaved(true);
+      }
+    } catch (error) {
+      console.error('Error loading temp.json:', error);
+      // Silently fail and use default state
+    }
+  };
+
+  /** Conner Childers, 10/29/2025
+   * Load temp.json on initial page mount
+   */
+  useEffect(() => {
+    loadTempJSON();
+  }, []);
 
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
@@ -89,6 +182,12 @@ export default function CanvasPage() {
         setSelectedPageID(recordedState.selectedPageID);
         setNextPageID(recordedState.nextPageID);
         setNextWidgetId(recordedState.nextWidgetId);
+      },
+
+      // Pass savePagesToJSON via ref so it can save automatically
+      savePagesToJSON: () => {
+        const userId = getCookieValue('UserCookie');
+        savePagesToJSONRef.current?.(userId, "temp");
       }
     })
   }, []);
@@ -101,23 +200,27 @@ export default function CanvasPage() {
   function recordState() {
     console.log("Pushing history:", history.current);
     history.current?.pushHistory();
+    setIsSaved(false); // Mark as unsaved when state changes
   }
 
   /** Christopher Parsons, 9/18/2025
    * Inputs:
-   *  newWidgets: Widget object
+   *  newWidgets: Widget object or function
    * Outputs:
    *  widgets: array
    * 
    * Replaces the widgets within the current selected page with
    * a new set of widgets. Allows for the manipulation/creation
-   * of new widgets.
+   * of new widgets. Also accepts functions, allowing for more
+   * dynamic updating of widgets.
    */
   const setWidgets = (newWidgets) => {
     setPages(prev =>
-      prev.map(page =>
-        page.id === selectedPageID ? { ...page, widgets: newWidgets } : page
-      )
+      prev.map(page => {
+        if (page.id !== selectedPageID) return page;
+        const nextWidgets = typeof newWidgets === 'function' ? newWidgets(page.widgets) : newWidgets;
+        return { ...page, widgets: nextWidgets };
+      })
     );
   };
 
@@ -133,8 +236,6 @@ export default function CanvasPage() {
    * it was before, but with a new page added.
    */
   const createPage = () => {
-    recordState();
-
     setPages([
       ...pages,
       {
@@ -143,12 +244,16 @@ export default function CanvasPage() {
         widgets: [],
         width: 800,
         height: 600,
-        backgroundColor: '#ffffff'
-      }])
+        backgroundColor: "#ffffff",
+      },
+    ]);
 
     setSelectedPageID(nextPageID);
     console.log('Created page', nextPageID);
     setNextPageID(nextPageID + 1);
+
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   /** 
@@ -163,32 +268,132 @@ export default function CanvasPage() {
    */
   const deletePage = (pageId) => {
     if (pages.length <= 1) {
-      console.log('Cannot delete the last page');
+      console.log("Cannot delete the last page");
       return;
     }
-    recordState();
 
     setPages(prev => prev.filter(page => page.id !== pageId));
     if (selectedPageID === pageId) {
-      setSelectedPageID(pages[0].id);
+      const first = pages.find((p) => p.id !== pageId);
+      if (first) setSelectedPageID(first.id);
     }
+
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   // Update page name
   const updatePageName = (pageId, newName) => {
-    recordState();
     setPages(prev => prev.map(page => page.id === pageId ? { ...page, name: newName } : page));
+
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
+
+  /** Conner Childers, 10/27/2025
+   * Inputs:
+   *  userId: string (optional) - User identifier for the directory
+   *  filename: string (optional) - Custom filename for the JSON file
+   *  pages: pages variable
+   * Outputs:
+   *  none
+   * 
+   * Saves the pages variable to a JSON file on the server in the users directory.
+   * The file will be saved to: users/{userId}/{filename}.json.
+   * This will be used to store the temp file for active editing.
+   */
+  const savePagesToJSON = async (userId = null, filename = "canvas_pages") => {
+    try {
+      // Get userId from UserCookie if not provided
+      const effectiveUserId = userId || getCookieValue('UserCookie') || 'user';
+
+      const response = await fetch('/api/save-canvas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pages,
+          selectedPageID,
+          nextPageID,
+          nextWidgetId,
+          userId: effectiveUserId,
+          filename
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(`Saved pages to server: ${result.path}`);
+        setIsSaved(true); // Mark as saved
+        // Only show alert on manual save (not auto-save)
+        if (filename !== "temp") {
+          alert(`Pages saved successfully to ${result.path}`);
+        }
+      } else {
+        console.error('Error saving pages:', result.error);
+        if (filename !== "temp") {
+          alert(`Failed to save pages: ${result.error}`);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving pages to JSON:', error);
+      if (filename !== "temp") {
+        alert(`Error saving pages: ${error.message}`);
+      }
+    }
+  };
+
+  /** Conner Childers, 10/29/2025
+   * Manual save function to save pages data to database.
+   * Called when user presses Ctrl+S or Cmd+S.
+   * Sends the current pages state directly to the database.
+   */
+  const saveToDatabase = async () => {
+    try {
+    //   const userId = getCookieValue('UserCookie') || '1';
+      const siteID = getCookieValue('CurrentSite') || '1';
+      
+      // TODO: Replace '%SITEID%' with actual site ID
+      console.log(pages[0]);
+      const response = await fetch(`api/website?site_id=${siteID}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pages),
+        redirect: 'manual'
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log('Successfully saved to database:', result);
+        setIsSaved(true);
+        alert('Project saved successfully!');
+      } else {
+        console.error('Error saving to database:', result.error);
+        alert(`Failed to save: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error saving to database:', error);
+      alert(`Error saving: ${error.message}`);
+    }
+  };
+  savePagesToJSONRef.current = savePagesToJSON;
 
   /** Christopher Parsons, 9/18/2025
    * Inputs:
    *  e: MouseEvent
    * Outputs:
    *  pageMousePos: { x: number, y: number }
-   *  canvasMousePos: { x: number, y: number }
    * 
    * useEffect is essentially a hook that keeps track of actions performed on the page.
    * handleDocumentKeyDown keeps track of when something is clicked.
+   * If the user hits undo, trigger .undo in HistoryManager. If they hit redo, trigger .redo in PageManager.
+   * If the user hits copy, save all selected widgets. If they hit paste, place currently copied things on the page.
+   * If the user hits duplicate, take all selected widgets and make copies of them.
    */
   useEffect(() => {
     const handleDocumentKeyDown = (e) => {
@@ -217,10 +422,73 @@ export default function CanvasPage() {
         history.current?.redo();
       }
 
-      // Do NOT delete widgets on Backspace/Delete anymore.
+      // If the user hits copy, save selected widgets ONLY if something is selected
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "c") {
+        e.preventDefault();
+        if (selectedWidgets && selectedWidgets.length > 0) {
+          clipboard.current = selectedWidgets.map(w => ({ ...w }));
+          console.log("Copied:", clipboard.current);
+        } else {
+          console.log("Nothing selected to copy.");
+        }
+      }
+
+      // If the user hits paste, place clipboard on the canvas and set them as selected
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "v") {
+        e.preventDefault();
+
+        if (clipboard.current) {
+          console.log("Pasting:", clipboard.current);
+          deselectAllWidgets();
+
+          const widgetsToPaste = clipboard.current.map((widget, i) => ({
+            ...widget,
+            isSelected: false,
+            isMoving: false,
+            id: nextWidgetId + i,
+          }));
+          setNextWidgetId(ids => ids + widgetsToPaste.length);
+
+          setWidgets([...widgets, ...widgetsToPaste]);
+          setSelectedWidgets(widgetsToPaste);
+          recordState();
+        }
+      }
+
+      // If the user hits copy, place a copy of currently selected widgets onto the canvas and set them as copied
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "d") {
+        e.preventDefault();
+        if (selectedWidgets.length <= 0) return;
+
+        console.log("Duplicating:", selectedWidgets);
+        const widgetsToPaste = selectedWidgets.map((widget, i) => ({
+          ...widget,
+          x: widget.x + 10,
+          y: widget.y + 10,
+          isSelected: false,
+          isMoving: false,
+          id: nextWidgetId + i,
+        }));
+        setNextWidgetId(ids => ids + widgetsToPaste.length);
+
+        setWidgets([...widgets, ...widgetsToPaste]);
+        setSelectedWidgets(widgetsToPaste);
+        recordState();
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        console.log("Manual save triggered");
+        e.preventDefault();
+        // Save pages data to database
+        saveToDatabase();
+      }
+
       // Prevent browser back navigation in some contexts.
       if (e.key === "Backspace" || e.key === "Delete") {
         e.preventDefault();
+        const ids = selectedWidgets.map(widget => widget.id);
+        console.log('Deleting ', ids);
+        deleteWidget(ids);
       }
     };
 
@@ -229,7 +497,7 @@ export default function CanvasPage() {
     return () => {
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
-  }, []);
+  }, [pages, savePagesToJSON, selectedWidgets]);
 
 
   /** Christopher Parsons, 9/18/2025
@@ -246,9 +514,9 @@ export default function CanvasPage() {
     if (!selectedWidgets || selectedWidgets.length === 0) return;
 
     // Re-select updated widget objects from the widgets array
-    const updatedSelection = selectedWidgets.map(sel =>
-      widgets.find(w => w.id === sel.id)
-    ).filter(Boolean); // Remove nulls in case of deletion
+    const updatedSelection = selectedWidgets
+      .map((sel) => widgets.find((w) => w.id === sel.id))
+      .filter(Boolean); // Remove nulls in case of deletion
 
     setSelectedWidgets(updatedSelection);
   }, [widgets]);
@@ -257,9 +525,14 @@ export default function CanvasPage() {
    * 
    * Triggers when the canvas page itself is clicked. If nothing
    * is clicked on aside from the canvas, deselects all widgets.
+   * Also disable editing on text widgets.
    */
   const handleCanvasClick = () => {
     deselectAllWidgets();
+
+    setWidgets(prev =>
+      prev.map(w => (w.type === 'text' && w.isEditing ? { ...w, isEditing: false } : w))
+    );
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -278,8 +551,10 @@ export default function CanvasPage() {
    * being resized.
    */
   const updateWidget = (widgetID, newX, newY, newSize = null) => {
-    const updatedWidgets = widgets.map(widget =>
-      widget.id === widgetID ? { ...widget, x: newX, y: newY, ...(newSize && { width: newSize.width, height: newSize.height }) } : widget
+    const updatedWidgets = widgets.map((widget) =>
+      widget.id === widgetID
+        ? { ...widget, x: newX, y: newY, ...(newSize && { width: newSize.width, height: newSize.height }) }
+        : widget
     );
     setWidgets(updatedWidgets);
   };
@@ -295,14 +570,13 @@ export default function CanvasPage() {
    * string fed in. Advances nextWidgetID + 1.
    */
   const createWidget = (typeToMake) => {
-    recordState();
     let newWidget = null;
     const nextId = nextWidgetId;
 
     switch (typeToMake) {
-      case 'box':
+      case "box":
         newWidget = {
-          type: 'box',
+          type: "box",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -311,14 +585,81 @@ export default function CanvasPage() {
           isSelected: false,
           isMoving: false,
           backgroundColor: '#cccccc',
+          boxStyle: 'default',
           pointerEventsNone: false,
           rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
+
+      case 'circle':
+        newWidget = {
+          type: 'circle',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          boxStyle: 'default',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
+
+      case 'triangle':
+        newWidget = {
+          type: 'triangle',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          boxStyle: 'default',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
+        };
+        break;
+      case 'polygon':
+        newWidget = {
+          type: 'polygon',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 100,
+          height: 100,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: '#cccccc',
+          boxStyle: 'default',
+          pointerEventsNone: false,
+          rotation: 0,
+          opacity: 1.0,
+          borderWidth: 1,
+          borderColor: "#000000",
+          borderStyle: "solid",
         };
         break;
 
       case 'video':
         newWidget = {
-          type: 'video',
+          type: "video",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -330,18 +671,18 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          videoUrl: '/images/DemoVideo.mp4',
+          videoUrl: "/images/DemoVideo.mp4",
           loop: false,
           muted: true,
           autoplay: true,
           controls: true,
-          objectFit: 'contain',
+          objectFit: "contain",
         };
         break;
-
+      
       case 'dropdown':
         newWidget = {
-          type: 'dropdown',
+          type: "dropdown",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -353,17 +694,17 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          options: ['Option 1', 'Option 2', 'Option 3'],
-          value: 'Option 1',
+          options: ["Option 1", "Option 2", "Option 3"],
+          value: "Option 1",
           fontSize: 12,
-          textColor: '#111111',
-          bgColor: '#ffffff',
+          textColor: "#111111",
+          bgColor: "#ffffff",
         };
         break;
 
-      case 'advert':
+      case "advert":
         newWidget = {
-          type: 'advert',
+          type: "advert",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -375,19 +716,62 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          imageUrl: '/images/Blueprint.png',
-          linkUrl: 'http://localhost:3000/features',
-          alt: 'Advertisement',
-          objectFit: 'cover',
+          imageUrl: "/images/Blueprint.png",
+          linkUrl: "http://localhost:3000/features",
+          alt: "Advertisement",
+          objectFit: "cover",
           showBorder: true,
           borderColor: '#333333',
           adSnippet: '',
         };
         break;
 
-      case 'hyperlink':
+      case "text":
         newWidget = {
-          type: 'hyperlink',
+          type: "text",
+          id: nextId,
+          width: 300,
+          height: 80,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: "transparent",
+          pointerEventsNone: false,
+          rotation: 0,
+          text: "Edit me",
+          fontSize: 18,
+          color: "#111111",
+          fontFamily: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif",
+          fontWeight: 400,
+          textAlign: "left",
+          lineHeight: 1.35,
+          letterSpacing: 0,
+          padding: 8,
+        };
+        break;
+
+      case "image":
+        newWidget = {
+          type: "image",
+          id: nextId,
+          width: 320,
+          height: 200,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: "#ffffff",
+          pointerEventsNone: false,
+          rotation: 0,
+          imageUrl: "/images/pog_web_logo.png",
+          alt: "Logo",
+          objectFit: "contain",
+          showBorder: false,
+          borderRadius: 0,
+          showInlineUrlInput: false,
+        };
+        break;
+
+      case "hyperlink":
+        newWidget = {
+          type: "hyperlink",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -399,17 +783,17 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          text: 'Click Here',
-          url: 'http://localhost:3000/features',
+          text: "Click Here",
+          url: "http://localhost:3000/features",
           fontSize: 12,
-          textColor: '#0000ee',
+          textColor: "#0000ee",
           openInNewTab: true,
         };
         break;
 
-      case 'menuScroll':
+      case "menuScroll":
         newWidget = {
-          type: 'menuScroll',
+          type: "menuScroll",
           id: nextId,
           x: currentPage.width / 2,
           y: currentPage.height / 2,
@@ -421,16 +805,35 @@ export default function CanvasPage() {
           pointerEventsNone: false,
           rotation: 0,
           // custom props:
-          items: ['Menu Item 1', 'Menu Item 2', 'Menu Item 3', 'Menu Item 4', 'Menu Item 5'],
+          items: ["Menu Item 1", "Menu Item 2", "Menu Item 3", "Menu Item 4", "Menu Item 5"],
           fontSize: 14,
-          textColor: '#333333',
+          textColor: "#333333",
           itemPadding: 8,
-          selectedValue: 'Menu Item 1', // Default to the first item
+          selectedValue: "Menu Item 1", // Default to the first item
         };
         break;
-
+      
+      case 'html':
+        newWidget = {
+          type: 'html',
+          id: nextId,
+          x: currentPage.width / 2,
+          y: currentPage.height / 2,
+          width: 320,
+          height: 200,
+          isSelected: false,
+          isMoving: false,
+          backgroundColor: 'transparent',
+          opacity: 1.0,
+          pointerEventsNone: false,
+          rotation: 0,
+          // custom props:
+          html: "<div style='padding:12px;border:2px dashed #555;background:#fafafa;border-radius:8px'>Inline <b>HTML</b> works here.</div>",
+          sandbox: false, // toggle to true for iframe isolation
+        };
+      break;
       default:
-        console.warn('Warning: Unknown widget type: ' + typeToMake);
+        console.warn("Warning: Unknown widget type: " + typeToMake);
         return;
     }
 
@@ -443,6 +846,9 @@ export default function CanvasPage() {
     setNextWidgetId((prevId) => prevId + 1);
     setWidgets([...widgets, newWidget]);
     setSelectedWidgets([newWidget]);
+
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   };
 
   /** Christopher Parsons, 9/18/2025
@@ -453,11 +859,12 @@ export default function CanvasPage() {
    * Replaces the widgets of the current page with a clone
    * but without the designated widget.
    */
-  function deleteWidget(id) {
+  function deleteWidget(ids) {
+    const idSet = new Set(Array.isArray(ids) ? ids : [ids]);
+    setWidgets(prev => prev.filter(widget => !idSet.has(widget.id)));
+
+    setSelectedWidgets(prev => prev.filter(widget => !idSet.has(widget.id)));
     recordState();
-    console.log('Deleting widget', id);
-    setWidgets(widgets.filter(widget => widget.id !== id));
-    deselectAllWidgets();
   }
 
   /** Christopher Parsons, 9/18/2025
@@ -484,14 +891,16 @@ export default function CanvasPage() {
    * with a modified attribute.
    */
   function changePageProperty(pageID, newProperties) {
-    recordState();
-    const changedPages = pages.map(page =>
+    const changedPages = pages.map((page) =>
       // If this is the correct widget, then update the object
       page.id === pageID ? { ...page, ...newProperties }
         : page // Otherwise, leave it
     );
 
     setPages(changedPages);
+
+    // Record state after updates
+    setTimeout(() => recordState(), 0);
   }
 
   return (
@@ -520,6 +929,8 @@ export default function CanvasPage() {
               createPage={createPage}
               updatePageName={updatePageName}
               deletePage={deletePage}
+              isSaved={isSaved}
+              importPagesFromJSON={importPagesFromJSON}
             />
           </header>
 
@@ -591,24 +1002,26 @@ export default function CanvasPage() {
    * 
    * Replaces a widget with itself but with a new attribute.
    */
-  function changeWidgetProperty(widgetID, newProperties, preventUpdate) {
-    const changedWidgets = widgets.map(widget =>
-      // If this is the correct widget, then update the object
-      widget.id === widgetID ? { ...widget, ...newProperties }
-        : widget // Otherwise, leave it
+  function changeWidgetProperty(widgetID, newProperties, dontUpdate) {
+    setWidgets(prev =>
+      prev.map(current => (current.id === widgetID ? { ...current, ...newProperties } : current))
     );
-    setWidgets(changedWidgets);
 
-    if (!preventUpdate) recordState();
+    // Keep the selection array in sync so controlled inputs (like Custom HTML)
+    // receive the latest value immediately and don't reset user cursor position.
+    setSelectedWidgets(prev =>
+      prev && prev.length > 0
+        ? prev.map(sel => (sel.id === widgetID ? { ...sel, ...newProperties } : sel))
+        : prev
+    );
+
+    if (!dontUpdate) recordState();
   }
 }
 
-/** 
- * 
- */
-function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage }) {
+function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, updatePageName, deletePage, isSaved, importPagesFromJSON }) {
   const [editingId, setEditingId] = useState(null);
-  const [editName, setEditName] = useState('');
+  const [editName, setEditName] = useState("");
 
   const startEdit = (page) => {
     setEditingId(page.id);
@@ -616,69 +1029,88 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
   };
 
   const saveEdit = (id) => {
-    if (editName.trim()) {
-      updatePageName(id, editName.trim());
-    }
+    if (editName.trim()) updatePageName(id, editName.trim());
     setEditingId(null);
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this page?")) {
-      deletePage(id);
-    }
+    if (window.confirm("Are you sure you want to delete this page?")) deletePage(id);
+  };
+  const handleImport = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json,.json';
+    input.onchange = async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        importPagesFromJSON(data);
+      } catch (err) {
+        console.error("❌ Failed to import pages JSON:", err);
+        alert("Invalid JSON file. Please select a valid JSON export.");
+      }
+      e.target.value = "";
+    };
+    input.click();
   };
 
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center', overflowX: 'auto', padding: '10px 0' }}>
-      {pages.map(page => (
-        <div
-          key={page.id}
-          style={{
-            margin: '0 10px',
-            padding: '5px 10px',
-            cursor: 'pointer',
-            backgroundColor: page.id === selectedPageID ? '#e2e8f0' : 'transparent',
-            borderRadius: '4px',
-            fontWeight: page.id === selectedPageID ? 'bold' : 'normal',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          onClick={() => {
-            if (editingId !== page.id) {
-              setSelectedPageID(page.id);
-            }
-          }}
+    <div className={styles.pageNavContainer}>
+      <div className={styles.pageList}>
+        <button
+          type="button"
+          className={styles.importIcon}
+          onClick={() => handleImport()}
+          title="Import pages from JSON"
+          aria-label="Import pages from JSON"
         >
-          {editingId === page.id ? (
-            <input
-              value={editName}
-              onChange={e => setEditName(e.target.value)}
-              onBlur={() => saveEdit(page.id)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  saveEdit(page.id);
-                } else if (e.key === 'Escape') {
-                  setEditingId(null);
-                }
-              }}
-              autoFocus
-              style={{ width: '100px' }}
-            />
-          ) : (
-            <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
-          )}
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(page.id);
+          📥
+        </button>
+        {pages.map((page) => (
+          <div
+            key={page.id}
+            className={`${styles.pageTab} ${page.id === selectedPageID ? styles.pageTabActive : ""}`}
+            onMouseDown={() => {
+              if (editingId !== page.id) setSelectedPageID(page.id);
             }}
-            style={{ cursor: 'pointer', marginLeft: '5px' }}
           >
-            🗑️
-          </span>
-        </div>
-      ))}
-      <button onClick={createPage} style={{ marginLeft: '10px' }}>+ New Page</button>
+            {editingId === page.id ? (
+              <input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                onBlur={() => saveEdit(page.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveEdit(page.id);
+                  if (e.key === "Escape") setEditingId(null);
+                }}
+                autoFocus
+                className={styles.pageEditInput}
+              />
+            ) : (
+              <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
+            )}
+            <span
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                handleDelete(page.id);
+              }}
+              className={styles.deleteIcon}
+            >
+              🗑️
+            </span>
+          </div>
+        ))}
+        <button onClick={createPage} className={styles.newPageButton}>
+          + New Page
+        </button>
+      </div>
+      <div className={styles.saveStatus}>
+        {isSaved ? "✓ Saved" : "● Unsaved changes"}
+      </div>
     </div>
   );
 }
+

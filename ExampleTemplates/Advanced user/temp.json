@@ -1,0 +1,80 @@
+{
+  "pages": [
+    {
+      "id": 0,
+      "name": "Page 0",
+      "width": 1920,
+      "height": 1080,
+      "backgroundColor": "#ffffff",
+      "widgets": [
+        {
+          "type": "html",
+          "id": 3,
+          "x": 0.000019184731057949824,
+          "y": 0,
+          "width": 1920,
+          "height": 1080,
+          "isSelected": false,
+          "isMoving": false,
+          "backgroundColor": "transparent",
+          "opacity": 1,
+          "pointerEventsNone": false,
+          "rotation": 0,
+          "html": "<div style=\"\n  height: 100vh;\n  width: 100vw;\n  background: linear-gradient(180deg, #0f0f0f 0%, #1a1a1a 100%);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n\">\n</div>",
+          "sandbox": false
+        },
+        {
+          "type": "html",
+          "id": 5,
+          "x": 0.005440531609432354,
+          "y": 0.6608546210249981,
+          "width": 1913,
+          "height": 200,
+          "isSelected": false,
+          "isMoving": false,
+          "backgroundColor": "transparent",
+          "opacity": 1,
+          "pointerEventsNone": false,
+          "rotation": 0,
+          "html": "<!-- Canvas-safe responsive navbar (no fixed positioning) -->\n<div style=\"\n  box-sizing: border-box;\n  width: 100%;\n  max-width: 100%;\n  background: rgba(20,20,20,0.95);\n  border-bottom: 1px solid rgba(255,255,255,0.08);\n  padding: 0.75rem 1rem;\n  font-family: 'Segoe UI', Roboto, Arial, sans-serif;\n  color: #eaeaea;\n\n  /* Flex layout */\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 1rem;\n\n  /* Prevent clipping in tight containers */\n  overflow: visible;\n\">\n  <!-- Brand -->\n  <div style=\"flex: 0 0 auto; font-weight: 700; letter-spacing: 0.04em; font-size: 1.1rem;\">\n    MySite\n  </div>\n\n  <!-- Links (wraps on small widths, scrolls horizontally if needed) -->\n  <nav style=\"\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: flex-end;\n    gap: 0.75rem 1.25rem;\n\n    /* Make sure the menu can shrink without clipping */\n    min-width: 0;\n    max-width: 100%;\n    overflow-x: auto;  /* allows horizontal scroll if many items */\n    scrollbar-width: thin;\n  \">\n    <a href=\"#\" style=\"text-decoration: none; color: #cfcfcf; padding: 0.4rem 0.6rem; border-radius: 0.5rem;\">Home</a>\n    <a href=\"#\" style=\"text-decoration: none; color: #cfcfcf; padding: 0.4rem 0.6rem; border-radius: 0.5rem;\">About</a>\n    <a href=\"#\" style=\"text-decoration: none; color: #cfcfcf; padding: 0.4rem 0.6rem; border-radius: 0.5rem;\">Services</a>\n    <a href=\"#\" style=\"text-decoration: none; color: #cfcfcf; padding: 0.4rem 0.6rem; border-radius: 0.5rem;\">Projects</a>\n    <a href=\"#\" style=\"text-decoration: none; color: #cfcfcf; padding: 0.4rem 0.6rem; border-radius: 0.5rem;\">Contact</a>\n  </nav>\n</div>\n",
+          "sandbox": false
+        },
+        {
+          "type": "html",
+          "id": 6,
+          "x": 86.97182986744386,
+          "y": 121.33742106248039,
+          "width": 859,
+          "height": 807,
+          "isSelected": false,
+          "isMoving": false,
+          "backgroundColor": "transparent",
+          "opacity": 1,
+          "pointerEventsNone": false,
+          "rotation": 0,
+          "html": "<!-- Blog Post Card (Dark) -->\n<div style=\"\n  box-sizing: border-box;\n  width: min(100%, 820px);\n  margin: 24px auto;\n  background: linear-gradient(180deg, #141414 0%, #0f0f0f 100%);\n  border: 1px solid rgba(255,255,255,0.06);\n  border-radius: 18px;\n  overflow: hidden;\n  font-family: 'Segoe UI', Roboto, Arial, sans-serif;\n  color: #e9e9e9;\n  box-shadow: 0 12px 30px rgba(0,0,0,0.35);\n\">\n  <!-- Cover (use your own image by setting background-image:url(...)) -->\n  <a href=\"#\"\n     style=\"\n       display:block;\n       text-decoration:none;\n       color:inherit;\n       background: linear-gradient(135deg, #272727 0%, #191919 100%);\n       aspect-ratio: 16/9;\n       width: 100%;\n       overflow:hidden;\n     \">\n    <!-- Optional overlay label -->\n    <div style=\"\n      display:inline-block;\n      margin: 14px;\n      padding: 6px 10px;\n      font-size: 12px;\n      letter-spacing: .04em;\n      background: rgba(255,255,255,0.08);\n      color: #f0f0f0;\n      border: 1px solid rgba(255,255,255,0.12);\n      border-radius: 999px;\n      backdrop-filter: blur(2px);\n    \">Featured</div>\n  </a>\n\n  <!-- Content -->\n  <div style=\"padding: 18px 20px 16px 20px;\">\n    <!-- Tags -->\n    <div style=\"\n      display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;\n    \">\n      <span style=\"padding:6px 10px; font-size:12px; color:#dcdcdc; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:999px;\">Design</span>\n      <span style=\"padding:6px 10px; font-size:12px; color:#dcdcdc; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:999px;\">UI/UX</span>\n      <span style=\"padding:6px 10px; font-size:12px; color:#dcdcdc; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:999px;\">Tutorial</span>\n    </div>\n\n    <!-- Title -->\n    <a href=\"#\" style=\"text-decoration:none; color:#ffffff;\">\n      <h2 style=\"\n        margin: 2px 0 8px 0;\n        font-size: 24px;\n        line-height: 1.25;\n        letter-spacing: .2px;\n      \">\n        7 Practical Layout Patterns for Cleaner Pages\n      </h2>\n    </a>\n\n    <!-- Meta -->\n    <div style=\"\n      display:flex; align-items:center; gap:10px; margin-bottom:12px; opacity:.9;\n    \">\n      <div style=\"\n        width:30px; height:30px; border-radius:50%;\n        background: radial-gradient(circle at 30% 30%, #4b4b4b, #222);\n        border: 1px solid rgba(255,255,255,0.12);\n        flex:0 0 auto;\n      \"></div>\n      <div style=\"display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;\">\n        <span style=\"font-size:14px;\">By <strong>Alex Morgan</strong></span>\n        <span style=\"font-size:13px; color:#bdbdbd;\">• Oct 28, 2025</span>\n        <span style=\"font-size:13px; color:#bdbdbd;\">• 6 min read</span>\n      </div>\n    </div>\n\n    <!-- Excerpt -->\n    <p style=\"\n      margin:0 0 14px 0; font-size:16px; line-height:1.65; color:#d8d8d8;\n    \">\n      Learn flexible grid, fluid type scales, and card stacks that stay elegant across breakpoints—without heavy frameworks or brittle utilities.\n    </p>\n\n    <!-- Actions -->\n    <div style=\"display:flex; align-items:center; justify-content:space-between; gap:10px;\">\n      <a href=\"#\"\n         style=\"\n           display:inline-block;\n           padding:10px 14px;\n           border-radius:12px;\n           border:1px solid rgba(255,255,255,0.14);\n           background: rgba(255,255,255,0.06);\n           color:#ffffff;\n           text-decoration:none;\n           font-size:14px;\n           letter-spacing:.2px;\n           transition: filter .2s ease;\n         \"\n         onmouseover=\"this.style.filter='brightness(1.15)'\"\n         onmouseout=\"this.style.filter='none'\">\n        Read Article\n      </a>\n\n      <!-- Secondary meta (optional) -->\n      <div style=\"font-size:13px; color:#bdbdbd;\">\n        1.2k views • 38 comments\n      </div>\n    </div>\n  </div>\n</div>\n",
+          "sandbox": false
+        },
+        {
+          "type": "html",
+          "id": 7,
+          "x": 1012.884051663839,
+          "y": 226.97148614940434,
+          "width": 838,
+          "height": 650,
+          "isSelected": false,
+          "isMoving": false,
+          "backgroundColor": "transparent",
+          "opacity": 1,
+          "pointerEventsNone": false,
+          "rotation": 0,
+          "html": "<!-- About the Author Card -->\n<div style=\"\n  box-sizing: border-box;\n  width: min(100%, 820px);\n  margin: 24px auto;\n  background: linear-gradient(180deg, #141414 0%, #0f0f0f 100%);\n  border: 1px solid rgba(255,255,255,0.06);\n  border-radius: 18px;\n  overflow: hidden;\n  font-family: 'Segoe UI', Roboto, Arial, sans-serif;\n  color: #e9e9e9;\n  box-shadow: 0 12px 30px rgba(0,0,0,0.35);\n  display: flex;\n  flex-direction: column;\n  justify-content: space-between;\n  height: 550px; /* Match height of blog post */\n  padding: 24px 28px;\n\">\n\n  <!-- Header -->\n  <div style=\"display: flex; align-items: center; gap: 16px;\">\n    <div style=\"\n      width: 90px; height: 90px; border-radius: 50%;\n      background: radial-gradient(circle at 30% 30%, #4b4b4b, #222);\n      border: 2px solid rgba(255,255,255,0.15);\n      flex-shrink: 0;\n    \"></div>\n    <div>\n      <h2 style=\"margin: 0; font-size: 22px; color: #fff;\">Alex Morgan</h2>\n      <p style=\"margin: 4px 0 0 0; font-size: 14px; color: #bdbdbd;\">Product Designer & Writer</p>\n    </div>\n  </div>\n\n  <!-- Bio -->\n  <p style=\"\n    font-size: 16px;\n    line-height: 1.7;\n    color: #d8d8d8;\n    margin: 24px 0;\n    flex-grow: 1;\n  \">\n    Alex is a designer and front-end developer with over a decade of experience crafting interfaces\n    that blend clarity and emotion. He writes about clean design systems, interaction patterns,\n    and how storytelling shapes digital experiences.\n  </p>\n\n  <!-- Stats -->\n  <div style=\"\n    display: flex;\n    justify-content: space-around;\n    text-align: center;\n    margin-bottom: 20px;\n  \">\n    <div>\n      <div style=\"font-size: 22px; font-weight: 600; color: #fff;\">120+</div>\n      <div style=\"font-size: 13px; color: #bdbdbd;\">Articles</div>\n    </div>\n    <div>\n      <div style=\"font-size: 22px; font-weight: 600; color: #fff;\">10k</div>\n      <div style=\"font-size: 13px; color: #bdbdbd;\">Followers</div>\n    </div>\n    <div>\n      <div style=\"font-size: 22px; font-weight: 600; color: #fff;\">8</div>\n      <div style=\"font-size: 13px; color: #bdbdbd;\">Years Exp.</div>\n    </div>\n  </div>\n\n  <!-- Social Links -->\n  <div style=\"display: flex; gap: 12px; justify-content: center;\">\n    <a href=\"#\" style=\"color: #ccc; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 10px;\"\n      onmouseover=\"this.style.background='rgba(255,255,255,0.1)'\"\n      onmouseout=\"this.style.background='transparent'\">Twitter</a>\n    <a href=\"#\" style=\"color: #ccc; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 10px;\"\n      onmouseover=\"this.style.background='rgba(255,255,255,0.1)'\"\n      onmouseout=\"this.style.background='transparent'\">LinkedIn</a>\n    <a href=\"#\" style=\"color: #ccc; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); padding: 8px 14px; border-radius: 10px;\"\n      onmouseover=\"this.style.background='rgba(255,255,255,0.1)'\"\n      onmouseout=\"this.style.background='transparent'\">Portfolio</a>\n  </div>\n</div>\n",
+          "sandbox": false
+        }
+      ]
+    }
+  ],
+  "selectedPageID": 0,
+  "nextPageID": 1,
+  "nextWidgetId": 8
+}

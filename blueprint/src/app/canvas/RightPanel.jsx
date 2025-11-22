@@ -1,8 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import styles from './page.module.css';
-import { renderToStaticMarkup, renderToString } from "react-dom/server";
-import PageRenderer from "./PageRenderer";
 import HTMLExport from "./HtmlExport";
+import { SHAPE_STYLE_OPTIONS } from "../components/widgets/shapeStyles";
+
+// Helper function to get cookie value by name
+const getCookieValue = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+};
+
+const shapeStyleWidgets = new Set(['box', 'circle', 'triangle', 'polygon']);
 
 /** Christopher Parsons, 9/18/2025
  * Inputs:
@@ -21,10 +30,10 @@ import HTMLExport from "./HtmlExport";
  * for the manipulation of existing widgets and pages.
  */
 export function RightPanel({
-    changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
-    pages, selectedPageID, setSelectedPageID, currentPage, createPage,
-    changePageProperty, recordState }) {
-    const [buttonSelected, setButtonSelected] = useState(false);
+  changeWidgetProperty, selectedWidgets, widgets, deleteWidget,
+  pages, selectedPageID, setSelectedPageID, currentPage, createPage,
+  changePageProperty, recordState }) {
+  const [buttonSelected, setButtonSelected] = useState(false);
 
   /** Christopher Parsons, 9/18/2025
    * If a button is clicked, flip the buttonSelected boolean.
@@ -41,16 +50,37 @@ export function RightPanel({
    * Also return the controls.
    */
   return (
-    <div>
-      {/* Button to switch, always rendered. When clicked, invert buttonSelected */}
-      <button className={styles.switchButton} onClick={handleButtonClick}>Switch</button>
-
-      {/* False = widget properties. True = page properties */}
-      {!buttonSelected ? <RightWidgetPanel changeWidgetProperty={changeWidgetProperty} selectedWidgets={selectedWidgets} widgets={widgets} deleteWidget={deleteWidget} recordState={recordState} />
-        : <RightPagePanel pages={pages} selectedPageID={selectedPageID} setSelectedPageID={setSelectedPageID} currentPage={currentPage} createPage={createPage} changePageProperty={changePageProperty} />}
+    <div className={styles.widgetPanel}>
+      <h2 className={styles.widgetHeader}>
+        {buttonSelected ? "Page Settings" : "Widget Settings"}
+      </h2>
+  
+      <button className={styles.switchButton} onClick={handleButtonClick}>
+        Switch
+      </button>
+  
+      {/* False = widget properties, True = page properties */}
+      {!buttonSelected ? (
+        <RightWidgetPanel
+          changeWidgetProperty={changeWidgetProperty}
+          selectedWidgets={selectedWidgets}
+          widgets={widgets}
+          deleteWidget={deleteWidget}
+          recordState={recordState}
+        />
+      ) : (
+        <RightPagePanel
+          pages={pages}
+          selectedPageID={selectedPageID}
+          setSelectedPageID={setSelectedPageID}
+          currentPage={currentPage}
+          createPage={createPage}
+          changePageProperty={changePageProperty}
+        />
+      )}
     </div>
-
   );
+  
 }
 
 function downloadMediaToDisk(url, filepath) {
@@ -73,31 +103,91 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
   if (selectedWidgets && selectedWidgets.length > 0) {
     // If something is selected
     return (
+      <div className={styles.widgetContent}>    
         <div>
-          <div>
-            {/* Button for deleting widgets */}
-            <button
-              className={styles.deleteButton}
-              onClick={() => {
-                selectedWidgets.forEach(widget => {
-                  console.log('Deleting ', widget)
-                  deleteWidget(widget.id);
-                })
-              }}
-            >Delete Selected Widget</button>
-          </div>
-  
-          {/* Menu to change widgets */}
-          {selectedWidgets.map((widget) => (
+          {/* Button for deleting widgets */}
+          <button
+            className={styles.deleteButton}
+            onClick={() => {
+              const ids = selectedWidgets.map(widget => widget.id);
+              console.log('Deleting ', ids);
+              deleteWidget(ids);
+            }}
+          >Delete Selected Widgets</button>
+        </div>
+        {/* Menu to change widgets */}
+        {selectedWidgets.map((widget) => {
+          const borderWhitelist =
+            widget.type === 'box' ||
+            widget.type === 'circle' ||
+            widget.type === 'triangle' ||
+            widget.type === 'polygon';
+
+          return (
             <div key={widget.id} className={styles.widgetOptions}>
-              {/* Inputs to change widget properties */}
               <p>Color:</p>
               <input
                 type="color"
                 value={widget.backgroundColor || "#cccccc"}
                 onChange={e => changeWidgetProperty(widget.id, { backgroundColor: e.target.value })}
               />
-  
+              {shapeStyleWidgets.has(widget.type) && (
+                <>
+                  <p>Shape Style:</p>
+                  <select
+                    value={widget.boxStyle || 'default'}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, { boxStyle: e.target.value })
+                    }
+                  >
+                    {SHAPE_STYLE_OPTIONS.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </>
+              )}
+              {borderWhitelist && (
+                <>
+                  <p>Border Color:</p>
+                  <input
+                    type="color"
+                    value={widget.borderColor || "#000000"}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        borderColor: e.target.value
+                      })
+                    }
+                  />
+
+                  <p>Border Width (px):</p>
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    value={widget.borderWidth ?? 1}
+                    onChange={e => {
+                      const val = parseInt(e.target.value || "0", 10);
+                      changeWidgetProperty(widget.id, { borderWidth: val });
+                    }}
+                  />
+
+                  <p>Border Style:</p>
+                  <select
+                    value={widget.borderStyle || "solid"}
+                    onChange={e =>
+                      changeWidgetProperty(widget.id, {
+                        borderStyle: e.target.value
+                      })
+                    }
+                  >
+                    <option value="solid">Solid</option>
+                    <option value="dashed">Dashed</option>
+                    <option value="dotted">Dotted</option>
+                    <option value="double">Double</option>
+                    <option value="none">None</option>
+                  </select>
+                </>
+              )}
               {/* Two rotation inputs, one as an editable display and the other as a slider */}
               <p>Rotation: {widget.rotation}</p>
               <input
@@ -107,13 +197,13 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                 value={widget.rotation || 0}
                 onChange={e =>
                   changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value, 10) })
-                }/>
+                } />
               <input
                 type="range"
                 min="0"
                 max="360"
                 value={widget.rotation || 0}
-                onMouseDown={e => 
+                onMouseDown={e =>
                   recordState()
                 }
                 onChange={e =>
@@ -121,6 +211,121 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                   changeWidgetProperty(widget.id, { rotation: parseInt(e.target.value || "0", 10) }, true)
                 }
               />
+              <p>Opacity: {(widget.opacity ?? 1).toFixed(2)}</p>
+              <input
+                type="number"
+                min="0"
+                max="1"
+                step="0.01"
+                value={widget.opacity ?? 1}
+                onChange={e => {
+                  const raw = e.target.value
+                  if (raw === "") {
+                    changeWidgetProperty(widget.id, { opacity: 0 })
+                    return
+                  }
+                  let val = parseFloat(raw)
+                  if (isNaN(val)) val = 0
+                  if (val < 0) val = 0
+                  if (val > 1) val = 1
+                  changeWidgetProperty(widget.id, { opacity: val })
+                }}
+              />
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={widget.opacity ?? 1}
+                onMouseDown={() => {
+                  recordState()
+                }}
+                onChange={e => {
+                  const val = parseFloat(e.target.value)
+                  changeWidgetProperty(widget.id, { opacity: val }, true)
+                }}
+              />
+
+              {/* ===== Text Box Controls ===== */}
+              {widget.type === 'text' && (() => {
+                // Bounds a number between a minimum and a maximum, 'clamping' it between two values
+                const clampNum = (v, min, max) => Math.max(min, Math.min(max, v || 0));
+
+                return (
+                  <>
+                    <p>Font Size:</p>
+                    <input
+                      type="number"
+                      min="8"
+                      max="200"
+                      value={widget.fontSize ?? 18}
+                      onChange={e =>
+                        changeWidgetProperty(widget.id, { fontSize: clampNum(parseInt(e.target.value || "0", 10), 8, 200) })
+                      }
+                    />
+
+                    <p>Text Color:</p>
+                    <input
+                      type="color"
+                      value={widget.color || "#111111"}
+                      onChange={e => changeWidgetProperty(widget.id, { color: e.target.value })}
+                    />
+
+                    <p>Font Weight:</p>
+                    <select
+                      value={String(widget.fontWeight ?? 400)}
+                      onChange={e => changeWidgetProperty(widget.id, { fontWeight: parseInt(e.target.value, 10) })}
+                    >
+                      <option value="300">Light (300)</option>
+                      <option value="400">Normal (400)</option>
+                      <option value="500">Medium (500)</option>
+                      <option value="600">Semibold (600)</option>
+                      <option value="700">Bold (700)</option>
+                      <option value="800">Extra Bold (800)</option>
+                      <option value="900">Black (900)</option>
+                    </select>
+
+                    <p>Letter Spacing (px):</p>
+                    <input
+                      type="number"
+                      step="0.5"
+                      value={widget.letterSpacing ?? 0}
+                      onChange={e => changeWidgetProperty(widget.id, { letterSpacing: parseFloat(e.target.value || "0") })}
+                    />
+                  </>
+                );
+              })()}
+
+              {/* ===== Image Controls ===== */}
+              {widget.type === 'image' && (() => {
+                return (
+                  <>
+                    <p>Image URL:</p>
+                    <input
+                      type="text"
+                      placeholder="./image.jpg"
+                      value={widget.imageUrl || ""}
+                      onChange={e => changeWidgetProperty(widget.id, { imageUrl: e.target.value })}
+                    />
+
+                    <p style={{ marginTop: 10 }}>Or select a file to upload:</p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+
+                        const imageURL = URL.createObjectURL(file);
+                        changeWidgetProperty(widget.id, { imageUrl: imageURL });
+
+                        // Reset file input
+                        e.target.value = '';
+                      }}
+                    />
+                  </>
+                );
+              })()}
 
               {/* ===== Menu Scroll controls ===== */}
               {widget.type === 'menuScroll' && (() => {
@@ -169,49 +374,49 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
 
               {/* ===== Hyperlink controls ===== */}
               {widget.type === 'hyperlink' && (
-            <>
-              <p>Display Text:</p>
-              <input
-                type="text"
-                value={widget.text || ""}
-                onChange={e => changeWidgetProperty(widget.id, { text: e.target.value })}
-              />
+                <>
+                  <p>Display Text:</p>
+                  <input
+                    type="text"
+                    value={widget.text || ""}
+                    onChange={e => changeWidgetProperty(widget.id, { text: e.target.value })}
+                  />
 
-              <p>URL:</p>
-              <input
-                type="text"
-                placeholder="https://example.com"
-                value={widget.url || ""}
-                onChange={e => changeWidgetProperty(widget.id, { url: e.target.value })}
-              />
+                  <p>URL:</p>
+                  <input
+                    type="text"
+                    placeholder="https://example.com"
+                    value={widget.url || ""}
+                    onChange={e => changeWidgetProperty(widget.id, { url: e.target.value })}
+                  />
 
-              <p>Font Size:</p>
-              <input
-                type="number"
-                min="1"
-                max="70"
-                value={widget.fontSize || 12}
-                onChange={e => changeWidgetProperty(widget.id, { fontSize: parseInt(e.target.value, 10) })}
-              />
+                  <p>Font Size:</p>
+                  <input
+                    type="number"
+                    min="1"
+                    max="70"
+                    value={widget.fontSize || 12}
+                    onChange={e => changeWidgetProperty(widget.id, { fontSize: parseInt(e.target.value, 10) })}
+                  />
 
-              <p>Text Color:</p>
-              <input
-                type="color"
-                value={widget.textColor || "#0000ee"}
-                onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
-              />
+                  <p>Text Color:</p>
+                  <input
+                    type="color"
+                    value={widget.textColor || "#0000ee"}
+                    onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
+                  />
 
-              <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span>Open in new tab</span>
-                <input
-                  type="checkbox"
-                  checked={!!widget.openInNewTab}
-                  onChange={e => changeWidgetProperty(widget.id, { openInNewTab: e.target.checked })}
-                />
-              </label>
-            </>
-          )}
-  
+                  <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span>Open in new tab</span>
+                    <input
+                      type="checkbox"
+                      checked={!!widget.openInNewTab}
+                      onChange={e => changeWidgetProperty(widget.id, { openInNewTab: e.target.checked })}
+                    />
+                  </label>
+                </>
+              )}
+
               {/* ===== Video controls ===== */}
               {widget.type === 'video' && (
                 <>
@@ -240,10 +445,10 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                           // Upload to server
                           const formData = new FormData();
                           formData.append('video', file);
-                          
-                          // Hardcoded subdirectory
-                          formData.append('subdirectory', '1'); // subdirectory ID = userID
-                                                                // hardcoded for now
+
+                          // Get userId from UserCookie
+                          const userId = getCookieValue('UserCookie') || 'user';
+                          formData.append('subdirectory', userId); // subdirectory ID = userID
 
                           const response = await fetch('/api/upload-video', {
                             method: 'POST',
@@ -255,12 +460,12 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                           }
 
                           const data = await response.json();
-                          
+
                           // Update with server URL and clear loading state
                           URL.revokeObjectURL(tempUrl);
-                          changeWidgetProperty(widget.id, { 
+                          changeWidgetProperty(widget.id, {
                             videoUrl: data.videoUrl,
-                            uploading: false 
+                            uploading: false
                           });
 
                           console.log('[Video Upload] Success:', data.filename);
@@ -268,9 +473,9 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                           console.error('[Video Upload] Error:', error);
                           alert('Failed to upload video. Please try again.');
                           URL.revokeObjectURL(tempUrl);
-                          changeWidgetProperty(widget.id, { 
+                          changeWidgetProperty(widget.id, {
                             videoUrl: widget.videoUrl || null,
-                            uploading: false 
+                            uploading: false
                           });
                         }
                       }
@@ -278,215 +483,262 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
                       e.target.value = '';
                     }}
                   />
-                  {widget.uploading && <p style={{color: '#4CAF50'}}>Uploading...</p>}
-  
+                  {widget.uploading && <p style={{ color: '#4CAF50' }}>Uploading...</p>}
+
                   <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span>Loop</span>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.loop}
-                    onChange={e => changeWidgetProperty(widget.id, { loop: e.target.checked })}
-                  />
-                </label>
-
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span>Muted</span>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.muted}
-                    onChange={e => changeWidgetProperty(widget.id, { muted: e.target.checked })}
-                  />
-                </label>
-
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span>Show controls</span>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.controls}
-                    onChange={(e) =>
-                      changeWidgetProperty(widget.id, { controls: e.target.checked })
-                    }
-                  />
-                </label>
-
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 8,
-                  }}
-                >
-                  <span>Autoplay</span>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.autoplay}
-                    onChange={(e) =>
-                      changeWidgetProperty(widget.id, { autoplay: e.target.checked })
-                    }
-                  />
-                </label>
-              </>
-            )}
-
-            {/* ===== Dropdown controls ===== */}
-            {widget.type === 'dropdown' && (() => {
-              // Use a draft string while typing; default to current options joined with ", "
-              const draft = widget.optionsText ?? (widget.options || []).join(", ");
-
-              // Commit helper: turn the draft string into an options array and normalize it
-              const commitOptions = (raw) => {
-                const arr = (raw || "")
-                  .split(",")
-                  .map(s => s.trim())
-                  .filter(Boolean); // drop empty tokens on commit only
-
-                const nextValue = arr.includes(widget.value) ? widget.value : (arr[0] || "");
-                // Save normalized text too so the input shows tidy commas + spaces
-                const normalizedText = arr.join(", ");
-
-                changeWidgetProperty(widget.id, {
-                  options: arr,
-                  value: nextValue,
-                  optionsText: normalizedText,
-                });
-              };
-
-              return (
-                <>
-                  <p>Options (comma-separated):</p>
-                  <input
-                    type="text"
-                    value={draft}
-                    onChange={e => {
-                      // While typing, only update the draft string; don't parse/sanitize yet.
-                      changeWidgetProperty(widget.id, { optionsText: e.target.value });
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 8,
                     }}
-                    onKeyDown={e => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        commitOptions(e.currentTarget.value);
-                        // keep focus if you want: e.currentTarget.blur();
+                  >
+                    <span>Loop</span>
+                    <input
+                      type="checkbox"
+                      checked={!!widget.loop}
+                      onChange={e => changeWidgetProperty(widget.id, { loop: e.target.checked })}
+                    />
+                  </label>
+
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 8,
+                    }}
+                  >
+                    <span>Muted</span>
+                    <input
+                      type="checkbox"
+                      checked={!!widget.muted}
+                      onChange={e => changeWidgetProperty(widget.id, { muted: e.target.checked })}
+                    />
+                  </label>
+
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 8,
+                    }}
+                  >
+                    <span>Show controls</span>
+                    <input
+                      type="checkbox"
+                      checked={!!widget.controls}
+                      onChange={(e) =>
+                        changeWidgetProperty(widget.id, { controls: e.target.checked })
                       }
+                    />
+                  </label>
+
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 8,
                     }}
-                    onBlur={e => commitOptions(e.currentTarget.value)}
-                  />
+                  >
+                    <span>Autoplay</span>
+                    <input
+                      type="checkbox"
+                      checked={!!widget.autoplay}
+                      onChange={(e) =>
+                        changeWidgetProperty(widget.id, { autoplay: e.target.checked })
+                      }
+                    />
+                  </label>
+                </>
+              )}
 
-                  <p>Selected Value:</p>
+              {/* ===== Dropdown controls ===== */}
+              {widget.type === 'dropdown' && (() => {
+                // Use a draft string while typing; default to current options joined with ", "
+                const draft = widget.optionsText ?? (widget.options || []).join(", ");
+
+                // Commit helper: turn the draft string into an options array and normalize it
+                const commitOptions = (raw) => {
+                  const arr = (raw || "")
+                    .split(",")
+                    .map(s => s.trim())
+                    .filter(Boolean); // drop empty tokens on commit only
+
+                  const nextValue = arr.includes(widget.value) ? widget.value : (arr[0] || "");
+                  // Save normalized text too so the input shows tidy commas + spaces
+                  const normalizedText = arr.join(", ");
+
+                  changeWidgetProperty(widget.id, {
+                    options: arr,
+                    value: nextValue,
+                    optionsText: normalizedText,
+                  });
+                };
+
+                return (
+                  <>
+                    <p>Options (comma-separated):</p>
+                    <input
+                      type="text"
+                      value={draft}
+                      onChange={e => {
+                        // While typing, only update the draft string; don't parse/sanitize yet.
+                        changeWidgetProperty(widget.id, { optionsText: e.target.value });
+                      }}
+                      onKeyDown={e => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          commitOptions(e.currentTarget.value);
+                          // keep focus if you want: e.currentTarget.blur();
+                        }
+                      }}
+                      onBlur={e => commitOptions(e.currentTarget.value)}
+                    />
+
+                    <p>Selected Value:</p>
+                    <input
+                      type="text"
+                      value={widget.value || ""}
+                      onChange={e => changeWidgetProperty(widget.id, { value: e.target.value })}
+                    />
+
+                    <p>Font Size:</p>
+                    <input
+                      type="number"
+                      min="10"
+                      max="48"
+                      value={widget.fontSize || 14}
+                      onChange={e =>
+                        changeWidgetProperty(
+                          widget.id,
+                          { fontSize: parseInt(e.target.value || "14", 10) }
+                        )
+                      }
+                    />
+
+                    <p>Text Color:</p>
+                    <input
+                      type="color"
+                      value={widget.textColor || "#111111"}
+                      onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
+                    />
+                  </>
+                );
+              })()}
+              {/* Customizable polygon controls */}
+              {widget.type === 'polygon' && (
+                <>
+                  <p>Sides: {widget.numSides || 5}</p>
                   <input
-                    type="text"
-                    value={widget.value || ""}
-                    onChange={e => changeWidgetProperty(widget.id, { value: e.target.value })}
+                    type="range"
+                    min="3"
+                    max="12"
+                    value={widget.numSides || 5}
+                    onChange={e => {
+                      const sides = parseInt(e.target.value, 10);
+                      changeWidgetProperty(widget.id, { numSides: sides });
+                    }}
                   />
 
-                  <p>Font Size:</p>
                   <input
                     type="number"
-                    min="10"
-                    max="48"
-                    value={widget.fontSize || 14}
-                    onChange={e =>
-                      changeWidgetProperty(
-                        widget.id,
-                        { fontSize: parseInt(e.target.value || "14", 10) }
-                      )
-                    }
-                  />
-
-                  <p>Text Color:</p>
-                  <input
-                    type="color"
-                    value={widget.textColor || "#111111"}
-                    onChange={e => changeWidgetProperty(widget.id, { textColor: e.target.value })}
+                    min="3"
+                    max="12"
+                    value={widget.numSides || 5}
+                    onChange={e => {
+                      let sides = parseInt(e.target.value || "3", 10);
+                      if (isNaN(sides)) sides = 3;
+                      if (sides < 3) sides = 3;
+                      if (sides > 12) sides = 12;
+                      changeWidgetProperty(widget.id, { numSides: sides });
+                    }}
                   />
                 </>
-              );
-            })()}
-
-
-            {/* ===== Advertisement controls ===== */}
-            {widget.type === 'advert' && (
-              <>
-                <p>Image URL:</p>
-                <input
-                  type="text"
-                  placeholder="https://…/banner.jpg"
-                  value={widget.imageUrl || ""}
-                  onChange={e => changeWidgetProperty(widget.id, { imageUrl: e.target.value })}
-                />
-
-                <p>Link URL:</p>
-                <input
-                  type="text"
-                  placeholder="www.google.com"
-                  value={widget.linkUrl || ""}
-                  onChange={e => changeWidgetProperty(widget.id, { linkUrl: e.target.value })}
-                />
-
-                <p>Object Fit:</p>
-                <select
-                  value={widget.objectFit || "cover"}
-                  onChange={e => changeWidgetProperty(widget.id, { objectFit: e.target.value })}
-                >
-                  <option value="contain">contain</option>
-                  <option value="cover">cover</option>
-                  <option value="fill">fill</option>
-                  <option value="none">none</option>
-                  <option value="scale-down">scale-down</option>
-                </select>
-
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={!!widget.showBorder}
-                    onChange={e => changeWidgetProperty(widget.id, { showBorder: e.target.checked })}
+              )}
+              {widget.type === 'html' && (
+                <>
+                  <p>HTML (inline CSS allowed):</p>
+                  <textarea
+                    value={widget.html || ""}
+                    onChange={e => changeWidgetProperty(widget.id, { html: e.target.value })}
+                    style={{ width: '100%', minHeight: 140, fontFamily: 'monospace' }}
                   />
-                  Show border
-                </label>
+                  <label style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+                    <input
+                      // type="checkbox"
+                      //checked={!!widget.sandbox}
+                      //onChange={e => changeWidgetProperty(widget.id, { sandbox: e.target.checked })}
+                    />
+                    {/*Render in sandboxed iframe (safer)*/}
+                  </label>
+                </>
+              )}
+              {/* ===== Advertisement controls ===== */}
+              {widget.type === 'advert' && (
+                <>
+                  <p>Image URL:</p>
+                  <input
+                    type="text"
+                    placeholder="https://…/banner.jpg"
+                    value={widget.imageUrl || ""}
+                    onChange={e => changeWidgetProperty(widget.id, { imageUrl: e.target.value })}
+                  />
 
-                <p>Border Color:</p>
-                <input
-                  type="color"
-                  value={widget.borderColor || "#333333"}
-                  onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
-                />
+                  <p>Link URL:</p>
+                  <input
+                    type="text"
+                    placeholder="www.google.com"
+                    value={widget.linkUrl || ""}
+                    onChange={e => changeWidgetProperty(widget.id, { linkUrl: e.target.value })}
+                  />
 
-                <div style={{marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #555'}}>
-                  <p><b>Advanced (Placeholder)</b></p>
-                  <p>Ad Service Code Snippet:</p>
+                  <p>Object Fit:</p>
+                  <select
+                    value={widget.objectFit || "cover"}
+                    onChange={e => changeWidgetProperty(widget.id, { objectFit: e.target.value })}
+                  >
+                    <option value="contain">contain</option>
+                    <option value="cover">cover</option>
+                    <option value="fill">fill</option>
+                    <option value="none">none</option>
+                    <option value="scale-down">scale-down</option>
+                  </select>
+
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={!!widget.showBorder}
+                      onChange={e => changeWidgetProperty(widget.id, { showBorder: e.target.checked })}
+                    />
+                    Show border
+                  </label>
+
+                  <p>Border Color:</p>
+                  <input
+                    type="color"
+                    value={widget.borderColor || "#333333"}
+                    onChange={e => changeWidgetProperty(widget.id, { borderColor: e.target.value })}
+                  />
+
+                  <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid #555' }}>
+                    <p><b>Advanced (Placeholder)</b></p>
+                    <p>Ad Service Code Snippet:</p>
                     <textarea
                       placeholder="Paste ad code snippet here (e.g., from Google AdSense)"
                       value={widget.adSnippet || ""}
                       onChange={e => changeWidgetProperty(widget.id, { adSnippet: e.target.value })}
                       style={{ width: '100%', minHeight: '100px', fontFamily: 'monospace', fontSize: '12px' }}
                     />
-                </div>
+                  </div>
 
-              </>
-            )}
-          </div>
-        ))}
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -510,6 +762,7 @@ function RightWidgetPanel({ changeWidgetProperty, selectedWidgets, widgets, dele
  * Returns an interface for creating and modifying pages.
  */
 function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage, createPage, changePageProperty }) {
+  const [downloadType, setDownloadType] = useState("html");
 
   /** Christopher Parsons, 9/20/2025
    * Inputs:
@@ -529,6 +782,29 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
 
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
+  }
+
+  /** Christopher Parsons, 11/9/2025
+   * Inputs:
+   *  downloadType: string
+   * 
+   * Downloads an html or a json file based on the currently selected input under Download As
+   * Made in an effort to allow downloads on both Chrome and Firefox
+   */
+  function handleDownloadBrowsers(downloadType) {
+    if (downloadType === "html") {
+      const html = returnHTML(currentPage);
+      const blob = new Blob([html], { type: 'text/html' });
+      download(blob, `${currentPage.name || 'page'}.html`);
+
+    } else if (downloadType === "json") {
+      const json = returnJSON(currentPage);
+      const blob = new Blob([json], { type: 'application/json' });
+      download(blob, `${currentPage.name || 'page'}.json`);
+
+    } else {
+      console.log("Invalid download type.");
+    }
   }
 
   /** Christopher Parsons, 9/20/2025
@@ -553,81 +829,77 @@ function RightPagePanel({ pages, selectedPageID, setSelectedPageID, currentPage,
   }
 
   return (
-    <div className={styles.widgetOptions}>
-      {/* A view of all pages */}
-      <select value={selectedPageID} onChange={e => setSelectedPageID(Number(e.target.value))}>
-        {pages.map(page => (
-          <option key={page.id} value={page.id}>{page.name}</option>
-        ))}
-      </select>
-
-      {/* Buttons for editing pages */}
-      <button onClick={createPage}>+ New Page</button>
-
-      {/** Christopher Parsons, 9/18/2025
-       * An interface for changing the width, height, and background color
-       * of the currently selected page.
-       */}
-      <div>
-        <p>Width</p>
+    <div className={styles.pageSettingsContainer}>
+      <div className={styles.pageSettingsGroup}>
+        <label>Page:</label>
+        <select
+          value={selectedPageID}
+          onChange={e => setSelectedPageID(Number(e.target.value))}
+          className={styles.pageSelect}
+        >
+          {pages.map(page => (
+            <option key={page.id} value={page.id}>{page.name}</option>
+          ))}
+        </select>
+        <button className={styles.newPageButton} onClick={createPage}>+ New Page</button>
+      </div>
+  
+      <div className={styles.pageSettingsGroup}>
+        <label>Width</label>
         <input
-          type="input"
+          type="number"
           min="0"
           autoComplete="off"
           value={currentPage.width}
           onChange={e => {
-            if (e?.target.value === "") {
-              changePageProperty(selectedPageID, { width: 0 })
-            } else {
-              changePageProperty(selectedPageID, { width: parseInt(e.target.value, 10) })
-            }
-          }} />
-
-        <p>Height</p>
+            const val = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+            changePageProperty(selectedPageID, { width: val });
+          }}
+        />
+      </div>
+  
+      <div className={styles.pageSettingsGroup}>
+        <label>Height</label>
         <input
-          type="input"
+          type="number"
           min="0"
           autoComplete="off"
           value={currentPage.height}
           onChange={e => {
-            if (e?.target.value === "") {
-              changePageProperty(selectedPageID, { height: 0 })
-            } else {
-              changePageProperty(selectedPageID, { height: parseInt(e.target.value, 10) })
-            }
-          }}
-        />
-
-        <p>Background Color</p>
-        <input
-          type="color"
-          onChange={e => {
-            if (e?.target.value === "") {
-              changePageProperty(selectedPageID, { backgroundColor: '#ffffff' })
-            } else {
-              changePageProperty(selectedPageID, { backgroundColor: e.target.value })
-            }
+            const val = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+            changePageProperty(selectedPageID, { height: val });
           }}
         />
       </div>
-
-      {/* Download current page as HTML or JSON */}
-      <p>Download as:</p>
-      <select>
-        {/* Download as HTML */}
-        <option onClick={() => {
-          const htmlFile = returnHTML(currentPage);
-          const blob = new Blob([htmlFile], { type: "text/html" });
-          download(blob, currentPage.name);
-        }}>HTML</option>
-
-        {/* Download as JSON */}
-        <option onClick={() => {
-          const jsonFile = returnJSON(currentPage);
-          const blob = new Blob([jsonFile], { type: "application/json" });
-          download(blob, currentPage.name)
-        }}>JSON</option>
-      </select>
+  
+      <div className={styles.pageSettingsGroup}>
+        <label>Background Color</label>
+        <input
+          type="color"
+          value={currentPage.backgroundColor}
+          onChange={e => changePageProperty(selectedPageID, { backgroundColor: e.target.value })}
+        />
+      </div>
+  
+      <div className={styles.pageSettingsDivider}></div>
+  
+      <div className={styles.pageSettingsGroup}>
+        <label>Download As:</label>
+        <select
+          value={downloadType}
+          onChange={e => setDownloadType(e.target.value)}
+          className={styles.pageSelect}
+        >
+          <option value="html">HTML</option>
+          <option value="json">JSON</option>
+        </select>
+        <button
+          className={styles.downloadButton}
+          onClick={() => handleDownloadBrowsers(downloadType)}
+        >
+          Download
+        </button>
+      </div>
     </div>
   );
-}
+}  

@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
     "blueprint": "file:",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.0",
     "next": "15.2.4",
     "react": "^19.0.0",

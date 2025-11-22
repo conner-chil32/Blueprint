@@ -10,13 +10,11 @@
 const features = {
     label: "features", 
     href: "/features", 
-    className: "nav-button",    //className included for the nav bar
 }
 
 const pricing = {
     label: "pricing", 
     href: "/pricing", 
-    className: "nav-button"     //className included for the nav bar
 }
 
 const logo = {
@@ -29,91 +27,82 @@ const logo = {
 
 const login = {
     label: "login", 
-    href: "/login", 
-    className: "nav-button"     //className included for the nav bar
+    href: "/login"
 }
 
 const admin_account_view = {
     label: "admin_account_view",
-    href: "/admin-account-view", 
-    className: "nav-button" 
+    href: "/admin-account-view"
 }
 
 const admin_page = {
     label: "admin_page",
-    href: "/admin-page", 
-    className: "nav-button" 
+    href: "/admin-page"
 }
 
 const canvas = {
     label: "canvas",
-    href: "/canvas", 
-    className: "nav-button" 
+    href: "/canvas" 
 }
 
 const ftu_main = {
     label: "ftu_main",
-    href: "/ftu-main", 
-    className: "nav-button" 
+    href: "/ftu-main"
 }
 
 const portal = {
     label: "portal",
-    href: "/portal", 
-    className: "nav-button" 
+    href: "/portal"
 }
 
 const recovery = {
     label: "recovery",
-    href: "/recovery", 
-    className: "nav-button" 
+    href: "/recovery" 
 }
 
 const signup = {
     label: "signup",
-    href: "/signup", 
-    className: "nav-button" 
+    href: "/signup" 
 }
 
 const userwebbackend = {
     label: "userwebbackend",
-    href: "/userwebbackend", 
-    className: "nav-button" 
+    href: "/userwebbackend" 
 }
 
 const wordpress_CRUD = {
     label: "wordpress_CRUD",
-    href: "/WordpressCRUD", 
-    className: "nav-button" 
+    href: "/WordpressCRUD"
 }
 
 const wordpress_test = {
     label: "wordpress_test",
-    href: "/WordpressTest", 
-    className: "nav-button" 
+    href: "/WordpressTest"
 }
 
 const payment = {
-    label: "buy now",
+    label: "payment",
     href: "/payment",
-    className: "nav-button"
 }
 
 const account_recovery = {
     label: "account-recovery",
-    href: "/account-recovery",
-    className: "nav-button"
+    href: "/account-recovery"
 }
 
 const admin_details = {
     label: "admin-details",
-    href: "/admin-detailed",
-    className: "nav-button"
+    href: "/admin-detailed"
 }
 
 const navtest = {
-    label: "navtest",
-    href: "/navtest",
+    label: "!NAVTEST!",
+    href: "/navtest"
+}
+
+const logout = {
+    label: "Logout",
+    href: "/api/logout",
     className: "nav-button"
 }
 
@@ -135,6 +124,7 @@ const library = {
     account_recovery:account_recovery,
     admin_details:admin_details,
 
-    navtest:navtest
+    navtest:navtest,
+    logout:logout
 }
 export { library };

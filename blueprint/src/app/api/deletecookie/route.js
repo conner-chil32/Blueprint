@@ -10,6 +10,7 @@ export async function GET() {
     
     if (res !== undefined) {
         deleteCookie(res, 'TempCookie');
+        deleteCookie(res, 'UserCookie')
     }
 
     return res;

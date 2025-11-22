@@ -92,7 +92,7 @@ async function runTests() {
         //  Summary
         // --------------------------------------------------------------------
         console.log(`\nTest results: ${passedTests}/${totalTests} tests passed.`);
-        if (passedTests === totalTests) console.log("✅All userQueries.js tests passed!");
+        if (passedTests === totalTests) console.log("All userQueries.js tests passed!");
         else console.log("Some tests failed. Review logs above.");
 
     } catch (err) {

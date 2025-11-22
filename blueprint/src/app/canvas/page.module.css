@@ -1,120 +1,4 @@
-.container {
-    --primary: #2563eb;
-    --secondary: #1e40af;
-    --background: #f8fafc;
-    --surface: #ffffff;
-    --border: #000000;
-}
-
-.htmlBody {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
-.navItems {
-    display: flex;
-    gap: 32px;
-    /*max-width: 1200px;*/
-    margin: 0 auto;
-    justify-content: center;
-}
-
-.navItems a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-}
-
-.navItems a:hover {
-    background-color: var(--secondary);
-}
-
-.mainContainer {
-    padding-top: 60px;
-}
-
-.switchButton {
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    padding: 10px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.panelToggleButton {
-    position: fixed;
-    top: 10px;
-    padding: 5px 10px;
-    z-index: 20
-}
-
-.deleteButton {
-    background-color: white;
-    color: black;
-    border: 1px solid black;
-    padding: 10px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-
-}
-
-.controlMenu {
-    display: flex;
-    gap: 15px;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-}
-
-.controlMenu button {
-    padding: 8px 8px;
-    border: none;
-    border-radius: 6px;
-    background: var(--primary);
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.sectionTitle {
-    color: #64748b;
-    font-size: 0.875rem;
-    font-weight: 600;
-    padding: 12px 8px;
-    text-transform: uppercase;
-}
-
-.categoryItem {
-    display: block;
-    width: 100%;
-    padding: 10px 16px;
-    margin: 4px 0;
-    border: none;
-    background: none;
-    text-align: left;
-    border-radius: 6px;
-    cursor: move;
-    transition: all 0.2s ease;
-    color: #1e293b;
-}
-
-.categoryItem:hover {
-    background-color: #f1f5f9;
-    transform: translateX(4px);
-}
-
-.divider {
-    height: 1px;
-    background-color: var(--border);
-    margin: 16px 0;
-}
-
-/* All below are for the positioning of the left panel, right panel, and canvas */
+/* Body Container */
 .bodyContainer {
     display: grid;
     /* 15% width for the left, 1fr for the center, 15% for the right */
@@ -122,75 +6,486 @@
     height: calc(100vh - 70px);
     width: 100%;
     margin-top: 70px;
-    column-gap: 0;
-}
-
-.sidePanel {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
+    background: transparent; /*  Let global gradient show through */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .bodyContainer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  .sidePanel {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    border: 1px solid black;
-}
-
-.leftPanel {
-    grid-column: 1;
-}
-
-.rightPanel {
-    grid-column: 3;
-}
-
-.centerColumn {
+    padding: 20px;
+    position: relative;
+    background: transparent;
+    backdrop-filter: blur(4px);
+    border: none;
+    z-index: 1;
+  }
+  
+  /* Left & Right Panel Borders */
+  .leftPanel {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .rightPanel {
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Center Canvas Area */
+  .centerColumn {
     grid-column: 2;
     display: grid;
     grid-template-rows: auto 1fr;
-    min-height: 0;
+    background: transparent;
     min-width: 0;
-}
-
-/* Outermost canvas */
-.canvasArea {
+    z-index: 1;
+  }
+  
+  /* Canvas container */
+  .canvasArea {
     position: relative;
-    border: 2px dashed #cbd5e1;
-    background-color: rgb(80, 80, 80);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.02); /* faint glass feel */
+    backdrop-filter: blur(6px);
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    display: grid;
-}
-
-/* Container inside of the canvas for pages */
-.canvasView {
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .canvasArea:hover {
+    border-color: var(--accent);
+  }
+  
+  /* Center view */
+  .canvasView {
     width: 100%;
     height: 100%;
-    overflow: visible;
-    place-items: center;
-    position: relative;
-    box-sizing: border-box;
     display: grid;
     place-items: center;
-
-    /* border: 2px dashed red; */
-}
-
-/* Container for the current page */
-.pages {
     position: relative;
-
-    /* border: 2px dotted blue; */
-}
-
-.pageNavBar {
-    /* position: absolute;
-    left: 15%;
-    width: 70%; */
+  }
+  
+  .pageNavBar {
     position: sticky;
     top: 0;
-    background-color: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
-    z-index: 10;
     display: flex;
     justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04); /* faint translucent bar */
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 0;
+    z-index: 10;
+  }
+  
+  /* Page Nav Buttons */
+  .pageNavBar button {
+    background: linear-gradient(90deg, var(--accent), var(--light-blue));
+    color: black;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+  }
+  
+  .pageNavBar button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(114, 211, 96, 0.3);
+  }
+  
+  .sectionTitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  
+  .categoryItem {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    margin: 4px 0;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.9);
+    text-align: left;
+    cursor: move;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  
+  .categoryItem:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(4px);
+  }
+  
+  .divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 16px 0;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Responsive */
+  @media (max-width: 1000px) {
+    .bodyContainer {
+      grid-template-columns: 18% 1fr;
+    }
+    .rightPanel {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .bodyContainer {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+    }
+    .leftPanel {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      height: auto;
+      flex-direction: row;
+      overflow-x: auto;
+      backdrop-filter: blur(8px);
+    }
+  }
+
+  /* ---- Page Navigation Styling ---- */
+.pageNavContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow-x: auto;
+  padding: 10px 0;
 }
+
+.pageList {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.pageTab {
+  margin: 0 10px;
+  padding: 6px 14px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.pageTab:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.pageTabActive {
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: #000;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(114, 211, 96, 0.3);
+}
+
+.pageEditInput {
+  width: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.deleteIcon {
+  cursor: pointer;
+  margin-left: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.deleteIcon:hover {
+  color: var(--accent);
+}
+
+.importIcon {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  margin-left: 6px;
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.importIcon:hover {
+  transform: scale(1.2);
+  color: var(--accent);
+}
+
+.importIcon:active {
+  transform: scale(1.1);
+}
+
+.newPageButton {
+  margin-left: 12px;
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.newPageButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
+}
+
+.saveStatus {
+  margin-left: auto;
+  padding-right: 20px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ---- Right Panel Polished Theme ---- */
+.widgetPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.9);
+  overflow-y: auto;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+.widgetHeader {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.widgetContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.widgetContent p {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 6px 0 2px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.widgetContent input[type="text"],
+.widgetContent input[type="number"],
+.widgetContent select,
+.widgetContent textarea {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.widgetContent input[type="text"]:focus,
+.widgetContent input[type="number"]:focus,
+.widgetContent select:focus,
+.widgetContent textarea:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.widgetContent input[type="color"] {
+  width: 100%;
+  height: 34px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.widgetContent input[type="range"] {
+  width: 100%;
+  accent-color: var(--light-blue);
+  margin-top: 6px;
+}
+
+.widgetContent button {
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.widgetContent button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
+}
+
+.widgetContent textarea {
+  resize: vertical;
+  min-height: 60px;
+  font-family: monospace;
+}
+
+.switchButton {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--light-blue), var(--accent));
+  color: black;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.switchButton:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
+}
+
+.deleteButton {
+  width: 100%;
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  color: #ff6b6b;
+  border-radius: 8px;
+  padding: 6px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.deleteButton:hover {
+  background: rgba(255, 80, 80, 0.25);
+  transform: scale(1.02);
+}
+
+/* ---- Page Settings Section ---- */
+.pageSettingsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.pageSettingsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pageSettingsGroup label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.3px;
+}
+
+.pageSettingsGroup input[type="number"],
+.pageSettingsGroup select {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border 0.2s ease, background 0.2s ease;
+}
+
+.pageSettingsGroup input[type="number"]:focus,
+.pageSettingsGroup select:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.pageSettingsGroup input[type="color"] {
+  width: 100%;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.pageSelect {
+  width: 100%;
+}
+
+.pageSettingsDivider {
+  height: 1px;
+  margin: 8px 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.newPageButton,
+.downloadButton {
+  width: 100%;
+  margin-top: 6px;
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.newPageButton:hover,
+.downloadButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
+}
+
