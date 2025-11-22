@@ -213,4 +213,65 @@
       align-items: center;
     }
   }
+
+  /* --- Light mode overrides --- */
+  :global([data-theme="light"]) .body,
+  :global([data-theme="light"]) .body * {
+    color: #000;
+  }
+
+  :global([data-theme="light"]) .bodySection {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(35, 31, 32, 0.08);
+    box-shadow: 0 12px 28px rgba(31, 26, 19, 0.12);
+  }
+
+  :global([data-theme="light"]) .createSection {
+    border-color: rgba(220, 168, 92, 0.6);
+  }
+
+  :global([data-theme="light"]) .infoBox input,
+  :global([data-theme="light"]) .selectInput {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #000;
+  }
+
+  :global([data-theme="light"]) .infoBox input::placeholder {
+    color: #000;
+  }
+
+  :global([data-theme="light"]) .showPasswordToggle {
+    color: #000;
+  }
+
+  :global([data-theme="light"]) .submit-button,
+  :global([data-theme="light"]) .bodySection button {
+    background: linear-gradient(120deg, #f8b86b, #ffeab6);
+    color: #000;
+    box-shadow: 0 12px 24px rgba(248, 184, 107, 0.4);
+  }
+
+  :global([data-theme="light"]) .reqsSection {
+    background: #fff7ee;
+    border-color: rgba(248, 184, 107, 0.65);
+    color: #000;
+  }
+
+  :global([data-theme="light"]) .reqsSection::before {
+    background: radial-gradient(circle at 50% 50%, rgba(248, 184, 107, 0.2), transparent 70%);
+  }
+
+  :global([data-theme="light"]) .message {
+    color: #000;
+    text-shadow: none;
+  }
   
+  .recoveryLink {
+    color: white;
+    text-decoration: underline;
+  }
+
+  :global([data-theme="light"]) .recoveryLink {
+    color: #000;
+  }
