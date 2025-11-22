@@ -1,7 +1,6 @@
 // page.js
 "use client";
 import styles from './page.module.css';
-import Navbar from "../components/navbar";
 import { useEffect, useRef } from 'react';
 
 function getIcon(type) {
@@ -62,7 +61,6 @@ export default function BlueprintFeatures() {
 
   return (
     <div className={styles.body}>
-      <Navbar />
       <div className={styles.mainContent}>
         <h1>Blueprint Features</h1>
         <h2>Webdesign for goldfish</h2>

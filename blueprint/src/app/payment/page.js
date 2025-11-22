@@ -1,6 +1,5 @@
 import styles from "../pricing/page.module.css";
 import payStyles from "./page.module.css";
-import Navbar from "../components/navbar";
 import { planTypes } from "../pricing/planTypes.js";
 
 /*
@@ -86,7 +85,6 @@ export default function Payment(){
 */
     return(
         <>
-            <Navbar />
             <div className={styles.body}>
                 <div className={styles.mainContent}>
                     <div className={styles.plans}>
