@@ -8,10 +8,10 @@
     "start": "next start",
     "local": "next dev -H localhost",
     "lint": "next lint",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:frontend": "jest --testPathPatterns=lib/tests/front-end",
-    "test:backend": "jest --testPathPatterns=lib/tests/back-end"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:frontend": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testPathPatterns=lib/tests/front-end",
+    "test:backend": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testPathPatterns=lib/tests/back-end --runInBand"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
