@@ -12,7 +12,7 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:frontend": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testPathPatterns=lib/tests/front-end",
-    "test:backend": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testPathPatterns=lib/tests/back-end"
+    "test:backend": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --testPathPatterns=lib/tests/back-end --runInBand"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
