@@ -1,3 +1,4 @@
+// app/components/navbar.js
 "use client";
 
 import CreateButton from "./CreateRouteButton.js";
@@ -8,10 +9,12 @@ export default function Navbar() {
   const [loginStatus, setloginStatus] = useState(false);
   const [theme, setTheme] = useState("dark");
 
-  // Load saved theme
+  // Load saved theme and login cookie on first mount
   useEffect(() => {
     const cookies = document.cookie.split("; ");
-    const loggedInCookie = cookies.find(cookie => cookie.startsWith("UserCookie"));
+    const loggedInCookie = cookies.find((cookie) =>
+      cookie.startsWith("UserCookie")
+    );
     const savedTheme = localStorage.getItem("theme");
 
     if (loggedInCookie) setloginStatus(true);
@@ -24,6 +27,7 @@ export default function Navbar() {
     }
   }, []);
 
+  // Whenever `theme` changes, update <html> and localStorage
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
@@ -50,9 +54,7 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="nav-right">
-            {/*<CreateButton code="navtest" />*/}
-
-            <CreateButton code={loginStatus ? 'logout' : 'login'} />
+            <CreateButton code={loginStatus ? "logout" : "login"} />
 
             {/* Theme Toggle */}
             <div className="theme-toggle">

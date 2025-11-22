@@ -1,5 +1,4 @@
 import { getSitesByUser } from "../../../lib/siteQueries";
-import Navbar from "../components/navbar";
 import styles from "./page.module.css";
 
 /**
@@ -25,7 +24,6 @@ export default async function PortalPage() {
     return (
         <div>
             {/* The Navbar floats on top, so we add padding to the content below */}
-            <Navbar />
 
             <div id="websites">
                 <div className={styles.tableContainer}>

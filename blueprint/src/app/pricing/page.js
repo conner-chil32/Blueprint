@@ -1,4 +1,3 @@
-import Navbar from "../components/navbar";  // Import the Navbar component
 import styles from "./page.module.css"; // Import the CSS module for styling
 import { planTypes } from "./planTypes.js";
 import CreateRouteButton from "../components/CreateRouteButton.js";
@@ -6,7 +5,6 @@ import CreateRouteButton from "../components/CreateRouteButton.js";
 export default function RawHTMLPage() {
   return (
     <>
-      <Navbar />
       <div className={styles.body}>
         <div className={styles.mainContent}>
           <h1 className={styles.title}>There is a plan for everyone</h1>

@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
 
-import Navbar from "../components/navbar";
 import { Canvas } from './Canvas';
 import { LeftPanel } from './LeftPanel';
 import { RightPanel } from './RightPanel';
@@ -905,7 +904,6 @@ export default function CanvasPage() {
 
   return (
     <>
-      <Navbar /> {/* <-- RENDERED NAVBAR */}
 
       <div className={styles.bodyContainer}>
 

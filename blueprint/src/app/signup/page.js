@@ -1,6 +1,5 @@
 "use client";
 
-import Navbar from "../components/navbar"
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; 
 import { useEffect, useState } from "react";
@@ -103,7 +102,6 @@ export default function SignUpPage() {
 
   return (
     <>
-      <Navbar />
       <div className={styles.body}>
         <div className={`${styles.bodySection} ${styles.createSection}`}>
           <form onSubmit={handleSubmit}>
