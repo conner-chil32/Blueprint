@@ -47,6 +47,7 @@ export default function Navbar() {
           {/* Left Side */}
           <div className="nav-left">
             <CreateImage code="logo" type="set" />
+            <CreateButton code="portal" />
             <CreateButton code="features" />
             <CreateButton code="pricing" />
             <CreateButton code="canvas" />
