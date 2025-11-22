@@ -1,9 +1,9 @@
 .logo {
-    width: 50%;
+    width: 300px;
     align-self: center;
     justify-self: center;
     position: relative;
-    height: 60%;
+    height: 300px;
     border-radius: 200px;
     align-content: center;
     transform: translateX(125px) translateY(-25px);
