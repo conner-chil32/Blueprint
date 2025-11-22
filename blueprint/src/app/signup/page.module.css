@@ -267,3 +267,11 @@
     text-shadow: none;
   }
   
+  .recoveryLink {
+    color: white;
+    text-decoration: underline;
+  }
+
+  :global([data-theme="light"]) .recoveryLink {
+    color: #000;
+  }

@@ -15,3 +15,14 @@
     justify-content: center;
     align-items: center;
 }
+
+/* --- Light mode overrides --- */
+:global([data-theme="light"]) .loginContainer {
+    color: #000;
+}
+
+:global([data-theme="light"]) .logo {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 12px;
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+}
