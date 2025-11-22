@@ -31,7 +31,7 @@ describe('First Time User Page', () => {
 
     test('Checking if the new website button directs to /canvas',()=>{
         render(<Main />);
-        expect(screen.getByRole('button',{name:'Create New Website +'}).closest('a')).toHaveAttribute('href', './canvas');
+        expect(screen.getByRole('button', { name: 'Create New Website +' }).form).toHaveAttribute('action', '/api/website')
     });
 
     test('Checking if wordpress button opens a localhost:8000 window',async ()=>{
