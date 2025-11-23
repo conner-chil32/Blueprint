@@ -51,7 +51,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         size={{ width: width, height: height }}
         bounds="parent"
         enableResizing={isSelected ? undefined : false}
-        disableDragging={!isSelected || !!isEditing}
+        disableDragging={!isSelected || isEditing}
         dragHandleClassName={dragHandleClassName}
         cancel={dragCancelSelector || undefined}
         // Update live
@@ -62,14 +62,13 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         }}
         onResizeStart={() => {
           // When the user starts resizing, record the page so undo is accurate
-          recordState && recordState();
+          setTimeout(() => recordState(), 0);
         }}
         // Finish resizing
         onResizeStop={(e, direction, refToElement, delta, position) => {
           handleResize(e, direction, refToElement, delta, position);
           // Alert the canvas page when resizing stops
           onDragStop && onDragStop(id);
-          recordState && recordState();
         }}
         onDragStart={(e, data) => {
           // When drag is started, note the widget's position
@@ -91,7 +90,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
             Math.abs(data.x - previousPosition.x) > 1 ||
             Math.abs(data.y - previousPosition.y) > 1
           ) {
-            recordState && recordState();
+            setTimeout(() => recordState(), 0);
           }
         }}
         scale={scale}
