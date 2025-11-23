@@ -29,9 +29,13 @@ describe('First Time User Page', () => {
         expect(screen.getByRole('button',{name:'Open WordPress Dashboard'})).toBeInTheDocument();
     });
 
-    test('Checking if the new website button directs to /canvas',()=>{
+    test('Checking if the new website button is in a form that posts to /api/website',()=>{
         render(<Main />);
-        expect(screen.getByRole('button',{name:'Create New Website +'}).closest('a')).toHaveAttribute('href', './canvas');
+        const button = screen.getByRole('button',{name:'Create New Website +'});
+        const form = button.closest('form');
+        expect(form).toBeInTheDocument();
+        expect(form).toHaveAttribute('action', '/api/website');
+        expect(form).toHaveAttribute('method', 'POST');
     });
 
     test('Checking if wordpress button opens a localhost:8000 window',async ()=>{
