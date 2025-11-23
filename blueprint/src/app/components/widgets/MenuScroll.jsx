@@ -1,4 +1,4 @@
-import { Widget } from './Widget';
+import { Widget } from '@/components/widgets/Widget.jsx';
 
 export function MenuScroll(props) {
     const {
