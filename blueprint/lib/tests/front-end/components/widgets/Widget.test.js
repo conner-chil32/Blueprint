@@ -1,22 +1,21 @@
 import React from 'react';
 import { act, render } from '@testing-library/react';
-import { Widget } from '@/components/widgets/Widget';
+import { Widget } from '@/components/widgets/Widget.jsx';
 import { Rnd as MockRnd } from 'react-rnd';
 
-jest.mock('react-rnd', () => {
-  const React = require('react');
+// Create a shared object to track props across renders
+const mockRndState = { latestProps: {} };
 
+jest.mock('react-rnd', () => {
   const MockRnd = ({ children, ...props }) => {
-    MockRnd.latestProps = props;
+    mockRndState.latestProps = props;
     return (
       <div data-testid="mock-rnd">
         {typeof children === 'function' ? children(props) : children}
       </div>
     );
   };
-
-  MockRnd.latestProps = {};
-
+  
   return { Rnd: MockRnd };
 });
 
@@ -56,13 +55,13 @@ describe('Widget', () => {
   test('respects selection state when configuring react-rnd', () => {
     const { rerender, container } = renderWidget();
 
-    expect(MockRnd.latestProps.disableDragging).toBe(true);
-    expect(MockRnd.latestProps.enableResizing).toBe(false);
+    expect(mockRndState.latestProps.disableDragging).toBe(true);
+    expect(mockRndState.latestProps.enableResizing).toBe(false);
 
     rerender(<Widget {...createWidgetProps({ isSelected: true })} />);
 
-    expect(MockRnd.latestProps.disableDragging).toBe(false);
-    expect(MockRnd.latestProps.enableResizing).toBeUndefined();
+    expect(mockRndState.latestProps.disableDragging).toBe(false);
+    expect(mockRndState.latestProps.enableResizing).toBeUndefined();
 
     const widgetShell = container.querySelector('[data-testid="mock-rnd"] > div');
     expect(widgetShell).toHaveStyle({ outline: '2px solid #3b82f6' });
@@ -70,7 +69,7 @@ describe('Widget', () => {
 
   test('records history only when dragged a meaningful amount', () => {
     const { props } = renderWidget();
-    const getHandlers = () => MockRnd.latestProps;
+    const getHandlers = () => mockRndState.latestProps;
 
     act(() => {
       getHandlers().onDragStart?.({}, { x: 10, y: 10 });
@@ -95,7 +94,7 @@ describe('Widget', () => {
 
   test('reports numeric dimensions during resize lifecycle', () => {
     const { props } = renderWidget({ isSelected: true });
-    const { onResizeStart, onResize, onResizeStop } = MockRnd.latestProps;
+    const { onResizeStart, onResize, onResizeStop } = mockRndState.latestProps;
     const ref = { style: { width: '320px', height: '180px' } };
 
     act(() => {

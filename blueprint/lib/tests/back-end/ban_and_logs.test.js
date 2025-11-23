@@ -2,6 +2,8 @@
 
 import { closeConnection } from '../../connection.js';
 import * as UQ from '../../userQueries.js';
+import { jest } from '@jest/globals';
+jest.useFakeTimers();
 
 let totalTests = 0;
 let passedTests = 0;
@@ -9,12 +11,12 @@ let passedTests = 0;
 function testPassed(desc) {
     passedTests++;
     totalTests++;
-    console.log(`✅ [PASS] ${desc}`);
+    console.log(`[PASS] ${desc}`);
 }
 
 function testFailed(desc) {
     totalTests++;
-    console.log(`❌ [FAIL] ${desc}`);
+    console.log(`[FAIL] ${desc}`);
 }
 
 async function wait(ms = 500) {
@@ -23,7 +25,7 @@ async function wait(ms = 500) {
 
 async function runTests() {
     try {
-        console.log("✅ Starting userQueries.js tests...\n");
+        console.log("Starting userQueries.js tests...\n");
 
         // --------------------------------------------------------------------
         // 1️Test banUser()
@@ -90,11 +92,11 @@ async function runTests() {
         //  Summary
         // --------------------------------------------------------------------
         console.log(`\nTest results: ${passedTests}/${totalTests} tests passed.`);
-        if (passedTests === totalTests) console.log("✅All userQueries.js tests passed!");
+        if (passedTests === totalTests) console.log("All userQueries.js tests passed!");
         else console.log("Some tests failed. Review logs above.");
 
     } catch (err) {
-        console.error("❌ Test sequence failed:", err);
+        console.error("Test sequence failed:", err);
     } finally {
         await closeConnection();
     }

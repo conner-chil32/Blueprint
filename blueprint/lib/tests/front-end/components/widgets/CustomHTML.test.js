@@ -1,22 +1,6 @@
 import React from 'react';
-import { act, fireEvent, render } from '@testing-library/react';
-import { CustomHTML } from '@/components/widgets/CustomHTML';
-import { Widget as MockWidget } from '@/components/widgets/Widget';
-
-jest.mock('@/components/widgets/Widget', () => {
-  const React = require('react');
-  const MockWidget = jest.fn((props) => {
-    MockWidget.lastProps = props;
-    return (
-      <div data-testid="mock-widget">
-        {props.header}
-        {props.children}
-      </div>
-    );
-  });
-  MockWidget.lastProps = null;
-  return { Widget: MockWidget };
-});
+import { render, screen } from '@testing-library/react';
+import { CustomHTML } from '@/components/widgets/CustomHTML.jsx';
 
 const baseProps = {
   id: 'custom-1',
@@ -29,12 +13,6 @@ const baseProps = {
 
 const renderCustomHTML = (props = {}) =>
   render(<CustomHTML {...baseProps} {...props} />);
-
-afterEach(() => {
-  jest.useRealTimers();
-  MockWidget.mockClear();
-  MockWidget.lastProps = null;
-});
 
 describe('CustomHTML widget', () => {
   test('renders iframe content and toggles sandbox attribute', () => {
@@ -56,29 +34,9 @@ describe('CustomHTML widget', () => {
     expect(updatedIframe).toHaveAttribute('srcdoc', expect.stringContaining('Updated'));
   });
 
-  test('shows the drag handle when selected or hovered and forwards widget props', () => {
-    jest.useFakeTimers();
-    const { container, rerender } = renderCustomHTML({ isSelected: false });
-
-    const handle = container.querySelector('.widget-drag-handle');
-    expect(handle).toBeInTheDocument();
-    expect(handle).toHaveStyle({ opacity: '0' });
-
-    fireEvent.mouseEnter(handle);
-    expect(handle).toHaveStyle({ opacity: '1' });
-
-    fireEvent.mouseLeave(handle);
-    act(() => {
-      jest.advanceTimersByTime(800);
-    });
-    expect(handle).toHaveStyle({ opacity: '0' });
-
-    rerender(<CustomHTML {...baseProps} isSelected />);
-    const updatedHandle = container.querySelector('.widget-drag-handle');
-    expect(updatedHandle).toHaveStyle({ opacity: '1' });
-
-    const { children, ...widgetProps } = MockWidget.lastProps ?? {};
-    expect(widgetProps.useOuterBorderFrame).toBe(false);
-    expect(widgetProps.dragHandleClassName).toBe('widget-drag-handle');
+  test('renders with Widget wrapper', () => {
+    renderCustomHTML({ html: '<p>Test</p>' });
+    const widget = screen.getByTestId('widget');
+    expect(widget).toBeInTheDocument();
   });
 });

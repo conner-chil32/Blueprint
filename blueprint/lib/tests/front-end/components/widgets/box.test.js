@@ -1,14 +1,7 @@
 import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { Box } from "@/components/widgets/Box";
-
-// Mock the Widget so we can detect its render
-jest.mock("@/components/widgets/Widget.js", () => ({
-  Widget: ({ style }) => (
-    <div data-testid="Widget" style={style}></div>
-  ),
-}));
+import { Box } from "@/components/widgets/Box.jsx";
 
 describe("Box", () => {
   test("Renders inside the canvas and uses default background color", () => {
@@ -20,7 +13,7 @@ describe("Box", () => {
     );
 
     const canvas = screen.getByTestId("canvas");
-    const widget = within(canvas).getByTestId("Widget");
+    const widget = within(canvas).getByTestId("widget");
 
     // See if it is in the canvas
     expect(widget).toBeInTheDocument();
