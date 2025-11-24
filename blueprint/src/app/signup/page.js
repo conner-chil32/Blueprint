@@ -3,7 +3,6 @@
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; 
 import { useEffect, useState } from "react";
-import { setCookie } from "@root/api/CookieController";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
@@ -11,8 +10,11 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-      if (document.cookie.includes("UserCookie")) window.location.href = "/";
-  });
+    if (document.cookie.includes("UserCookie")) {
+      window.location.href = "/";
+    }
+  }, []);
+  
   
 
   const infoBoxes = [

@@ -5,9 +5,9 @@ import CreateButton from "./CreateRouteButton.js";
 import CreateImage from "./CreateRouteImage.js";
 import { useState, useEffect } from "react";
 
-export default function Navbar() {
+export default function Navbar({ initialTheme = "dark" }) {
   const [loginStatus, setloginStatus] = useState(false);
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState(initialTheme);
 
   // Load saved theme and login cookie on first mount
   useEffect(() => {
@@ -15,22 +15,24 @@ export default function Navbar() {
     const loggedInCookie = cookies.find((cookie) =>
       cookie.startsWith("UserCookie")
     );
-    const savedTheme = localStorage.getItem("theme");
-
     if (loggedInCookie) setloginStatus(true);
 
-    if (savedTheme) {
+    // Prefer localStorage theme if it exists
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
       setTheme(savedTheme);
       document.documentElement.setAttribute("data-theme", savedTheme);
     } else {
-      document.documentElement.setAttribute("data-theme", "dark");
+      // Fall back to theme coming from SSR
+      document.documentElement.setAttribute("data-theme", initialTheme);
     }
-  }, []);
+  }, [initialTheme]);
 
-  // Whenever `theme` changes, update <html> and localStorage
+  // Whenever `theme` changes, update <html>, localStorage, and cookie
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+    document.cookie = `theme=${theme}; path=/; max-age=31536000`;
   }, [theme]);
 
   const toggleTheme = () => {

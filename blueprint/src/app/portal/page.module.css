@@ -1,6 +1,6 @@
 .accountViewButton {
-  background-color: #f8f9fa; /* Light background from mock-up */
-  color: #333; /* Dark text */
+  background-color: #f8f9fa;
+  color: #333;
   padding: 8px 16px;
   border-radius: 5px;
   border: none;
@@ -15,23 +15,22 @@
   background-color: #e2e6ea;
 }
 
-/* --- User Bar (Logged in as: User | Log Out) --- */
+/* --- User Bar --- */
 .userBar {
   display: flex;
-  justify-content: flex-end; /* Aligns content to the right */
+  justify-content: flex-end;
   align-items: center;
   padding: 10px 0 0 0;
   color: white;
-  gap: 20px; /* Spacing between "Logged in as" and "Log Out" */
+  gap: 20px;
 }
 
 .logOutButton {
-  background-color: #f8f9fa; /* Light background from mock-up */
-  color: #333; /* Dark text */
+  background-color: #f8f9fa;
+  color: #333;
   padding: 8px 16px;
   border-radius: 5px;
   border: none;
-  text-decoration: none;
   font-weight: bold;
   cursor: pointer;
 }
@@ -40,111 +39,124 @@
   background-color: #e2e6ea;
 }
 
-/* --- Main Page Container --- */
+/* --- Main Container --- */
 .portalContainer {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px 40px 40px; /* Padding for the main content area */
+  padding: 0 40px 40px 40px;
   color: white;
 }
 
-/* --- Welcome / Your Websites Titles --- */
+/* --- Titles --- */
 .largeTitleText {
-  font-size: 2.5rem; /* 40px */
+  font-size: 2.5rem;
   font-weight: bold;
   margin: 10px 0 0 0;
   color: #eee;
-  padding-top: 20px; /* Space from the user bar */
+  padding-top: 20px;
 }
 
 .mediumTitleText {
-  font-size: 1.5rem; /* 24px */
+  font-size: 1.5rem;
   font-weight: normal;
   color: #ccc;
   margin-top: 5px;
-  margin-bottom: 30px; /* Space above the website list */
+  margin-bottom: 30px;
 }
 
-/* --- Website List & Cards --- */
-.websiteList {
+/* --- Dashboard Grid --- */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+  margin-top: 25px;
+}
+
+.emptyWrapper {
+  grid-column: 1 / -1;        /* Span full grid width */
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-/* Empty state text when no websites */
+/* Centered text */
 .emptyState {
+  text-align: center;
   color: #ccc;
   font-style: italic;
-  margin-top: 10px;
+  font-size: 1.2rem;
 }
 
-.emptyHighlight {
-  font-weight: bold;
-  color: var(--accent);
-}
-
-.websiteCard {
-  display: grid;
-  /* Columns: Preview | Info | Actions */
-  grid-template-columns: 200px 1fr 200px;
-  gap: 25px;
-  align-items: center;
-  background-color: rgba(20, 20, 20, 0.8); /* Dark card background */
+/* --- Site Card --- */
+.siteCard {
+  background: rgba(20, 20, 20, 0.85);
   padding: 20px;
   border-radius: 12px;
   border: 1px solid #444;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  color: white;
 }
 
-.websitePreview {
-  width: 100%;
-  height: 120px;
-  background-color: #555; /* Placeholder color from mock-up */
+.thumbnail {
+  background: #555;
+  height: 160px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  color: #ccc;
   font-style: italic;
-  text-align: center;
-}
-
-.websiteInfo h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #eee;
-  font-size: 1.3rem;
-  font-weight: bold;
-}
-
-.websiteInfo p {
-  margin: 5px 0;
   color: #ccc;
-  font-size: 0.95rem;
+  margin-bottom: 15px;
 }
 
-.websiteActions {
+.siteTitle {
+  margin: 5px 0;
+  font-size: 1.3rem;
+  color: #eee;
+}
+
+.siteMeta {
+  margin: 4px 0;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.buttonRow {
+  margin-top: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: stretch; /* Make buttons full width of their column */
 }
 
-/* Primary action buttons */
 .actionButton {
-  background-color: #0d6efd; /* Blue from mock-up */
+  background-color: #0d6efd;
   color: white;
-  padding: 10px 15px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
   text-align: center;
-  display: inline-block;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
 }
 
 .actionButton:hover {
   background-color: #0b5ed7;
+}
+
+.detailsButton {
+  background-color: #f8f9fa;
+  color: #333;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+}
+
+.detailsButton:hover {
+  background-color: #e2e6ea;
 }
 
 /* --- Create Button --- */
@@ -152,10 +164,13 @@
   margin-top: 40px;
   border-top: 1px solid #444;
   padding-top: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .createButton {
-  background-color: #198754; /* Green */
+  background-color: #198754;
   color: white;
   padding: 12px 25px;
   border: none;
@@ -167,18 +182,4 @@
 
 .createButton:hover {
   background-color: #157347;
-}
-
-/* Responsive layout for smaller screens */
-@media (max-width: 900px) {
-  .websiteCard {
-    grid-template-columns: 1fr;
-    text-align: left;
-  }
-
-  .websiteActions {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
 }

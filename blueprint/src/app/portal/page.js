@@ -1,119 +1,142 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getSitesByUser } from "../../../lib/siteQueries";
 import styles from "./page.module.css";
 
-/**
- * PortalPage
- * ----------
- * Server component that loads all websites for the current user
- * and displays them in a simple dashboard-style portal.
- */
-export default async function PortalPage() {
-  // TODO: Replace with real session / auth lookup
-  const userId = 1;
+export default function PortalPage() {
+  const [userId, setUserId] = useState(null);
+  const [websites, setWebsites] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  let websites = [];
-  try {
-    websites = await getSitesByUser(userId);
-  } catch (error) {
-    console.error("Failed to fetch websites:", error);
-    // Page still renders; we'll show an empty state
+  // Read cookie on client
+  useEffect(() => {
+    const cookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("UserCookie="));
+
+    const value = cookie ? cookie.split("=")[1] : null;
+    setUserId(value);
+
+    if (value) {
+      loadUserWebsites(value);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  // Fetch websites for this user
+  async function loadUserWebsites(userId) {
+    try {
+      const res = await fetch(`/api/websites/by-user?id=${userId}`);
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setWebsites(data);
+      } else {
+        setWebsites([]);
+      }
+    } catch (err) {
+      console.error("Failed to load websites:", err);
+      setWebsites([]);
+    }
+    setLoading(false);
   }
 
   return (
     <div className={styles.portalContainer}>
-      {/* Top right: logged-in bar */}
+      {/* Top bar */}
       <div className={styles.userBar}>
         <span>
-          Logged in as: <strong>User #{userId}</strong>
+          {userId ? (
+            <>Logged in as: <strong>User #{userId}</strong></>
+          ) : (
+            <>Not logged in</>
+          )}
         </span>
-        <button className={styles.logOutButton}>Log Out</button>
+
+        {userId && (
+          <button
+            className={styles.logOutButton}
+            onClick={() => {
+              document.cookie =
+                "UserCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              window.location.reload();
+            }}
+          >
+            Log Out
+          </button>
+        )}
       </div>
 
-      {/* Titles */}
-      <h1 className={styles.largeTitleText}>Your Website Portal</h1>
+      <h1 className={styles.largeTitleText}>Your Projects</h1>
       <h2 className={styles.mediumTitleText}>
-        Manage and view the sites you’ve created.
+        Manage the websites you have created.
       </h2>
 
-      {/* Website list */}
-      <div className={styles.websiteList}>
-        {(!websites || websites.length === 0) && (
-          <p className={styles.emptyState}>
-            You don’t have any websites yet. Click{" "}
-            <span className={styles.emptyHighlight}>Create Website</span> to
-            start building your first one.
-          </p>
-        )}
+      {loading && <p style={{ color: "#ccc" }}>Loading...</p>}
 
-        {websites?.map((website) => {
-          // Try to be flexible with field names from the DB
-          const siteId = website.site_id ?? website.id;
-          const siteName =
-            website.site_name ?? website.name ?? `Website #${siteId}`;
-          const status = website.status ?? "Draft";
-          const domain = website.domain ?? website.url ?? "Not published";
-          const lastUpdatedRaw =
-            website.updated_at ?? website.last_modified ?? website.created_at;
-          const lastUpdated = lastUpdatedRaw
-            ? new Date(lastUpdatedRaw).toLocaleDateString()
-            : "Unknown";
+      {/* Dashboard Grid */}
+      {!loading && (
+        <div className={styles.gridContainer}>
+          {websites.length === 0 && (
+            <div className={styles.emptyWrapper}>
+              <p className={styles.emptyState}>
+                You don’t have any saved websites yet.
+              </p>
+            </div>
+          )}
 
-          return (
-            <div className={styles.websiteCard} key={siteId}>
-              {/* Preview / thumbnail area */}
-              <div className={styles.websitePreview}>
-                {/* Later: replace with real <Image /> when you have screenshots */}
-                Preview not available
-              </div>
+          {websites.map((website) => {
+            const siteId = website.id;
+            const siteName = website.site_name || `Website #${siteId}`;
+            const domain = website.domain || "Not published";
+            const updated = website.updated_at
+              ? new Date(website.updated_at).toLocaleDateString()
+              : "Unknown";
 
-              {/* Info column */}
-              <div className={styles.websiteInfo}>
-                <h3>{siteName}</h3>
-                <p>
-                  <strong>Status:</strong> {status}
-                </p>
-                <p>
+            return (
+              <div key={siteId} className={styles.siteCard}>
+                <div className={styles.thumbnail}>Preview not available</div>
+
+                <h3 className={styles.siteTitle}>{siteName}</h3>
+
+                <p className={styles.siteMeta}>
                   <strong>Domain:</strong> {domain}
                 </p>
-                <p>
-                  <strong>Last updated:</strong> {lastUpdated}
+
+                <p className={styles.siteMeta}>
+                  <strong>Last updated:</strong> {updated}
                 </p>
+
+                <div className={styles.buttonRow}>
+                  <Link
+                    href={`/api/website?site_id=${siteId}`}
+                    className={styles.actionButton}
+                  >
+                    View Live
+                  </Link>
+
+                  <Link
+                    href={`/canvas?site=${siteId}`}
+                    className={styles.actionButton}
+                  >
+                    Edit
+                  </Link>
+
+                  <Link
+                    href={`/portal/${siteId}`}
+                    className={styles.detailsButton}
+                  >
+                    Details
+                  </Link>
+                </div>
               </div>
+            );
+          })}
+        </div>
+      )}
 
-              {/* Actions column */}
-              <div className={styles.websiteActions}>
-                {siteId && (
-                  <>
-                    <Link
-                      href={`/api/website?site_id=${siteId}`}
-                      className={styles.actionButton}
-                    >
-                      View Live Site
-                    </Link>
-
-                    <Link
-                      href={`/userwebbackend?site_id=${siteId}`}
-                      className={styles.actionButton}
-                    >
-                      Website Backend
-                    </Link>
-
-                    <Link
-                      href={`/portal/${siteId}`}
-                      className={styles.accountViewButton}
-                    >
-                      View Details
-                    </Link>
-                  </>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Divider + Create button */}
       <div className={styles.createButtonContainer}>
         <Link href="/canvas">
           <button className={styles.createButton}>Create Website</button>
