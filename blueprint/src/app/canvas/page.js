@@ -675,7 +675,7 @@ export default function CanvasPage() {
           loop: false,
           muted: true,
           autoplay: true,
-          controls: true,
+          controls: false,
           objectFit: "contain",
         };
         break;
