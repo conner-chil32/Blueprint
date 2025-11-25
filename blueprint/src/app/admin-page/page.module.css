@@ -88,8 +88,7 @@
 }
 
 .rightSide {
-    flex: 0 1 300px; /*when this is changed the right side user search box tends to take up too much real estate*/
-    /* or however narrow you want */
+    flex: 0 1 300px;
     display: flex;
     flex-direction: column;
     gap: 20px;
