@@ -3,8 +3,10 @@
  * Sets up the environment for testing parser
  */
 
-import { validateConnection, commit } from '../../utility.js';
+import { validateConnection, commit } from "../../utility.js";
 import { getConnectionObject } from '../../connection.js';
+import { jest } from '@jest/globals';
+jest.useFakeTimers();
 
 // Set up environment variables for testing
 export function setupTestEnvironment() {

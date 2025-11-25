@@ -1,7 +1,7 @@
 "use client";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { WidgetRenderer } from "./WidgetRenderer";
+import { WidgetRenderer } from "./WidgetRenderer.jsx";
 import styles from "./page.module.css";
 import { useRef } from "react";
 

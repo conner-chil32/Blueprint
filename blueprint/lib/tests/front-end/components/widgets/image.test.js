@@ -1,16 +1,7 @@
 import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { Image } from "@/components/widgets/Image";
-
-// Mock the Widget so we can detect its render
-jest.mock("@/components/widgets/Widget.js", () => ({
-  Widget: ({ children, style }) => (
-    <div data-testid="widget" style={style}>
-      {children}
-    </div>
-  ),
-}));
+import { Image } from "@/components/widgets/Image.jsx";
 
 describe("Image", () => {
   test("Renders inside the canvas with an img element", () => {

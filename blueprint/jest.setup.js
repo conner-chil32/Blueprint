@@ -1,4 +1,14 @@
 import '@testing-library/jest-dom'
+import { createRequire } from 'module'
+import { jest } from '@jest/globals'
+
+// Make jest available globally
+globalThis.jest = jest
+
+// Make require available in ESM mode for jest.mock factories
+if (typeof require === 'undefined') {
+  global.require = createRequire(import.meta.url)
+}
 
 // jest.setup.js
 class IntersectionObserver {
@@ -49,3 +59,78 @@ class ResizeObserver {
 }
 
 global.ResizeObserver = ResizeObserver;
+
+// Mock fetch if not available (for Node < 18 or when not injected)
+if (!global.fetch) {
+  global.fetch = () =>
+    Promise.resolve({
+      json: () => Promise.resolve({}),
+      text: () => Promise.resolve(''),
+      ok: true,
+      status: 200,
+    });
+}
+
+// Mock Request if not available
+if (!global.Request) {
+  global.Request = class Request {
+    constructor(input, init) {
+      this.url = typeof input === 'string' ? input : input.url;
+      this.method = init?.method || 'GET';
+      this.headers = new Headers(init?.headers || {});
+    }
+  };
+}
+
+// Mock TextEncoder/TextDecoder if not available (needed for React DOM Server)
+if (!global.TextEncoder) {
+  const { TextEncoder, TextDecoder } = require('util');
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
+// Mock MessageChannel if not available (needed for React DOM Server)
+if (!global.MessageChannel) {
+  global.MessageChannel = class MessageChannel {
+    constructor() {
+      this.port1 = {
+        onmessage: null,
+        postMessage: () => {},
+        close: () => {},
+      };
+      this.port2 = {
+        onmessage: null,
+        postMessage: () => {},
+        close: () => {},
+      };
+    }
+  };
+}
+
+// Mock Response if not available
+if (!global.Response) {
+  global.Response = class Response {
+    constructor(body, init) {
+      this.body = body;
+      this.status = init?.status || 200;
+      this.statusText = init?.statusText || 'OK';
+      this.headers = new Headers(init?.headers || {});
+      this.ok = this.status >= 200 && this.status < 300;
+    }
+    json() {
+      return Promise.resolve(JSON.parse(this.body || '{}'));
+    }
+    text() {
+      return Promise.resolve(this.body || '');
+    }
+    static json(data, init) {
+      return new Response(JSON.stringify(data), {
+        ...init,
+        headers: {
+          'content-type': 'application/json',
+          ...init?.headers,
+        },
+      });
+    }
+  };
+}
