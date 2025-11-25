@@ -9,16 +9,43 @@
     color: var(--text-color);
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: stretch;
-    /* ensures both sides match height */
     gap: 20px;
-    width: 80%;
+    width: 100%;
+    max-width: 1200px;
 }
 
 .topRow {
     display: flex;
     gap: 20px;
     width: 100%;
+    min-height: 350px;
+    align-items: stretch;
+    flex-wrap: wrap;
+    margin: 0px 5px;
+}
+
+.bottomRow {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    height: 440px;
+    align-items: flex-start;
+    margin: 0px 5px;
+}
+
+.bottomRow .cell {
+    flex: 1;
+    height: 100%;
+}
+
+.bottomRow .cell img {
+    max-height: 90%;
+    max-width: 100%;
+    width: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 .cell {
@@ -26,8 +53,8 @@
     border-radius: var(--border-weight);
     padding: 10px;
     flex: 1;
-    /* Share space equally */
     text-align: left;
+    min-width: 200px;
 }
 
 .cell h1{
@@ -52,7 +79,8 @@
 }
 
 .leftSide {
-    flex: 1;
+    flex: 1 1 600px;
+    max-width: 930px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -173,6 +201,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 30px;
+    
 }
 
 .actions{
@@ -194,6 +223,8 @@ border-style: solid;
     background-color: #222;
     color: white;
     border: 1px solid #444;
+    border-radius: var(--border-weight);
+    padding: 5px;
 }
 
 .customDuration {
