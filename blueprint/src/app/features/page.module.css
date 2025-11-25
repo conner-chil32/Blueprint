@@ -158,3 +158,38 @@
   .mainContent h1 { font-size: 38px; }
   .mainContent h2 { font-size: 18px; }
 }
+
+/* --- Light mode overrides --- */
+:global([data-theme="light"]) .featuresSection {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 12px 26px rgba(31, 26, 19, 0.1);
+}
+
+:global([data-theme="light"]) .featuresSection::before {
+  background: radial-gradient(circle at 50% 0%, rgba(248, 184, 107, 0.18), transparent 70%);
+}
+
+:global([data-theme="light"]) .featuresSection h3 {
+  color: #111;
+}
+
+:global([data-theme="light"]) .featureCard {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  color: #000;
+}
+
+:global([data-theme="light"]) .featureIcon {
+  color: #dca85c;
+  filter: drop-shadow(0 0 6px rgba(220, 168, 92, 0.35));
+}
+
+:global([data-theme="light"]) .featureText {
+  color: #1f1f1f;
+}
+
+:global([data-theme="light"]) .mainContent h2 {
+  color: #4a4a4a;
+}

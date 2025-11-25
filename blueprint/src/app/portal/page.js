@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
+import { getSitesByUser } from "../../../lib/siteQueries";
 
 export default function PortalPage() {
   const [userId, setUserId] = useState(null);
@@ -28,11 +29,11 @@ export default function PortalPage() {
   // Fetch websites for this user
   async function loadUserWebsites(userId) {
     try {
-      const res = await fetch(`/api/websites/by-user?id=${userId}`);
-      const data = await res.json();
+      // Your API route OR the DB helper function
+      const sites = await getSitesByUser(userId);
 
-      if (Array.isArray(data)) {
-        setWebsites(data);
+      if (Array.isArray(sites)) {
+        setWebsites(sites);
       } else {
         setWebsites([]);
       }

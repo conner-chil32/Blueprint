@@ -160,7 +160,7 @@ export async function deleteSite(siteId) {
 export async function updateSite(id, siteName, json = {}) {
     try {
         await validateConnection();
-        await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateUpdated=NOW()  WHERE siteID = ?;`, [name, id]);
+        await connection.query(`UPDATE userWebsites SET websiteName=?, websiteDateUpdated=NOW()  WHERE siteID = ?;`, [siteName, id]);
         await commit();
     } catch (err) {
         console.error(err);

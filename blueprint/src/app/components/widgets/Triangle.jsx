@@ -1,5 +1,5 @@
-import { Widget } from './Widget';
-import { getShapeVariantStyles } from './shapeStyles';
+import { Widget } from '@/components/widgets/Widget.jsx';
+import { getShapeVariantStyles } from './shapeStyles.js';
 //Needed to do large rewrites to account for border
 
 export function Triangle({ scale, boxStyle = 'default', ...props }) {
