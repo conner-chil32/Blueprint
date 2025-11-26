@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
-
+import blog from "./templates/blog.json"
 import Navbar from "../components/navbar";
 import { Canvas } from './Canvas';
 import { LeftPanel } from './LeftPanel';
@@ -19,7 +19,7 @@ import History from "./HistoryManager";
  */
 export default function CanvasPage() {
   // Pages, each containing widgets
-  const [pages, setPages] = useState([{ id: 0, name: "Page 0", width: 800, height: 600, backgroundColor: '#ffffff', widgets: [] }]);
+  const [pages, setPages] = useState([blog]);
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
