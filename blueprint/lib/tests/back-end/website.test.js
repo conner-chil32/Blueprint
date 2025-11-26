@@ -4,9 +4,9 @@ docker compose up -d
 node /path/to/run-parser-tests.js
 */
 import assert from 'assert';
-import { Website } from '../../website.js';
+import { Website } from '@lib/website.js';
 import { TestRunner } from './user.test.js';
-import { validateConnection, commit } from '../../utility.js';
+import { validateConnection, commit } from '@lib/utility.js';
 
 export const websiteTests = new TestRunner('Website Class');
 

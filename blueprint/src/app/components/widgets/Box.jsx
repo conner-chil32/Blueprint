@@ -1,5 +1,5 @@
-import { Widget } from './Widget';
-import { getShapeVariantStyles } from './shapeStyles';
+import { Widget } from '@/components/widgets/Widget.jsx';
+import { getShapeVariantStyles } from './shapeStyles.js';
 
 export function Box({ scale, boxStyle = 'default', ...props }) {
   

@@ -1,16 +1,7 @@
 import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { Hyperlink } from "@/components/widgets/Hyperlink";
-
-// Mock the Widget so we can detect its render
-jest.mock("@/components/widgets/Widget.js", () => ({
-  Widget: ({ children, style }) => (
-    <div data-testid="widget" style={style}>
-      {children}
-    </div>
-  ),
-}));
+import { Hyperlink } from "@/components/widgets/Hyperlink.jsx";
 
 describe("Hyperlink", () => {
   test("Renders inside the canvas with a link element", () => {

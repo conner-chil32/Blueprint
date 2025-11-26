@@ -1,26 +1,21 @@
+"use client";
+
+import { useEffect, useState } from 'react';
 import { getSitesByUser } from "../../../lib/siteQueries";
 import Navbar from "../components/navbar";
 import styles from "./page.module.css";
 
-/**
- * This is now an async Server Component.
- * It will fetch data on the server before rendering the page.
- */
-export default async function PortalPage() {
+export default function PortalPage() {
+    const [websites, setWebsites] = useState([]);
+    const userId = 1; // TODO: Get from session/cookie
 
-    // TODO: Get the real user ID from a session or cookie
-    // For now, we'll use a placeholder '1'
-    const userId = 1;
-
-    // Fetch the user's websites using the function from siteQueries.js
-    let websites = [];
-    try {
-        // We use `getSitesByUser` as required by the task
-        websites = await getSitesByUser(userId);
-    } catch (error) {
-        console.error("Failed to fetch websites:", error);
-        // Don't crash the page; just show an empty list
-    }
+    useEffect(() => {
+        getSitesByUser(userId)
+            .then(sites => setWebsites(sites))
+            .catch(error => {
+                console.error("Failed to fetch websites:", error);
+            });
+    }, [userId]);
 
     return (
         <div>

@@ -1,5 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import Portal from '@/app/portal/page'
+import * as siteQueries from '@/../../lib/siteQueries'
+
+jest.spyOn(siteQueries, 'getSitesByUser').mockResolvedValue([]);
 
 describe('User Portal',()=>{
     test('Checking navbar loads',()=>{

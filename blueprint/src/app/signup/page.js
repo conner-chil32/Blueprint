@@ -184,7 +184,7 @@ export default function SignUpPage() {
             </button>
             {message && <div className={`${styles.message} ${isError ? styles.messageError : styles.messageSuccess}`}>{message}</div>}
             <div style={{ textAlign: 'center', marginTop: '15px' }}>
-              <a href="/account-recovery" style={{ color: 'white', textDecoration: 'underline' }}>
+              <a href="/account-recovery" className={styles.recoveryLink}>
                 Forgot Username/Password?
               </a>
             </div>
