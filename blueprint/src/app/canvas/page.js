@@ -25,28 +25,59 @@ export default function CanvasPage() {
   // .find() searches through each element of an array for a matching value
   const currentPage = pages.find((page) => page.id === selectedPageID);
 
-  // Import a JSON file and replace the entire pages array.
+  // Import a JSON file - either a single page (appends) or entire project (replaces all pages).
   const importPagesFromJSON = (imported) => {
     try {
-      const pagesArr = Array.isArray(imported) ? imported : (imported && Array.isArray(imported.pages) ? imported.pages : null);
-      if (!Array.isArray(pagesArr)) {
-        throw new Error("JSON must be an array of pages or an object with a 'pages' array.");
+      // Check if this is a single page object (has widgets property but not pages property)
+      const isSinglePage = imported && 
+                           !Array.isArray(imported) && 
+                           !imported.pages && 
+                           (imported.widgets !== undefined || imported.name !== undefined);
+      
+      if (isSinglePage) {
+        // Import single page - append to existing pages
+        const newPage = {
+          id: nextPageID,
+          name: (typeof imported.name === 'string' && imported.name.trim()) ? imported.name : `Page ${nextPageID}`,
+          width: imported.width != null ? imported.width : 800,
+          height: imported.height != null ? imported.height : 600,
+          backgroundColor: imported.backgroundColor || '#ffffff',
+          widgets: Array.isArray(imported.widgets) ? imported.widgets : [],
+        };
+        
+        setPages([...pages, newPage]);
+        setSelectedPageID(newPage.id);
+        setNextPageID(nextPageID + 1);
+        console.log("✅ Imported single page:", newPage.name);
+        recordState && recordState();
+        
+        // Flag that we should save to temp.json after state updates
+        shouldSaveAfterImport.current = true;
+      } else {
+        // Import entire project - replace all pages
+        const pagesArr = Array.isArray(imported) ? imported : (imported && Array.isArray(imported.pages) ? imported.pages : null);
+        if (!Array.isArray(pagesArr)) {
+          throw new Error("JSON must be a single page object, an array of pages, or an object with a 'pages' array.");
+        }
+        const normalized = pagesArr.map((p, idx) => ({
+          id: typeof p.id === 'number' ? p.id : idx,
+          name: (typeof p.name === 'string' && p.name.trim()) ? p.name : `Page ${idx}`,
+          width: p && p.width != null ? p.width : 800,
+          height: p && p.height != null ? p.height : 600,
+          backgroundColor: (p && p.backgroundColor) || '#ffffff',
+          widgets: Array.isArray(p && p.widgets) ? p.widgets : [],
+        }));
+        setPages(normalized);
+        const firstId = normalized.length > 0 ? normalized[0].id : 0;
+        setSelectedPageID(firstId);
+        const maxId = normalized.reduce((m, pg) => (typeof pg.id === 'number' ? Math.max(m, pg.id) : m), -1);
+        setNextPageID(maxId + 1);
+        console.log("✅ Imported project with", normalized.length, "pages");
+        recordState && recordState();
+        
+        // Flag that we should save to temp.json after state updates
+        shouldSaveAfterImport.current = true;
       }
-      const normalized = pagesArr.map((p, idx) => ({
-        id: typeof p.id === 'number' ? p.id : idx,
-        name: (typeof p.name === 'string' && p.name.trim()) ? p.name : `Page ${idx}`,
-        width: p && p.width != null ? p.width : 800,
-        height: p && p.height != null ? p.height : 600,
-        backgroundColor: (p && p.backgroundColor) || '#ffffff',
-        widgets: Array.isArray(p && p.widgets) ? p.widgets : [],
-      }));
-      setPages(normalized);
-      const firstId = normalized.length > 0 ? normalized[0].id : 0;
-      setSelectedPageID(firstId);
-      const maxId = normalized.reduce((m, pg) => (typeof pg.id === 'number' ? Math.max(m, pg.id) : m), -1);
-      setNextPageID(maxId + 1);
-      console.log("✅ Imported pages from JSON:", normalized.length, "pages");
-      recordState && recordState();
     } catch (err) {
       console.error("❌ Failed to import pages JSON:", err);
     }
@@ -87,6 +118,9 @@ export default function CanvasPage() {
 
   // Ref to hold the savePagesToJSON function
   const savePagesToJSONRef = useRef(null);
+  
+  // Flag to trigger temp.json save after import
+  const shouldSaveAfterImport = useRef(false);
 
   // Helper function to get cookie value by name
   const getCookieValue = (name) => {
@@ -144,6 +178,18 @@ export default function CanvasPage() {
   useEffect(() => {
     loadTempJSON();
   }, []);
+
+  /** Save to temp.json after import completes
+   * This effect triggers when pages change and shouldSaveAfterImport flag is set
+   */
+  useEffect(() => {
+    if (shouldSaveAfterImport.current) {
+      shouldSaveAfterImport.current = false;
+      const userId = getCookieValue('UserCookie');
+      console.log('💾 Auto-saving to temp.json after import');
+      savePagesToJSONRef.current?.(userId, "temp");
+    }
+  }, [pages]);
 
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
@@ -1051,7 +1097,10 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
         console.error("❌ Failed to import pages JSON:", err);
         alert("Invalid JSON file. Please select a valid JSON export.");
       }
-      e.target.value = "";
+      // Reset input value to allow re-importing the same file
+      if (e.target) {
+        e.target.value = "";
+      }
     };
     input.click();
   };
