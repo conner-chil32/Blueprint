@@ -8,6 +8,12 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [invalidInputs, setInvalidInputs] = useState({
+    password1: false,
+    password2: false,
+    email: false,
+  });
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (document.cookie.includes("UserCookie")) {
@@ -44,6 +50,7 @@ export default function SignUpPage() {
     e.preventDefault();
     setMessage("");
     setLoading(true);
+    setInvalidInputs({ email: false, password1: false, password2: false });
 
     const formData = new FormData(e.target);
     const username = formData.get("username");
@@ -56,10 +63,22 @@ export default function SignUpPage() {
     const securityAnswer = formData.get("securityAnswer");
     
 
+    // Test to ensure the email is valid
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setMessage("Please enter a valid email.");
+      setInvalidInputs(prev => ({ ...prev, email: true }));
+      setLoading(false);
+      setIsError(true);
+      return;
+    }
 
     if (password1 !== password2) {//error if passwords dont match
       setMessage("Passwords do not match.");
+      setInvalidInputs(prev => ({ ...prev, password1: true, password2: true }));
       setLoading(false);
+      setIsError(true);
       return;
     }
 
@@ -67,7 +86,9 @@ export default function SignUpPage() {
 
     if (!passwordRegex.test(password1)) {
       setMessage("Password does meet requirements.");
+      setInvalidInputs(prev => ({ ...prev, password1: true, password2: true }));
       setLoading(false);
+      setIsError(true);
       return;
     }
 
@@ -89,6 +110,7 @@ export default function SignUpPage() {
 
       const data = await res.json();
       if (data.success) {//debug messages can remove later or simplify for end user
+        setIsError(false);
         setMessage("Account created successfully!");
         e.target.reset();
       } else {
@@ -107,16 +129,24 @@ export default function SignUpPage() {
       <div className={styles.body}>
         <div className={`${styles.bodySection} ${styles.createSection}`}>
           <form onSubmit={handleSubmit}>
-            {infoBoxes.filter(b => b.id !== 'phone').map((box) => (
+            {infoBoxes.filter(b => b.id !== 'phone').map((box) => {
+              const isInvalid = Boolean(invalidInputs[box.id]);
+              const inputType = box.id === 'email' ? 'email' : (box.type || 'text');
+
+              return (
               <div key={box.id} className={styles.infoBox}>
-                <input type={box.type || "text"} name={box.id} placeholder={box.text} required/>
+                <input type={inputType} name={box.id} placeholder={box.text} required
+                className={`${styles.emailInput} ${invalidInputs.email ? styles.invalidInput : ""}`}
+                onChange={() => setInvalidInputs(prev => ({ ...prev, email: false }))}
+                />
               </div>
-            ))}
+              );
+            })}
             <div className={styles.infoBox}>
-              <input type={showPassword ? "text" : "password"} name="password1" placeholder="Password" required/>
+              <input type={showPassword ? "text" : "password"} name="password1" placeholder="Password" required className={invalidInputs.password1 ? styles.invalidInput : ""}/>
             </div>
             <div className={styles.infoBox}>
-              <input type={showPassword ? "text" : "password"} name="password2" placeholder="Re-enter Password" required />
+              <input type={showPassword ? "text" : "password"} name="password2" placeholder="Re-enter Password" required className={invalidInputs.password2 ? styles.invalidInput : ""}/>
             </div>
             <div className={styles.infoBox}>
               <input type="text" name="phone" placeholder="Phone Number (Optional)" />
@@ -152,7 +182,7 @@ export default function SignUpPage() {
             <button className="submit-button" type="submit" disabled={loading}>
               {loading ? "Creating..." : <>CREATE <br/> ACCOUNT</>}
             </button>
-            {message && <div className={styles.message}>{message}</div>}
+            {message && <div className={`${styles.message} ${isError ? styles.messageError : styles.messageSuccess}`}>{message}</div>}
             <div style={{ textAlign: 'center', marginTop: '15px' }}>
               <a href="/account-recovery" className={styles.recoveryLink}>
                 Forgot Username/Password?

@@ -154,8 +154,29 @@
   .message {
     margin-top: 20px;
     font-weight: 500;
+  }
+
+  .message {
+    margin-top: 20px;
+    font-weight: 500;
+    text-align: center;
+    text-shadow: none;
+  }
+
+  .messageSuccess {
     color: var(--accent);
     text-shadow: 0 0 5px rgba(114, 211, 96, 0.3);
+  }
+
+  .messageError {
+    color: #ff4d4d;
+    text-shadow: 0 0 5px rgba(255, 77, 77, 0.3);
+  }
+  
+  .infoBox input.invalidInput {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.6);
+    background-color: rgba(255, 0, 0, 0.08);
   }
   
   /* Logo */
