@@ -21,7 +21,8 @@
 ## Creators
 ### Conner Childers
 Contact Information:
- - Email: 
+ - Email: cc457904@gmail.com
+ - LinkedIn: https://www.linkedin.com/in/conner-childers-511128267/
 ### Elijah White
 Contact Information:
  - Email: elijah.white.scott@gmail.com
