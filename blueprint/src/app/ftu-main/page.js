@@ -2,7 +2,6 @@
 
 
 //import { Main } from "next/document"; Causing errors
-import Navbar from "../components/navbar";  // Import the Navbar component
 import styles from "./FTU.module.css"; // Import FTU.modules.css for styling
 
 export default function RawHTMLPage() {
@@ -19,7 +18,6 @@ export default function RawHTMLPage() {
 
         {/* Integrate the top bar component */}
         <div className="topBarBackground">
-            <Navbar />
         </div>
         
         <div className={styles.body}>

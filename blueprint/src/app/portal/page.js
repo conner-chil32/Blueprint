@@ -1,62 +1,148 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { getSitesByUser } from "../../../lib/siteQueries";
-import Navbar from "../components/navbar";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import styles from "./page.module.css";
+import { getSitesByUser } from "../../../lib/siteQueries";
 
 export default function PortalPage() {
-    const [websites, setWebsites] = useState([]);
-    const userId = 1; // TODO: Get from session/cookie
+  const [userId, setUserId] = useState(null);
+  const [websites, setWebsites] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        getSitesByUser(userId)
-            .then(sites => setWebsites(sites))
-            .catch(error => {
-                console.error("Failed to fetch websites:", error);
-            });
-    }, [userId]);
+  // Read cookie on client
+  useEffect(() => {
+    const cookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("UserCookie="));
 
-    return (
-        <div>
-            {/* The Navbar floats on top, so we add padding to the content below */}
-            <Navbar />
+    const value = cookie ? cookie.split("=")[1] : null;
+    setUserId(value);
 
-            <div id="websites">
-                <div className={styles.tableContainer}>
-                    <table className={styles.table}>
-                        {
+    if (value) {
+      loadUserWebsites(value);
+    } else {
+      setLoading(false);
+    }
+  }, []);
 
-                            <tbody>
-                                <tr>
-                                    <th rowSpan="3" align="center" className={styles.tableHeader}>Website Preview image</th>
-                                    <td className={styles.tableData}>Statistics</td>
-                                    <td className={styles.tableData}>
-                                        <Link href="/api/website?site_id=1">
-                                            <button className={styles.linkButton}>
-                                                Website
-                                            </button>
-                                        </Link>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className={styles.tableData}>Status</td>
-                                    <td className={styles.tableData}>
-                                        <Link href="/userwebbackend">
-                                            <button className={styles.linkButton}>
-                                                Website Backend
-                                            </button>
-                                            <a href="#" className={styles.actionButton}>
-                                                Website Details
-                                            </a>
-                                        </Link>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
+  // Fetch websites for this user
+  async function loadUserWebsites(userId) {
+    try {
+      // Your API route OR the DB helper function
+      const sites = await getSitesByUser(userId);
+
+      if (Array.isArray(sites)) {
+        setWebsites(sites);
+      } else {
+        setWebsites([]);
+      }
+    } catch (err) {
+      console.error("Failed to load websites:", err);
+      setWebsites([]);
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div className={styles.portalContainer}>
+      {/* Top bar */}
+      <div className={styles.userBar}>
+        <span>
+          {userId ? (
+            <>Logged in as: <strong>User #{userId}</strong></>
+          ) : (
+            <>Not logged in</>
+          )}
+        </span>
+
+        {userId && (
+          <button
+            className={styles.logOutButton}
+            onClick={() => {
+              document.cookie =
+                "UserCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+              window.location.reload();
+            }}
+          >
+            Log Out
+          </button>
+        )}
+      </div>
+
+      <h1 className={styles.largeTitleText}>Your Projects</h1>
+      <h2 className={styles.mediumTitleText}>
+        Manage the websites you have created.
+      </h2>
+
+      {loading && <p style={{ color: "#ccc" }}>Loading...</p>}
+
+      {/* Dashboard Grid */}
+      {!loading && (
+        <div className={styles.gridContainer}>
+          {websites.length === 0 && (
+            <div className={styles.emptyWrapper}>
+              <p className={styles.emptyState}>
+                You don’t have any saved websites yet.
+              </p>
+            </div>
+          )}
+
+          {websites.map((website) => {
+            const siteId = website.id;
+            const siteName = website.site_name || `Website #${siteId}`;
+            const domain = website.domain || "Not published";
+            const updated = website.updated_at
+              ? new Date(website.updated_at).toLocaleDateString()
+              : "Unknown";
+
+            return (
+              <div key={siteId} className={styles.siteCard}>
+                <div className={styles.thumbnail}>Preview not available</div>
+
+                <h3 className={styles.siteTitle}>{siteName}</h3>
+
+                <p className={styles.siteMeta}>
+                  <strong>Domain:</strong> {domain}
+                </p>
+
+                <p className={styles.siteMeta}>
+                  <strong>Last updated:</strong> {updated}
+                </p>
+
+                <div className={styles.buttonRow}>
+                  <Link
+                    href={`/api/website?site_id=${siteId}`}
+                    className={styles.actionButton}
+                  >
+                    View Live
+                  </Link>
+
+                  <Link
+                    href={`/canvas?site=${siteId}`}
+                    className={styles.actionButton}
+                  >
+                    Edit
+                  </Link>
+
+                  <Link
+                    href={`/portal/${siteId}`}
+                    className={styles.detailsButton}
+                  >
+                    Details
+                  </Link>
                 </div>
-            </div> {/* This closes the new paddingTop div */}
+              </div>
+            );
+          })}
         </div>
-    );
+      )}
+
+      <div className={styles.createButtonContainer}>
+        <Link href="/canvas">
+          <button className={styles.createButton}>Create Website</button>
+        </Link>
+      </div>
+    </div>
+  );
 }

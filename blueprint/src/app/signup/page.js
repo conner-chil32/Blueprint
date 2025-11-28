@@ -1,10 +1,8 @@
 "use client";
 
-import Navbar from "../components/navbar"
 import AccountCollecter from "../components/accountCollecter";
 import styles from './page.module.css'; 
 import { useEffect, useState } from "react";
-import { setCookie } from "@root/api/CookieController";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
@@ -18,8 +16,11 @@ export default function SignUpPage() {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-      if (document.cookie.includes("UserCookie")) window.location.href = "/";
-  });
+    if (document.cookie.includes("UserCookie")) {
+      window.location.href = "/";
+    }
+  }, []);
+  
   
 
   const infoBoxes = [
@@ -125,7 +126,6 @@ export default function SignUpPage() {
 
   return (
     <>
-      <Navbar />
       <div className={styles.body}>
         <div className={`${styles.bodySection} ${styles.createSection}`}>
           <form onSubmit={handleSubmit}>
