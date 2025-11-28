@@ -17,8 +17,36 @@
 - [Deployment](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#deployment)
 - [Testing](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#testing)
 - [Development-Notes](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#development-notes)
-- [Timeline](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#timeline)
   
+## Creators
+### Conner Childers
+Contact Information:
+ - Email: 
+### Elijah White
+Contact Information:
+ - Email: 
+### Christopher Parsons
+Contact Information:
+ - Email: 
+### Aaron Goodlund
+Contact Information:
+ - Email: agoodlund@csus.edu
+### Lydell Jones
+Contact Information:
+ - Email: 
+### Jacob Francis
+Contact Information:
+ - Email: 
+### David Vigil
+Contact Information:
+ - Email: 
+### Angel Ramirez
+Contact Information:
+ - Email: 
+### Alex Miller
+Contact Information:
+ - Email: 
+
 ## Synopsis
 
 ### Objective
@@ -30,10 +58,12 @@
 - Password Validation
 - Multi-Factor Authentication
 - Account Creation/Recovery
-- Domain Registration
+- User Created Website Download
+<!--
+- Domain Registration 
 - AWS Integration
 - Mobile Friendly Design
-
+-->
 ### Stack
 <h4 align="center">Front End</h3>
 
@@ -58,15 +88,19 @@
 - Docker
 - MySQL
 - Wordpress
-  
+
 <div align="center">
 <h4>Hosting Platform</h3>
-    
+<h5>Local Server</h5>
+
+</div>
+
+<!--  I don't know what image there is to portray a local server    
 <img src="https://logos-world.net/wp-content/uploads/2021/08/Amazon-Web-Services-AWS-Logo.png" style="width:150px; height:100px"></img>
 </div>
 
 - Amazon Web Services
-
+-->
 ### Current User Flow
 
 ![image](https://github.com/user-attachments/assets/1b809178-848f-4968-a760-f7a8caf27f5d)
@@ -74,13 +108,37 @@
 
 ## Deployment
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+steps to download, setup, and deploy
 
 ## Testing
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<h4>System Requirements</h4>
 
-## Development
+- Windows 11
+- Google Chrome, Desktop
+- Node - v22.17.0
+- Docker Desktop - v28.5.1
+- React v19.0.0
+
+<h5>Testing Steps</h5>
+
+CD into …/Blueprint/blueprint
+In the terminal, to install all required packages:
+  - npm install
+    - Note: If the project has errors with modules not found, you may need to cd back into /Blueprint and run npm install again before returning to Blueprint/blueprint.
+To run all frontend tests:
+- npm run test:frontend
+To run a specific test:
+- npm test (filename)
+
+To perform manual testing, you can run the entire project by running docker with this command:
+  - docker-compose up
+From there, wait for all docker containers to spin up. This may take a few minutes.
+You can then head to http://localhost:3000/ and perform testing on any page. When you are finished: 
+1. ctrl+C in your terminal to turn off the server
+2. Run docker-compose down to spin down the containers 
+1. delete the blueprint/lib/db_data file and restore the .htaccess_dummy file
+If you make any changes to the server, be sure to rebuild the containers before spinning up again.
 
 ### Prototype
 
@@ -101,36 +159,26 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   </div>
 </div>
 
+### Deployed Site
+
+<div style="display: flex; flex-direction:column">
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between">
+    <img src="" style="height:150px; width:190px;" alt="features page" /> <!-- I have no idea how the original images were stored -->
+    <img src="" style="height:150px; width:190px;" alt="pricing page" />
+    <img src="" style="height:150px; width:190px;" alt="login page" />
+    <img src="" style="height:150px; width:190px;" alt="account creation page" />
+    <img src="" style="height:150px; width:190px;" alt="account recovery page" />
+  </div>
+  <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
+    <img src="" style="height:150px; width:190px;" alt="first time user page" />
+    <img src="" style="height:150px; width:190px;" alt="canvas page" />
+    <img src="" style="height:150px; width:190px;" alt="admin backend page" />
+    <img src="" style="height:150px; width:190px;" alt="user created website list page" />
+    <img src="" style="height:150px; width:190px;" alt="user website stats page" />
+    <img src="" style="height:150px; width:190px;" alt="wordpress backend page" />
+  </div>
+</div>
+
 ### Database ERD
 
 ![image](https://github.com/user-attachments/assets/11cfbb86-722a-4df7-b889-8118f6a5782b)
-
-
-
-
-## Timeline
-### Sprint 5 milestones:
-- The Canvas page will have basic functionality.
-- At the very least a blank but working website page will be capable of being created.
-- The foundation for widgets will be set up.
-- The login system will be at least partially implemented, with pages working.
-
-### Sprint 6 milestones:
-- Database implementation will be in its later stages, with all login information stored.
-- The Canvas Page will contain a collection of basic widgets, like buttons, links, and asthetics.
-
-### Sprint 7 milestones:
-- Websites and user information can be stored on the database.
-- The Canvas page will have more complex widgets, namely video players.
-
-### Sprint 8 milestones:
-- Testing and continued platform integration.
-- All websites will be mobile-compatible.
-
-### Sprint 9 milestones:
-- Major bugs tested for and fixed.
-
-### Sprints 10 milestones:
-- Database deployed on AWS.
-- All pages deployed on Github Pages.
-- Docker fully up and running.
