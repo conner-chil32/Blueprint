@@ -29,7 +29,8 @@ Contact Information:
  - LinkedIn: https://www.linkedin.com/in/elijah-white-937461194/
 ### Christopher Parsons
 Contact Information:
- - Email: 
+ - Email: bomrr12@gmail.com
+ - LinkedIn: www.linkedin.com/in/christopher-parsons-599723256
 ### Aaron Goodlund
 Contact Information:
  - LinkedIn: linkedin.com/in/aaron-goodlund-18011617a
