@@ -30,7 +30,8 @@ Contact Information:
  - Email: 
 ### Aaron Goodlund
 Contact Information:
- - Email: agoodlund@csus.edu
+ - LinkedIn: linkedin.com/in/aaron-goodlund-18011617a
+ - Email: AGoodlund229@gmail.com
 ### Lydell Jones
 Contact Information:
  - Email: 
@@ -120,7 +121,7 @@ steps to download, setup, and deploy
 - Docker Desktop - v28.5.1
 - React v19.0.0
 
-<h5>Testing Steps</h5>
+<h4>Testing Steps</h4>
 
 CD into …/Blueprint/blueprint
 In the terminal, to install all required packages:
@@ -143,14 +144,14 @@ If you make any changes to the server, be sure to rebuild the containers before 
 ### Prototype
 
 <div style="display: flex; flex-direction:column">
-  <div style="display: flex; flex-direction:row">
+  <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
     <img src="https://github.com/user-attachments/assets/7765fcf8-6226-4f7c-ad6c-4c6594329a09" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/b3e55218-454e-4c24-a4f5-e5920d2b98e5" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/3818383b-c307-4232-a196-1ccf8b7507b1" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/cf1dfc99-6cbc-4ca9-b48d-e4cdf29be216" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/4985b048-dcd2-4e82-a01a-c22af2ca53bc" style="height:150px; width:190px;"></img>
   </div>
-  <div style="display: flex; flex-direction:row">
+  <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
     <img src="https://github.com/user-attachments/assets/9e0ca395-e956-49c5-97ed-2986cce7c44d" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/b5686c5c-c7d4-4161-b80f-e5597fb7bd03" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/6cbdffc1-c1dc-48e3-bb92-d184320f5751" style="height:150px; width:190px;"></img>
