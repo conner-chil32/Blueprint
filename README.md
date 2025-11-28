@@ -24,7 +24,8 @@ Contact Information:
  - Email: 
 ### Elijah White
 Contact Information:
- - Email: 
+ - Email: elijah.white.scott@gmail.com
+ - LinkedIn: https://www.linkedin.com/in/elijah-white-937461194/
 ### Christopher Parsons
 Contact Information:
  - Email: 
