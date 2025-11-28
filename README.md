@@ -33,14 +33,15 @@ Contact Information:
  - LinkedIn: www.linkedin.com/in/christopher-parsons-599723256
 ### Aaron Goodlund
 Contact Information:
+ - Email: agoodlund229@gmail.com
  - LinkedIn: linkedin.com/in/aaron-goodlund-18011617a
- - Email: AGoodlund229@gmail.com
 ### Lydell Jones
 Contact Information:
  - Email: 
 ### Jacob Francis
 Contact Information:
- - Email: 
+ - Email: jacobfrancisr1@gmail.com
+ - LinkedIn: linkedin.com/in/jfncs
 ### David Vigil
 Contact Information:
  - Email: 
