@@ -37,7 +37,8 @@ Contact Information:
  - LinkedIn: www.linkedin.com/in/aaron-goodlund-18011617a
 ### Lydell Jones
 Contact Information:
- - Email: 
+ - Email: lydell1233@gmail.com
+ - LinkedIn: https://www.linkedin.com/in/lydell-jones/
 ### Jacob Francis
 Contact Information:
  - Email: jacobfrancisr1@gmail.com
@@ -113,7 +114,37 @@ Contact Information:
 
 ## Deployment
 
-steps to download, setup, and deploy
+<h4>System Requirements</h4>
+- Docker Desktop - v28.5.1
+
+<h4>Deployment Information</h4>
+
+This application was designed to be deployed on physical hardware and thus was used with containerization from docker.
+
+Our application is composed of 6 containers created and orchestrated with Docker Compose.
+
+If this application were to be deployed on another machine, virtual or otherwise the following steps and restrictions need to be followed and considered.
+
+<h4>Application default configuration</h4>
+
+<h5>Ports used (External)<h5>
+
+- 3306
+- 8080
+- 3000
+- 3307
+- 8000
+
+<h5>Disk Usage<h5>
+
+- Virtual = 4.83 GB
+
+- Approximate Physical ~= 7-8 GB
+
+<h5>Steps to deploy<h5>
+
+- <Include steps to Deploy>
+
 
 ## Testing
 
