@@ -34,7 +34,7 @@ Contact Information:
 ### Aaron Goodlund
 Contact Information:
  - Email: agoodlund229@gmail.com
- - LinkedIn: linkedin.com/in/aaron-goodlund-18011617a
+ - LinkedIn: www.linkedin.com/in/aaron-goodlund-18011617a
 ### Lydell Jones
 Contact Information:
  - Email: 
