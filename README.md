@@ -143,10 +143,114 @@ If this application were to be deployed on another machine, virtual or otherwise
 
 - Approximate Physical ~= 7-8 GB
 
-<h5>Steps to deploy<h5>
+<h4>Steps to deploy</h4>
 
-- <Include steps to Deploy>
+<h5>1. Server Prerequisites</h5>
 
+- Install Node.js (v18 or higher)
+- Install Docker and Docker Compose
+- Install Git
+- Configure firewall to allow ports:
+  - 80
+  - 443
+  - 3000
+  - 3306
+  - 8000
+  - 8080
+
+<h5>2. Clone Repository</h5>
+
+- SSH into your webserver
+- Clone the repository: `git clone https://github.com/conner-chil32/Blueprint.git`
+- Navigate to project directory: `(cd ./blueprint)`
+
+<h5>3. Environment Configuration</h5>
+
+- Copy .env_example to .env
+- Update environment variables:
+  - Change `ADDRESS` from localhost to your server's domain/IP
+  - Set strong passwords for all database credentials
+  - Update `CONTAINER_NAME` if needed
+
+<h5>4. Build Next.js Application</h5>
+
+- Navigate to ./blueprint directory
+- Run npm install to install dependencies
+- Run npm run build to create production build
+- Verify .next folder is created
+
+<h5>5. Start Docker Services</h5>
+
+- Return to root directory
+- Run docker-compose up -d to start all services:
+  - MySQL database (port 3306)
+  - WordPress database (port 3307)
+  - WordPress (port 8000)
+  - phpMyAdmin (port 8080)
+  - Next.js web app (port 3000)
+
+<h5>6. Database Initialization</h5>
+
+- Wait for Docker containers to fully initialize (~2-3 minutes)
+- Database schemas will be created automatically from `./dbstart scripts`
+- Verify databases are running: `docker ps`
+
+<h5>7. Configure Reverse Proxy (Nginx/Apache)</h5>
+
+- Install Nginx or Apache as reverse proxy
+- Configure proxy to forward:
+  - Port 80/443 → Port 3000 (Next.js app)
+  - Subdomain/path for WordPress → Port 8000
+- Set up SSL certificates
+
+<h5>8. Configure Domain/DNS</h5>
+
+- Point your domain A record to server IP address
+- Configure any subdomains for WordPress if needed
+- Wait for DNS propagation (up to 48 hours)
+
+<h5>9. Production Optimizations</h5>
+
+- Set `NODE_ENV=production` in environment
+- Configure Docker restart policies: restart: unless-stopped
+- Set up log rotation for Docker containers
+- Configure MySQL for production (buffer pools, connections)
+
+<h5>10. Set Up Process Management</h5>
+
+- Configure Docker to start on boot: `systemctl enable docker`
+- Create systemd service for auto-restart
+- Alternative: Use PM2 for Next.js if not using Docker for web app
+
+<h5>11. Security Hardening</h5>
+
+- Disable phpMyAdmin on production (port 8080)
+- Change MySQL root passwords
+- Configure firewall rules (UFW/iptables)
+- Set up fail2ban for SSH protection
+- Enable MySQL only on localhost if not needed externally
+
+<h5>12. Monitoring & Backups</h5>
+
+- Set up health checks for containers
+- Configure automated MySQL backups
+- Set up disk space monitoring
+- Configure log aggregation
+- Set up uptime monitoring
+
+<h5>13. Testing</h5>
+
+- Test Next.js app: `http://$INSERT_DOMAIN$.com`
+- Test WordPress: `http://$INSERT_DOMAIN$:8000`
+- Verify database connections work
+- Test all application features
+
+<h5>14. Ongoing Maintenance</h5>
+
+- Regular security updates: `docker-compose pull && docker-compose up -d`
+- Monitor disk space (MySQL data grows)
+- Review logs regularly: `docker-compose logs`
+- Backup databases before updates
 
 ## Testing
 
