@@ -45,7 +45,8 @@ Contact Information:
  - LinkedIn: linkedin.com/in/jfncs
 ### David Vigil
 Contact Information:
- - Email: 
+ - Email: dvigil658@gmail.com
+ - Linkedin: https://www.linkedin.com/in/david-vigil-dev/
 ### Angel Ramirez
 Contact Information:
  - Email: angelr050103@gmail.com
