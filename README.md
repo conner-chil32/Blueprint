@@ -48,7 +48,8 @@ Contact Information:
  - Email: 
 ### Angel Ramirez
 Contact Information:
- - Email: 
+ - Email: angelr050103@gmail.com
+ - LinkedIn: linkedin.com/in/angelramirez003
 ### Alex Miller
 Contact Information:
  - Email: 
