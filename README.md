@@ -377,6 +377,7 @@ If you make any changes to the server, be sure to rebuild the containers before 
     </div>
     <div>
       <img src="./pictures/admin-backend.png" style="height:150px; width:190px;" alt="admin backend page" />
+      <p style="text-align:center"><b>User Admin:</b> <br>
       This page allows the user to manage their <br>
       site. It shows information on how many views <br>
       they have, and to view the status of their <br>
@@ -384,6 +385,7 @@ If you make any changes to the server, be sure to rebuild the containers before 
     </div>
     <div>
       <img src="./pictures/portal.png" style="height:150px; width:190px;" alt="user created website list page" />
+      <p style="text-align:center"><b>Portal:</b> <br>
       The portal page is a place for users to <br>
       view what projects they have. It shows <br>
       a list of sites that they currently own <br>
@@ -392,6 +394,7 @@ If you make any changes to the server, be sure to rebuild the containers before 
     </div>
     <div>
       <img src="./pictures/wordpress.png" style="height:150px; width:190px;" alt="wordpress backend page" />
+      <p style="text-align:center"><b>Wordpress Backend:</b> <br>
       The wordpress backend serves as a <br>
       template and connection point for <br>
       the rest of the site. It functions <br>
