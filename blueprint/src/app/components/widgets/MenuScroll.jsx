@@ -50,7 +50,7 @@ export function MenuScroll(props) {
             fontSize: `${fontSize}px`,
             }}
             onWheel={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
+            //onMouseDown={(e) => e.stopPropagation()}
         >
             {items.map((item, index) => {
             const isSelected = selectedValue === item;

@@ -17,8 +17,44 @@
 - [Deployment](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#deployment)
 - [Testing](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#testing)
 - [Development-Notes](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#development-notes)
-- [Timeline](https://github.com/conner-chil32/Blueprint?tab=readme-ov-file#timeline)
   
+## Creators
+### Conner Childers
+Contact Information:
+ - Email: cc457904@gmail.com
+ - LinkedIn: https://www.linkedin.com/in/conner-childers-511128267/
+### Elijah White
+Contact Information:
+ - Email: elijah.white.scott@gmail.com
+ - LinkedIn: https://www.linkedin.com/in/elijah-white-937461194/
+### Christopher Parsons
+Contact Information:
+ - Email: bomrr12@gmail.com
+ - LinkedIn: www.linkedin.com/in/christopher-parsons-599723256
+### Aaron Goodlund
+Contact Information:
+ - Email: agoodlund229@gmail.com
+ - LinkedIn: www.linkedin.com/in/aaron-goodlund-18011617a
+### Lydell Jones
+Contact Information:
+ - Email: lydell1233@gmail.com
+ - LinkedIn: https://www.linkedin.com/in/lydell-jones/
+### Jacob Francis
+Contact Information:
+ - Email: jacobfrancisr1@gmail.com
+ - LinkedIn: linkedin.com/in/jfncs
+### David Vigil
+Contact Information:
+ - Email: dvigil658@gmail.com
+ - Linkedin: https://www.linkedin.com/in/david-vigil-dev/
+### Angel Ramirez
+Contact Information:
+ - Email: angelr050103@gmail.com
+ - LinkedIn: linkedin.com/in/angelramirez003
+### Alex Miller
+Contact Information:
+ - Email: 
+
 ## Synopsis
 
 ### Objective
@@ -30,10 +66,12 @@
 - Password Validation
 - Multi-Factor Authentication
 - Account Creation/Recovery
-- Domain Registration
+- User Created Website Download
+<!--
+- Domain Registration 
 - AWS Integration
 - Mobile Friendly Design
-
+-->
 ### Stack
 <h4 align="center">Front End</h3>
 
@@ -58,15 +96,19 @@
 - Docker
 - MySQL
 - Wordpress
-  
+
 <div align="center">
 <h4>Hosting Platform</h3>
-    
+<h5>Local Server</h5>
+
+</div>
+
+<!--  I don't know what image there is to portray a local server    
 <img src="https://logos-world.net/wp-content/uploads/2021/08/Amazon-Web-Services-AWS-Logo.png" style="width:150px; height:100px"></img>
 </div>
 
 - Amazon Web Services
-
+-->
 ### Current User Flow
 
 ![image](https://github.com/user-attachments/assets/1b809178-848f-4968-a760-f7a8caf27f5d)
@@ -74,25 +116,183 @@
 
 ## Deployment
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<h4>System Requirements</h4>
+- Docker Desktop - v28.5.1
+
+<h4>Deployment Information</h4>
+
+This application was designed to be deployed on physical hardware and thus was used with containerization from docker.
+
+Our application is composed of 6 containers created and orchestrated with Docker Compose.
+
+If this application were to be deployed on another machine, virtual or otherwise the following steps and restrictions need to be followed and considered.
+
+<h4>Application default configuration</h4>
+
+<h5>Ports used (External)<h5>
+
+- 3306
+- 8080
+- 3000
+- 3307
+- 8000
+
+<h5>Disk Usage<h5>
+
+- Virtual = 4.83 GB
+
+- Approximate Physical ~= 7-8 GB
+
+<h4>Steps to deploy</h4>
+
+<h5>1. Server Prerequisites</h5>
+
+- Install Node.js (v18 or higher)
+- Install Docker and Docker Compose
+- Install Git
+- Configure firewall to allow ports:
+  - 80
+  - 443
+  - 3000
+  - 3306
+  - 8000
+  - 8080
+
+<h5>2. Clone Repository</h5>
+
+- SSH into your webserver
+- Clone the repository: `git clone https://github.com/conner-chil32/Blueprint.git`
+- Navigate to project directory: `(cd ./blueprint)`
+
+<h5>3. Environment Configuration</h5>
+
+- Copy .env_example to .env
+- Update environment variables:
+  - Change `ADDRESS` from localhost to your server's domain/IP
+  - Set strong passwords for all database credentials
+  - Update `CONTAINER_NAME` if needed
+
+<h5>4. Build Next.js Application</h5>
+
+- Navigate to ./blueprint directory
+- Run npm install to install dependencies
+- Run npm run build to create production build
+- Verify .next folder is created
+
+<h5>5. Start Docker Services</h5>
+
+- Return to root directory
+- Run docker-compose up -d to start all services:
+  - MySQL database (port 3306)
+  - WordPress database (port 3307)
+  - WordPress (port 8000)
+  - phpMyAdmin (port 8080)
+  - Next.js web app (port 3000)
+
+<h5>6. Database Initialization</h5>
+
+- Wait for Docker containers to fully initialize (~2-3 minutes)
+- Database schemas will be created automatically from `./dbstart scripts`
+- Verify databases are running: `docker ps`
+
+<h5>7. Configure Reverse Proxy (Nginx/Apache)</h5>
+
+- Install Nginx or Apache as reverse proxy
+- Configure proxy to forward:
+  - Port 80/443 → Port 3000 (Next.js app)
+  - Subdomain/path for WordPress → Port 8000
+- Set up SSL certificates
+
+<h5>8. Configure Domain/DNS</h5>
+
+- Point your domain A record to server IP address
+- Configure any subdomains for WordPress if needed
+- Wait for DNS propagation (up to 48 hours)
+
+<h5>9. Production Optimizations</h5>
+
+- Set `NODE_ENV=production` in environment
+- Configure Docker restart policies: restart: unless-stopped
+- Set up log rotation for Docker containers
+- Configure MySQL for production (buffer pools, connections)
+
+<h5>10. Set Up Process Management</h5>
+
+- Configure Docker to start on boot: `systemctl enable docker`
+- Create systemd service for auto-restart
+- Alternative: Use PM2 for Next.js if not using Docker for web app
+
+<h5>11. Security Hardening</h5>
+
+- Disable phpMyAdmin on production (port 8080)
+- Change MySQL root passwords
+- Configure firewall rules (UFW/iptables)
+- Set up fail2ban for SSH protection
+- Enable MySQL only on localhost if not needed externally
+
+<h5>12. Monitoring & Backups</h5>
+
+- Set up health checks for containers
+- Configure automated MySQL backups
+- Set up disk space monitoring
+- Configure log aggregation
+- Set up uptime monitoring
+
+<h5>13. Testing</h5>
+
+- Test Next.js app: `http://$INSERT_DOMAIN$.com`
+- Test WordPress: `http://$INSERT_DOMAIN$:8000`
+- Verify database connections work
+- Test all application features
+
+<h5>14. Ongoing Maintenance</h5>
+
+- Regular security updates: `docker-compose pull && docker-compose up -d`
+- Monitor disk space (MySQL data grows)
+- Review logs regularly: `docker-compose logs`
+- Backup databases before updates
 
 ## Testing
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<h4>System Requirements</h4>
 
-## Development
+- Windows 11
+- Google Chrome, Desktop
+- Node - v22.17.0
+- Docker Desktop - v28.5.1
+- React v19.0.0
+
+<h4>Testing Steps</h4>
+
+CD into …/Blueprint/blueprint
+In the terminal, to install all required packages:
+  - npm install
+    - Note: If the project has errors with modules not found, you may need to cd back into /Blueprint and run npm install again before returning to Blueprint/blueprint.
+To run all frontend tests:
+- npm run test:frontend
+To run a specific test:
+- npm test (filename)
+
+To perform manual testing, you can run the entire project by running docker with this command:
+  - docker-compose up
+From there, wait for all docker containers to spin up. This may take a few minutes.
+You can then head to http://localhost:3000/ and perform testing on any page. When you are finished: 
+1. ctrl+C in your terminal to turn off the server
+2. Run docker-compose down to spin down the containers 
+1. delete the blueprint/lib/db_data file and restore the .htaccess_dummy file
+If you make any changes to the server, be sure to rebuild the containers before spinning up again.
 
 ### Prototype
 
 <div style="display: flex; flex-direction:column">
-  <div style="display: flex; flex-direction:row">
+  <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
     <img src="https://github.com/user-attachments/assets/7765fcf8-6226-4f7c-ad6c-4c6594329a09" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/b3e55218-454e-4c24-a4f5-e5920d2b98e5" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/3818383b-c307-4232-a196-1ccf8b7507b1" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/cf1dfc99-6cbc-4ca9-b48d-e4cdf29be216" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/4985b048-dcd2-4e82-a01a-c22af2ca53bc" style="height:150px; width:190px;"></img>
   </div>
-  <div style="display: flex; flex-direction:row">
+  <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
     <img src="https://github.com/user-attachments/assets/9e0ca395-e956-49c5-97ed-2986cce7c44d" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/b5686c5c-c7d4-4161-b80f-e5597fb7bd03" style="height:150px; width:190px;"></img>
     <img src="https://github.com/user-attachments/assets/6cbdffc1-c1dc-48e3-bb92-d184320f5751" style="height:150px; width:190px;"></img>
@@ -101,36 +301,109 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   </div>
 </div>
 
+### Deployed Site
+
+<div style="display: flex; flex-direction:column">
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between">
+    <div>
+      <img src="./pictures/features.png" style="height:150px; width:190px;" alt="features page" />
+      <p style="text-align:center"><b>Features Page:</b> <br>
+      This is the first page<br>
+      for all new users. It <br>
+      showcases the features <br>
+      of the site in a easy to <br>
+      understand format. <br>
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/pricing.png" style="height:150px; width:190px;" alt="pricing page" />
+      <p style="text-align:center"><b>Pricing Page:</b> <br>
+      This page shows all <br>
+      the prices for the <br>
+      different tiers of the <br>
+      service.
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/login.png" style="height:150px; width:190px;" alt="login page" />
+      <p style="text-align:center"><b>Login Page:</b> <br>
+      This page shows the <br>
+      basic login in page <br>
+      for the user. It directly <br>
+      interfaces with the backend <br>
+      database.
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/account_creation.png" style="height:150px; width:190px;" alt="account creation page" />
+      <p style="text-align:center"><b>Account Creation Page:</b> <br>
+      This page shows the <br>
+      form for creating new <br>
+      accounts. The user information <br>
+      is hashed and stored in the <br>
+      database.
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/account_reccovery.png" style="height:150px; width:190px;" alt="account recovery page" />
+      <p style="text-align:center"><b>Account Recovery Page:</b> <br>
+      If the user cannot remember <br>
+      their account information <br>
+      this page allows the user to <br>
+      change their password thats <br>
+      associated to their account.
+      </p>
+    </div>
+  </div>
+  <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
+    <div>
+      <img src="./pictures/ftu-main.png" style="height:150px; width:190px;" alt="first time user page" />
+      <p style="text-align:center"><b>First Time User Page:</b> <br>
+      After a user logs in <br>
+      they are routed this <br>
+      page so can create <br>
+      their first site.
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/canvas.png" style="height:150px; width:190px;" alt="canvas page" />
+      <p style="text-align:center"><b>Canvas:</b> <br>
+      This page allows the <br>
+      user to create the pages <br>
+      on their site. It has many <br>
+      widgets that allow them to <br>
+      use different building blocks <br>
+      to form their site's pages.
+    </div>
+    <div>
+      <img src="./pictures/admin-backend.png" style="height:150px; width:190px;" alt="admin backend page" />
+      <p style="text-align:center"><b>User Admin:</b> <br>
+      This page allows the user to manage their <br>
+      site. It shows information on how many views <br>
+      they have, and to view the status of their <br>
+      webpage.
+    </div>
+    <div>
+      <img src="./pictures/portal.png" style="height:150px; width:190px;" alt="user created website list page" />
+      <p style="text-align:center"><b>Portal:</b> <br>
+      The portal page is a place for users to <br>
+      view what projects they have. It shows <br>
+      a list of sites that they currently own <br>
+      and allows them to access any of them <br>
+      more easily.
+    </div>
+    <div>
+      <img src="./pictures/wordpress.png" style="height:150px; width:190px;" alt="wordpress backend page" />
+      <p style="text-align:center"><b>Wordpress Backend:</b> <br>
+      The wordpress backend serves as a <br>
+      template and connection point for <br>
+      the rest of the site. It functions <br>
+      as an entrance point for the <br>
+      Wordpress API.
+    </div>
+  </div>
+</div>
+
 ### Database ERD
 
 ![image](https://github.com/user-attachments/assets/11cfbb86-722a-4df7-b889-8118f6a5782b)
-
-
-
-
-## Timeline
-### Sprint 5 milestones:
-- The Canvas page will have basic functionality.
-- At the very least a blank but working website page will be capable of being created.
-- The foundation for widgets will be set up.
-- The login system will be at least partially implemented, with pages working.
-
-### Sprint 6 milestones:
-- Database implementation will be in its later stages, with all login information stored.
-- The Canvas Page will contain a collection of basic widgets, like buttons, links, and asthetics.
-
-### Sprint 7 milestones:
-- Websites and user information can be stored on the database.
-- The Canvas page will have more complex widgets, namely video players.
-
-### Sprint 8 milestones:
-- Testing and continued platform integration.
-- All websites will be mobile-compatible.
-
-### Sprint 9 milestones:
-- Major bugs tested for and fixed.
-
-### Sprints 10 milestones:
-- Database deployed on AWS.
-- All pages deployed on Github Pages.
-- Docker fully up and running.

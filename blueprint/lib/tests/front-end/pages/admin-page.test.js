@@ -2,6 +2,14 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import React from 'react'
 import AdminView from '@/app/admin-page/page'
 
+// Mock fetch to prevent API errors
+global.fetch = jest.fn(() =>
+    Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ success: true, userList: [] })
+    })
+);
+
 describe('Admin Home Page', () => {
     test('Checking if navbar loads', () =>{
         render(<AdminView />);
@@ -44,9 +52,10 @@ describe('Admin Home Page', () => {
     test('Checking if Admin Actions buttons load',()=>{
         render(<AdminView />);
         expect(screen.getByRole('button',{name:"Delete account"})).toBeInTheDocument();
-        expect(screen.getByRole('button',{name:"Temporarily ban user"})).toBeInTheDocument();
-        expect(screen.getByRole('button',{name:"Permanently ban user"})).toBeInTheDocument();
+        expect(screen.getByRole('button',{name:"Ban user"})).toBeInTheDocument();
+        expect(screen.getByRole('button',{name:"Login history"})).toBeInTheDocument();
         expect(screen.getByRole('button',{name:"Add note"})).toBeInTheDocument();
+        expect(screen.getByRole('button',{name:"Add Account"})).toBeInTheDocument();
     });
     test('Checking if Modify Account textbox loads',()=>{
         render(<AdminView />);
