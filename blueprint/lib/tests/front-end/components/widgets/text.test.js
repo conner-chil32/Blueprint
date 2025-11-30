@@ -1,16 +1,7 @@
 import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { Text } from "@/components/widgets/Text";
-
-// Mock the Widget so we can detect its render and children
-jest.mock("@/components/widgets/Widget.js", () => ({
-  Widget: ({ children, style, onDoubleClick }) => (
-    <div data-testid="widget" style={style} onDoubleClick={onDoubleClick}>
-      {children}
-    </div>
-  ),
-}));
+import { Text } from "@/components/widgets/Text.jsx";
 
 describe("Text", () => {
   test("renders inside the canvas with default content", () => {

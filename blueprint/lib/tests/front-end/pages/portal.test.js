@@ -1,5 +1,13 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import Portal from '@/app/portal/page'
+
+// Mock fetch to return empty sites array
+global.fetch = jest.fn(() =>
+    Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ sites: [] })
+    })
+);
 
 describe('User Portal',()=>{
     test('Checking navbar loads',()=>{
@@ -7,11 +15,10 @@ describe('User Portal',()=>{
         expect(screen.getByAltText('blueprint logo',{exact:false})).toBeInTheDocument();
     });
 
-    test('Checking headings load',()=>{
+    test('Checking table header loads',()=>{
         render(<Portal />);
         
-        expect(screen.getByRole('heading',{name:'Welcome'})).toBeInTheDocument();
-        expect(screen.getByRole('heading',{name:'Your Websites'})).toBeInTheDocument();
+        expect(screen.getByRole('columnheader',{name:'Website Preview image'})).toBeInTheDocument();
     });
 
     test('Checking buttons load',()=>{

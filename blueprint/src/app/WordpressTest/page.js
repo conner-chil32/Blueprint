@@ -1,18 +1,27 @@
-// Fetch blog pages via WordPress REST API. Should return the first page that you make in Wordpress http://localhost:8000/wp-admin/edit.php?post_type=page
-async function getPageData() {
-  const res = await fetch('http://localhost:8000/wp-json/wp/v2/pages');
-  if (!res.ok) {
-    throw new Error('Failed to fetch WordPress content');
-  }
-  const data = await res.json();
-  return data[0]; // Get the first page from the array
-}
+"use client";
 
-export default async function WPTestPage() {
-  const data = await getPageData();
+import { useEffect, useState } from 'react';
+
+export default function WPTestPage() {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/wp-json/wp/v2/pages')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch WordPress content');
+        return res.json();
+      })
+      .then(pages => setData(pages[0]))
+      .catch(() => setError(true));
+  }, []);
+
+  if (error) {
+    return <p>Error: Unable to load WordPress content.</p>;
+  }
 
   if (!data || !data.title || !data.content) {
-    return <p>Error: Unable to load WordPress content.</p>;
+    return <p>Loading...</p>;
   }
 
   return (

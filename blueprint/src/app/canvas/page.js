@@ -2,8 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
-
-import Navbar from "../components/navbar";
+import blog from "./templates/blog.json"
 import { Canvas } from './Canvas';
 import { LeftPanel } from './LeftPanel';
 import { RightPanel } from './RightPanel';
@@ -19,34 +18,65 @@ import History from "./HistoryManager";
  */
 export default function CanvasPage() {
   // Pages, each containing widgets
-  const [pages, setPages] = useState([{ id: 0, name: "Page 0", width: 800, height: 600, backgroundColor: '#ffffff', widgets: [] }]);
+  const [pages, setPages] = useState([blog]);
   const [selectedPageID, setSelectedPageID] = useState(0);
   const [nextPageID, setNextPageID] = useState(1);
   // .find() searches through each element of an array for a matching value
   const currentPage = pages.find((page) => page.id === selectedPageID);
 
-  // Import a JSON file and replace the entire pages array.
+  // Import a JSON file - either a single page (appends) or entire project (replaces all pages).
   const importPagesFromJSON = (imported) => {
     try {
-      const pagesArr = Array.isArray(imported) ? imported : (imported && Array.isArray(imported.pages) ? imported.pages : null);
-      if (!Array.isArray(pagesArr)) {
-        throw new Error("JSON must be an array of pages or an object with a 'pages' array.");
+      // Check if this is a single page object (has widgets property but not pages property)
+      const isSinglePage = imported && 
+                           !Array.isArray(imported) && 
+                           !imported.pages && 
+                           (imported.widgets !== undefined || imported.name !== undefined);
+      
+      if (isSinglePage) {
+        // Import single page - append to existing pages
+        const newPage = {
+          id: nextPageID,
+          name: (typeof imported.name === 'string' && imported.name.trim()) ? imported.name : `Page ${nextPageID}`,
+          width: imported.width != null ? imported.width : 800,
+          height: imported.height != null ? imported.height : 600,
+          backgroundColor: imported.backgroundColor || '#ffffff',
+          widgets: Array.isArray(imported.widgets) ? imported.widgets : [],
+        };
+        
+        setPages([...pages, newPage]);
+        setSelectedPageID(newPage.id);
+        setNextPageID(nextPageID + 1);
+        console.log("✅ Imported single page:", newPage.name);
+        recordState && recordState();
+        
+        // Flag that we should save to temp.json after state updates
+        shouldSaveAfterImport.current = true;
+      } else {
+        // Import entire project - replace all pages
+        const pagesArr = Array.isArray(imported) ? imported : (imported && Array.isArray(imported.pages) ? imported.pages : null);
+        if (!Array.isArray(pagesArr)) {
+          throw new Error("JSON must be a single page object, an array of pages, or an object with a 'pages' array.");
+        }
+        const normalized = pagesArr.map((p, idx) => ({
+          id: typeof p.id === 'number' ? p.id : idx,
+          name: (typeof p.name === 'string' && p.name.trim()) ? p.name : `Page ${idx}`,
+          width: p && p.width != null ? p.width : 800,
+          height: p && p.height != null ? p.height : 600,
+          backgroundColor: (p && p.backgroundColor) || '#ffffff',
+          widgets: Array.isArray(p && p.widgets) ? p.widgets : [],
+        }));
+        setPages(normalized);
+        const firstId = normalized.length > 0 ? normalized[0].id : 0;
+        setSelectedPageID(firstId);
+        const maxId = normalized.reduce((m, pg) => (typeof pg.id === 'number' ? Math.max(m, pg.id) : m), -1);
+        setNextPageID(maxId + 1);
+        console.log("✅ Imported project with", normalized.length, "pages");
+        recordState && recordState();
+        
+        // Flag that we should save to temp.json after state updates
+        shouldSaveAfterImport.current = true;
       }
-      const normalized = pagesArr.map((p, idx) => ({
-        id: typeof p.id === 'number' ? p.id : idx,
-        name: (typeof p.name === 'string' && p.name.trim()) ? p.name : `Page ${idx}`,
-        width: p && p.width != null ? p.width : 800,
-        height: p && p.height != null ? p.height : 600,
-        backgroundColor: (p && p.backgroundColor) || '#ffffff',
-        widgets: Array.isArray(p && p.widgets) ? p.widgets : [],
-      }));
-      setPages(normalized);
-      const firstId = normalized.length > 0 ? normalized[0].id : 0;
-      setSelectedPageID(firstId);
-      const maxId = normalized.reduce((m, pg) => (typeof pg.id === 'number' ? Math.max(m, pg.id) : m), -1);
-      setNextPageID(maxId + 1);
-      console.log("✅ Imported pages from JSON:", normalized.length, "pages");
-      recordState && recordState();
     } catch (err) {
       console.error("❌ Failed to import pages JSON:", err);
     }
@@ -87,6 +117,9 @@ export default function CanvasPage() {
 
   // Ref to hold the savePagesToJSON function
   const savePagesToJSONRef = useRef(null);
+  
+  // Flag to trigger temp.json save after import
+  const shouldSaveAfterImport = useRef(false);
 
   // Helper function to get cookie value by name
   const getCookieValue = (name) => {
@@ -144,6 +177,18 @@ export default function CanvasPage() {
   useEffect(() => {
     loadTempJSON();
   }, []);
+
+  /** Save to temp.json after import completes
+   * This effect triggers when pages change and shouldSaveAfterImport flag is set
+   */
+  useEffect(() => {
+    if (shouldSaveAfterImport.current) {
+      shouldSaveAfterImport.current = false;
+      const userId = getCookieValue('UserCookie');
+      console.log('💾 Auto-saving to temp.json after import');
+      savePagesToJSONRef.current?.(userId, "temp");
+    }
+  }, [pages]);
 
   /** Christopher Parsons 10/11/2025
    * Keep varState updated with the current state's values.
@@ -352,9 +397,9 @@ export default function CanvasPage() {
    */
   const saveToDatabase = async () => {
     try {
-    //   const userId = getCookieValue('UserCookie') || '1';
+      //   const userId = getCookieValue('UserCookie') || '1';
       const siteID = getCookieValue('CurrentSite') || '1';
-      
+
       // TODO: Replace '%SITEID%' with actual site ID
       console.log(pages[0]);
       const response = await fetch(`api/website?site_id=${siteID}`, {
@@ -675,11 +720,11 @@ export default function CanvasPage() {
           loop: false,
           muted: true,
           autoplay: true,
-          controls: true,
+          controls: false,
           objectFit: "contain",
         };
         break;
-      
+
       case 'dropdown':
         newWidget = {
           type: "dropdown",
@@ -812,7 +857,7 @@ export default function CanvasPage() {
           selectedValue: "Menu Item 1", // Default to the first item
         };
         break;
-      
+
       case 'html':
         newWidget = {
           type: 'html',
@@ -831,7 +876,7 @@ export default function CanvasPage() {
           html: "<div style='padding:12px;border:2px dashed #555;background:#fafafa;border-radius:8px'>Inline <b>HTML</b> works here.</div>",
           sandbox: false, // toggle to true for iframe isolation
         };
-      break;
+        break;
       default:
         console.warn("Warning: Unknown widget type: " + typeToMake);
         return;
@@ -905,7 +950,6 @@ export default function CanvasPage() {
 
   return (
     <>
-      <Navbar /> {/* <-- RENDERED NAVBAR */}
 
       <div className={styles.bodyContainer}>
 
@@ -921,7 +965,7 @@ export default function CanvasPage() {
 
         <main className={styles.centerColumn}>
           {/* Page navigation bar above the canvas */}
-          <header className={styles.pageNavBar} style={{ top: '70px' }}>
+          <header className={styles.pageNavBar}>
             <PageNavigation
               pages={pages}
               selectedPageID={selectedPageID}
@@ -1051,7 +1095,10 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
         console.error("❌ Failed to import pages JSON:", err);
         alert("Invalid JSON file. Please select a valid JSON export.");
       }
-      e.target.value = "";
+      // Reset input value to allow re-importing the same file
+      if (e.target) {
+        e.target.value = "";
+      }
     };
     input.click();
   };
@@ -1059,7 +1106,7 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
 
   return (
     <div className={styles.pageNavContainer}>
-      <div className={styles.pageList}>
+      <div className={styles.leftControls}>
         <button
           type="button"
           className={styles.importIcon}
@@ -1067,48 +1114,57 @@ function PageNavigation({ pages, selectedPageID, setSelectedPageID, createPage, 
           title="Import pages from JSON"
           aria-label="Import pages from JSON"
         >
-          📥
+          📥Import
         </button>
-        {pages.map((page) => (
-          <div
-            key={page.id}
-            className={`${styles.pageTab} ${page.id === selectedPageID ? styles.pageTabActive : ""}`}
-            onMouseDown={() => {
-              if (editingId !== page.id) setSelectedPageID(page.id);
-            }}
-          >
-            {editingId === page.id ? (
-              <input
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                onBlur={() => saveEdit(page.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") saveEdit(page.id);
-                  if (e.key === "Escape") setEditingId(null);
-                }}
-                autoFocus
-                className={styles.pageEditInput}
-              />
-            ) : (
-              <span onDoubleClick={() => startEdit(page)}>{page.name}</span>
-            )}
-            <span
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                handleDelete(page.id);
+      </div>
+
+      <div className={styles.pageScroller}>
+        <div className={styles.pageList}>
+          {pages.map((page) => (
+            <div
+              key={page.id}
+              className={`${styles.pageTab} ${page.id === selectedPageID ? styles.pageTabActive : ""}`}
+              onMouseDown={() => {
+                if (editingId !== page.id) setSelectedPageID(page.id);
               }}
-              className={styles.deleteIcon}
             >
-              🗑️
-            </span>
-          </div>
-        ))}
+              {editingId === page.id ? (
+                <input
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  onBlur={() => saveEdit(page.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveEdit(page.id);
+                    if (e.key === "Escape") setEditingId(null);
+                  }}
+                  autoFocus
+                  className={styles.pageEditInput}
+                />
+              ) : (
+                <span className={styles.pageTabLabel} onDoubleClick={() => startEdit(page)}>{page.name}</span>
+              )}
+              <span
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  handleDelete(page.id);
+                }}
+                className={styles.deleteIcon}
+              >
+                🗑️
+              </span>
+            </div>
+          ))}
+
+        </div>
+      </div>
+
+      <div className={styles.rightControls}>
         <button onClick={createPage} className={styles.newPageButton}>
           + New Page
         </button>
-      </div>
-      <div className={styles.saveStatus}>
-        {isSaved ? "✓ Saved" : "● Unsaved changes"}
+        <div className={styles.saveStatus}>
+          {isSaved ? "✓ Saved" : "● Unsaved changes"}
+        </div>
       </div>
     </div>
   );

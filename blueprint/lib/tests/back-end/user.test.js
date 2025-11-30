@@ -8,7 +8,10 @@ import { User } from '../../user.js';
 import { Website } from '../../website.js';
 import { validateConnection, commit } from '../../utility.js';
 import * as userQueries from '../../userQueries.js';
+import { jest } from '@jest/globals';
 import bcrypt from 'bcrypt';
+jest.useFakeTimers();
+
 export class TestRunner {
   constructor(name) {
     this.name = name;
@@ -21,6 +24,7 @@ export class TestRunner {
       failed: 0
     };
   }
+
 
   beforeEach(fn) {
     this.beforeEachFns.push(fn);

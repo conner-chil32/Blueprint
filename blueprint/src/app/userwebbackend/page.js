@@ -104,12 +104,10 @@ export default function UserWebBackend() {
 /*
 import styles from './UserWebBackend.module.css';
 import Link from 'next/link';
-import Navbar from '../components/navbar'; // relative path might need adjusting
 
 export default function UserWebBackend() {
   return (
     <>
-      <Navbar />
       <div className={styles.wrapper}>
         {/* Back Button *//*}
         <Link href="/">

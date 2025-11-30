@@ -1,67 +1,96 @@
-import { getSitesByUser } from "../../../lib/siteQueries";
 import Navbar from "../components/navbar";
 import styles from "./page.module.css";
+import { getSitesByUser } from "@lib/siteQueries";
+import { cookies } from "next/headers"; // Import to read cookies
+import { redirect } from "next/navigation"; // Import to handle redirects
 
 /**
- * This is now an async Server Component.
- * It will fetch data on the server before rendering the page.
+ * Portal Page (Server Component)
+ * - Protects the route: Redirects to /login if no user cookie exists.
+ * - Dynamic Data: Fetches websites for the *logged-in* user.
  */
 export default async function PortalPage() {
+    // 1. Get the cookies from the request
+    const cookieStore = cookies();
+    
+    // 2. Check for the 'UserCookie' your team sets in login/route.js
+    const userCookie = cookieStore.get('UserCookie');
 
-    // TODO: Get the real user ID from a session or cookie
-    // For now, we'll use a placeholder '1'
-    const userId = 1;
+    // 3. SECURITY: If the cookie is missing, kick them back to login
+    if (!userCookie) {
+        redirect('/login');
+    }
 
-    // Fetch the user's websites using the function from siteQueries.js
+    // 4. Get the real User ID from the cookie value
+    const userId = userCookie.value;
+
+    // 5. Fetch the REAL websites for this user
     let websites = [];
     try {
-        // We use `getSitesByUser` as required by the task
         websites = await getSitesByUser(userId);
     } catch (error) {
         console.error("Failed to fetch websites:", error);
-        // Don't crash the page; just show an empty list
     }
 
     return (
         <div>
-            {/* The Navbar floats on top, so we add padding to the content below */}
             <Navbar />
-
-            <div id="websites">
-                <div className={styles.tableContainer}>
-                    <table className={styles.table}>
-                        {
-
-                            <tbody>
-                                <tr>
-                                    <th rowSpan="3" align="center" className={styles.tableHeader}>Website Preview image</th>
-                                    <td className={styles.tableData}>Statistics</td>
-                                    <td className={styles.tableData}>
-                                        <Link href="/api/website?site_id=1">
-                                            <button className={styles.linkButton}>
-                                                Website
-                                            </button>
-                                        </Link>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className={styles.tableData}>Status</td>
-                                    <td className={styles.tableData}>
-                                        <Link href="/userwebbackend">
-                                            <button className={styles.linkButton}>
-                                                Website Backend
-                                            </button>
-                                            <a href="#" className={styles.actionButton}>
-                                                Website Details
-                                            </a>
-                                        </Link>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        }
-                    </table>
+            
+            <div style={{ paddingTop: '70px' }}>
+                
+                {/* User Bar */}
+                <div className={styles.userBar}>
+                    <span>Logged in as: User #{userId}</span>
+                    <a href="/api/logout" className={styles.logOutButton}>
+                        Log Out
+                    </a>
                 </div>
-            </div> {/* This closes the new paddingTop div */}
+
+                {/* Main Content */}
+                <div className={styles.portalContainer}>
+                    <div id="welcome">
+                        <h1 className={styles.largeTitleText}>Welcome</h1> 
+                        <h2 className={styles.mediumTitleText}>Your Websites</h2> 
+                    </div>
+                    
+                    {/* Dynamic Website List */}
+                    <div className={styles.websiteList}>
+                        {websites.length > 0 ? (
+                            websites.map(site => (
+                                <div key={site.siteID} className={styles.websiteCard}>
+                                    <div className={styles.websitePreview}>
+                                        Website Preview
+                                    </div>
+                                    <div className={styles.websiteInfo}>
+                                        <h3>{site.websiteName}</h3>
+                                        <p>Website Status: Live</p>
+                                        <p>Description: {site.description || "No description."}</p>
+                                    </div>
+                                    <div className={styles.websiteActions}>
+                                        <a href={`/api/website/${site.siteID}`} className={styles.actionButton}>
+                                            Change Website
+                                        </a>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p>You don't have any websites yet.</p>
+                        )}
+                    </div>
+
+                    {/* Create Button */}
+                    <div className={styles.createButtonContainer}>
+                        
+                        <form action="/api/create-website" method="POST">
+                            {/* Pass the userId hidden so the API knows who owns the new site */}
+                            <input type="hidden" name="userId" value={userId} />
+                            <button type="submit" className={styles.createButton}>
+                                Create New Website
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

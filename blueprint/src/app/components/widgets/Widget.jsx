@@ -98,6 +98,7 @@ export function Widget({ staticRender = false, id, x, y, width, height, isSelect
         {/* Widget container */}
         <div
           key={id}
+          data-testid="widget"
           style={{
             position: 'relative',
             transform: `rotate(${rotation || 0}deg)`,
