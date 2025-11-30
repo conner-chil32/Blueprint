@@ -2,6 +2,14 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import React from 'react'
 import AdminView from '@/app/admin-page/page'
 
+// Mock fetch to prevent API errors
+global.fetch = jest.fn(() =>
+    Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ success: true, userList: [] })
+    })
+);
+
 describe('Admin Home Page', () => {
     test('Checking if navbar loads', () =>{
         render(<AdminView />);
