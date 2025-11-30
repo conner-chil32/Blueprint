@@ -305,16 +305,58 @@ If you make any changes to the server, be sure to rebuild the containers before 
 
 <div style="display: flex; flex-direction:column">
   <div style="display: flex; flex-wrap: wrap; justify-content: space-between">
-    <img src="./pictures/features.png" style="height:150px; width:190px;" alt="features page" /> <!-- I have no idea how the original images were stored -->
-    <img src="./pictures/pricing.png" style="height:150px; width:190px;" alt="pricing page" />
-    <img src="./pictures/login.png" style="height:150px; width:190px;" alt="login page" />
-    <img src="./pictures/account_creation.png" style="height:150px; width:190px;" alt="account creation page" />
-    <img src="" style="height:150px; width:190px;" alt="account recovery page" />
+    <div>
+      <img src="./pictures/features.png" style="height:150px; width:190px;" alt="features page" />
+      <p style="text-align:center"><b>Features Page:</b> <br>
+      This is the first page<br>
+      for all new users. It <br>
+      showcases the features <br>
+      of the site in a easy to <br>
+      understand format. <br>
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/pricing.png" style="height:150px; width:190px;" alt="pricing page" />
+      <p style="text-align:center"><b>Pricing Page:</b> <br>
+      This page shows all <br>
+      the prices for the <br>
+      different tiers of the <br>
+      service.
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/login.png" style="height:150px; width:190px;" alt="login page" />
+      <p style="text-align:center"><b>Login Page:</b> <br>
+      This page shows the <br>
+      basic login in page <br>
+      for the user. It directly <br>
+      interfaces with the backend <br>
+      database.
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/account_creation.png" style="height:150px; width:190px;" alt="account creation page" />
+      <p style="text-align:center"><b>Account Creation Page:</b> <br>
+      This page shows the <br>
+      form for creating new <br>
+      accounts. The user information <br>
+      is hashed and stored in the <br>
+      database.
+    </div>
+    <div>
+      <img src="./pictures/account_reccovery.png" style="height:150px; width:190px;" alt="account recovery page" />
+      <p style="text-align:center"><b>Account Recovery Page:</b> <br>
+      If the user cannot remember <br>
+      their account information <br>
+      this page allows the user to <br>
+      change their password thats <br>
+      associated to their account.
+    </div>
   </div>
   <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
-    <img src="" style="height:150px; width:190px;" alt="first time user page" />
+    <img src="./pictures/ftu-main.png" style="height:150px; width:190px;" alt="first time user page" />
     <img src="./pictures/canvas.png" style="height:150px; width:190px;" alt="canvas page" />
-    <img src="" style="height:150px; width:190px;" alt="admin backend page" />
+    <img src="./pictures/admin-backend.png" style="height:150px; width:190px;" alt="admin backend page" />
     <img src="" style="height:150px; width:190px;" alt="user created website list page" />
     <img src="" style="height:150px; width:190px;" alt="user website stats page" />
     <img src="" style="height:150px; width:190px;" alt="wordpress backend page" />
