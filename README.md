@@ -342,6 +342,7 @@ If you make any changes to the server, be sure to rebuild the containers before 
       accounts. The user information <br>
       is hashed and stored in the <br>
       database.
+      </p>
     </div>
     <div>
       <img src="./pictures/account_reccovery.png" style="height:150px; width:190px;" alt="account recovery page" />
@@ -351,15 +352,32 @@ If you make any changes to the server, be sure to rebuild the containers before 
       this page allows the user to <br>
       change their password thats <br>
       associated to their account.
+      </p>
     </div>
   </div>
   <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
-    <img src="./pictures/ftu-main.png" style="height:150px; width:190px;" alt="first time user page" />
-    <img src="./pictures/canvas.png" style="height:150px; width:190px;" alt="canvas page" />
+    <div>
+      <img src="./pictures/ftu-main.png" style="height:150px; width:190px;" alt="first time user page" />
+      <p style="text-align:center"><b>First Time User Page:</b> <br>
+      After a user logs in <br>
+      they are routed this <br>
+      page so can create <br>
+      their first site.
+      </p>
+    </div>
+    <div>
+      <img src="./pictures/canvas.png" style="height:150px; width:190px;" alt="canvas page" />
+      <p style="text-align:center"><b>Canvas:</b> <br>
+      This page allows the <br>
+      user to create the pages <br>
+      on their site. It has many <br>
+      widgets that allow them to <br>
+      use different building blocks <br>
+      to form their site's pages
+    </div>
     <img src="./pictures/admin-backend.png" style="height:150px; width:190px;" alt="admin backend page" />
-    <img src="" style="height:150px; width:190px;" alt="user created website list page" />
-    <img src="" style="height:150px; width:190px;" alt="user website stats page" />
-    <img src="" style="height:150px; width:190px;" alt="wordpress backend page" />
+    <img src="./pictures/portal.png" style="height:150px; width:190px;" alt="user created website list page" />
+    <img src="./pictures/wordpress.png" style="height:150px; width:190px;" alt="wordpress backend page" />
   </div>
 </div>
 
