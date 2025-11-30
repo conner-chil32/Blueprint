@@ -7,7 +7,7 @@ exclude:
 
 # Theme settings:
 site_author: Carlos Pereira Atencio
-repo_url: "https://github.com/conner-chil32/Blueprint"
+repo_url: "https://github.com/POG-Web-LLC/Blueprint"
 edit_on_github: true
 github_docs_folder: true
 sticky_navigation: true
