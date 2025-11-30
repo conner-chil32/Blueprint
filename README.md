@@ -306,14 +306,14 @@ If you make any changes to the server, be sure to rebuild the containers before 
 <div style="display: flex; flex-direction:column">
   <div style="display: flex; flex-wrap: wrap; justify-content: space-between">
     <img src="./pictures/features.png" style="height:150px; width:190px;" alt="features page" /> <!-- I have no idea how the original images were stored -->
-    <img src="" style="height:150px; width:190px;" alt="pricing page" />
-    <img src="" style="height:150px; width:190px;" alt="login page" />
-    <img src="" style="height:150px; width:190px;" alt="account creation page" />
+    <img src="./pictures/pricing.png" style="height:150px; width:190px;" alt="pricing page" />
+    <img src="./pictures/login.png" style="height:150px; width:190px;" alt="login page" />
+    <img src="./pictures/account_creation.png" style="height:150px; width:190px;" alt="account creation page" />
     <img src="" style="height:150px; width:190px;" alt="account recovery page" />
   </div>
   <div style="display: flex; flx-wrap: wrap; justify-content: space-between">
     <img src="" style="height:150px; width:190px;" alt="first time user page" />
-    <img src="" style="height:150px; width:190px;" alt="canvas page" />
+    <img src="./pictures/canvas.png" style="height:150px; width:190px;" alt="canvas page" />
     <img src="" style="height:150px; width:190px;" alt="admin backend page" />
     <img src="" style="height:150px; width:190px;" alt="user created website list page" />
     <img src="" style="height:150px; width:190px;" alt="user website stats page" />
