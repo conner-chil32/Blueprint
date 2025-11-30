@@ -2,7 +2,6 @@
 
 
 //import { Main } from "next/document"; Causing errors
-import Navbar from "../components/navbar";  // Import the Navbar component
 import styles from "./FTU.module.css"; // Import FTU.modules.css for styling
 
 export default function RawHTMLPage() {
@@ -19,40 +18,43 @@ export default function RawHTMLPage() {
 
         {/* Integrate the top bar component */}
         <div className="topBarBackground">
-            <Navbar />
         </div>
         
-        <div className={`${styles.body} ${styles.content}`}>
-            <h1 className={`${styles.h1}`}>Get Started On <br /> Your Website!</h1>
-            <h1><br /></h1>
-            <p className={`${styles.p}`}>With Blueprint, you will be on your way to creating your dream website in no time.</p>
-            <h1><br /></h1>
+        <div className={styles.body}>
+            
+            <div className={`${styles.content}`}>
+                <h1 className={`${styles.h1}`}>Get Started On <br /> Your Website!</h1>
+                <h1><br /></h1>
+                <p className={`${styles.p}`}>With Blueprint, you will be on your way to creating your dream website in no time.</p>
+                <h1><br /></h1>
 
-            <form action="/api/website" method="POST">
-                <input type="text" id="name" name="name"></input>
-                <button className={`${styles.createButton}`}>
-                    Create New Website<br />
-                    <b>+</b>
-                </button>
-            </form>
+                <form action="/api/website" method="POST">
+                    <input type="text" id="name" name="name"></input>
+                    <button className={`${styles.createButton}`}>
+                        Create New Website<br />
+                        <b>+</b>
+                    </button>
+                </form>
 
-            {/* Button to open WordPress Dashboard */}
-            <div style={{ marginTop: "2rem" }}>
-                <button
-                    onClick={handleOpenWordPress}
-                    style={{
-                        backgroundColor: "#0073aa",
-                        color: "#fff",
-                        padding: "0.75rem 1.5rem",
-                        border: "none",
-                        borderRadius: "5px",
-                        fontSize: "1rem",
-                        cursor: "pointer"
-                    }}
-                >
-                    Open WordPress Dashboard
-                </button>
+                {/* Button to open WordPress Dashboard */}
+                <div style={{ marginTop: "2rem" }}>
+                    <button
+                        onClick={handleOpenWordPress}
+                        style={{
+                            backgroundColor: "#0073aa",
+                            color: "#fff",
+                            padding: "0.75rem 1.5rem",
+                            border: "none",
+                            borderRadius: "5px",
+                            fontSize: "1rem",
+                            cursor: "pointer"
+                        }}
+                    >
+                        Open WordPress Dashboard
+                    </button>
+                </div>
             </div>
+                
         </div>
     </>
     );

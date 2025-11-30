@@ -1,208 +1,277 @@
 /* Body Container */
 .bodyContainer {
-    display: grid;
-    /* 15% width for the left, 1fr for the center, 15% for the right */
-    grid-template-columns: 15% 1fr 15%;
-    height: calc(100vh - 70px);
-    width: 100%;
-    margin-top: 70px;
-    background: transparent; /*  Let global gradient show through */
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .bodyContainer::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: transparent;
-    z-index: 0;
-    pointer-events: none;
-  }
-  
-  .sidePanel {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    padding: 20px;
-    position: relative;
-    background: transparent;
-    backdrop-filter: blur(4px);
-    border: none;
-    z-index: 1;
-  }
-  
-  /* Left & Right Panel Borders */
-  .leftPanel {
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .rightPanel {
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Center Canvas Area */
-  .centerColumn {
-    grid-column: 2;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    background: transparent;
-    min-width: 0;
-    z-index: 1;
-  }
-  
-  /* Canvas container */
-  .canvasArea {
-    position: relative;
-    border: 2px dashed rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.02); /* faint glass feel */
-    backdrop-filter: blur(6px);
-    width: 100%;
-    height: 100%;
-    border-radius: 12px;
-    transition: border-color 0.3s ease;
-  }
-  
-  .canvasArea:hover {
-    border-color: var(--accent);
-  }
-  
-  /* Center view */
-  .canvasView {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    place-items: center;
-    position: relative;
-  }
-  
-  .pageNavBar {
-    position: sticky;
-    top: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.04); /* faint translucent bar */
-    backdrop-filter: blur(5px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 0;
-    z-index: 10;
-  }
-  
-  /* Page Nav Buttons */
-  .pageNavBar button {
-    background: linear-gradient(90deg, var(--accent), var(--light-blue));
-    color: black;
-    border: none;
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-left: 10px;
-    transition: transform 0.2s ease, box-shadow 0.3s ease;
-  }
-  
-  .pageNavBar button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 12px rgba(114, 211, 96, 0.3);
-  }
-  
-  .sectionTitle {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-  }
-  
-  .categoryItem {
-    display: block;
-    width: 100%;
-    padding: 10px 14px;
-    margin: 4px 0;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.9);
-    text-align: left;
-    cursor: move;
-    transition: background 0.2s ease, transform 0.2s ease;
-  }
-  
-  .categoryItem:hover {
-    background: rgba(255, 255, 255, 0.12);
-    transform: translateX(4px);
-  }
-  
-  .divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 16px 0;
-  }
-  
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  /* Responsive */
-  @media (max-width: 1000px) {
-    .bodyContainer {
-      grid-template-columns: 18% 1fr;
-    }
-    .rightPanel {
-      display: none;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .bodyContainer {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr;
-    }
-    .leftPanel {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      width: 100%;
-      height: auto;
-      flex-direction: row;
-      overflow-x: auto;
-      backdrop-filter: blur(8px);
-    }
+  display: grid;
+  /* 15% width for the left, 1fr for the center, 15% for the right */
+  grid-template-columns: 15% 1fr 15%;
+  height: calc(100vh - 70px);
+  width: 100%;
+  margin-top: 70px;
+  background: transparent;
+  /*  Let global gradient show through */
+  position: relative;
+  overflow: hidden;
+}
+
+.bodyContainer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px;
+  position: relative;
+  background: transparent;
+  backdrop-filter: blur(4px);
+  border: none;
+  z-index: 1;
+}
+
+:global([data-theme="light"]) .sidePanel {
+  background: color-mix(in srgb, var(--card-bg) 70%, transparent);
+  border: none;
+  backdrop-filter: blur(6px);
+}
+
+/* Left & Right Panel Borders */
+.leftPanel {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="light"]) .leftPanel {
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.rightPanel {
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="light"]) .rightPanel {
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Center Canvas Area */
+.centerColumn {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  background: transparent;
+  min-width: 0;
+  z-index: 1;
+}
+
+/* Canvas container */
+.canvasArea {
+  position: relative;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.02);
+  /* faint glass feel */
+  backdrop-filter: blur(6px);
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  transition: border-color 0.3s ease;
+  overflow: auto;
+}
+
+:global([data-theme="light"]) .canvasArea {
+  border: 2px dashed rgba(0, 0, 0, 0.18);
+  background: color-mix(in srgb, var(--card-bg) 35%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+.canvasArea:hover {
+  border-color: var(--accent);
+}
+
+/* Center view */
+.canvasView {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.pageNavBar {
+  position: sticky;
+  top: 0;
+  display: block;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  /* faint translucent bar */
+  backdrop-filter: blur(5px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 12px;
+  z-index: 10;
+}
+
+:global([data-theme="light"]) .pageNavBar {
+  background: color-mix(in srgb, #000 6%, transparent);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Page Nav Buttons */
+.pageNavBar button {
+  background: linear-gradient(90deg, var(--accent), var(--light-blue));
+  color: black;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.pageNavBar button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(114, 211, 96, 0.3);
+}
+
+.sectionTitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.categoryItem {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  margin: 4px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  text-align: left;
+  cursor: move;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.categoryItem:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateX(4px);
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 16px 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
 
-  /* ---- Page Navigation Styling ---- */
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .bodyContainer {
+    grid-template-columns: 18% 1fr;
+  }
+
+  .rightPanel {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .bodyContainer {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .leftPanel {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* ---- Page Navigation Styling ---- */
 .pageNavContainer {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr auto;
+  min-width: 0;
+}
+
+.leftControls,
+.rightControls {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  min-width: max-content;
+  flex: 0 0 auto;
+  gap: 12px;
+}
+
+.pageScroller {
+  min-width: 0;
   overflow-x: auto;
-  padding: 10px 0;
+  overflow-y: hidden;
+  scrollbar-gutter: stable both-edges;
 }
 
 .pageList {
   display: flex;
   align-items: center;
-  overflow-x: auto;
+  gap: 10px;
+  width: max-content;
+  white-space: nowrap;
 }
 
 .pageTab {
-  margin: 0 10px;
-  padding: 6px 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 6px 10px;
+  gap: 6px;
+  margin: 0;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   color: rgba(255, 255, 255, 0.8);
   font-weight: 400;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   transition: all 0.2s ease;
 }
 
+:global([data-theme="light"]) .pageTab {
+  background: color-mix(in srgb, var(--card-bg) 75%, transparent);
+  color: var(--card-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
 .pageTab:hover {
   background: rgba(255, 255, 255, 0.15);
+}
+
+:global([data-theme="light"]) .pageTab:hover {
+  background: color-mix(in srgb, var(--card-bg) 85%, transparent);
 }
 
 .pageTabActive {
@@ -210,6 +279,20 @@
   color: #000;
   font-weight: 600;
   box-shadow: 0 0 8px rgba(114, 211, 96, 0.3);
+}
+
+:global([data-theme="light"]) .pageTabActive {
+  color: #101010;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.pageTabLabel {
+  display: inline-block;
+  /* Max characters before truncation */
+  max-width: 14ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pageEditInput {
@@ -237,7 +320,6 @@
   cursor: pointer;
   border: none;
   background: transparent;
-  margin-left: 6px;
   font-size: 16px;
   line-height: 1;
   transition: transform 0.2s ease, color 0.2s ease;
@@ -269,12 +351,12 @@
   box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
 }
 
-.saveStatus {
-  margin-left: auto;
+.rightControls .saveStatus {
   padding-right: 20px;
   font-size: 14px;
   color: var(--accent);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 /* ---- Right Panel Polished Theme ---- */
@@ -291,6 +373,12 @@
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
+:global([data-theme="light"]) .widgetPanel {
+  background: color-mix(in srgb, var(--card-bg) 70%, transparent);
+  color: var(--card-text);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.03);
+}
+
 .widgetHeader {
   text-align: center;
   font-size: 1rem;
@@ -299,6 +387,10 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 10px;
+}
+
+:global([data-theme="light"]) .widgetHeader {
+  color: var(--accent);
 }
 
 .widgetContent {
@@ -323,7 +415,7 @@
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.08);
-  color: white;
+  color: var(--card-text);
   font-size: 0.85rem;
   outline: none;
   transition: border 0.2s ease, background 0.2s ease;
@@ -489,3 +581,71 @@
   box-shadow: 0 0 10px rgba(114, 211, 96, 0.3);
 }
 
+/* Modifications for light mode */
+
+:global([data-theme="light"]) .widgetContent p,
+:global([data-theme="light"]) .sectionTitle,
+:global([data-theme="light"]) .pageSettingsGroup label {
+  color: color-mix(in srgb, var(--card-text) 85%, #000 15%);
+}
+
+:global([data-theme="light"]) .widgetContent input[type="text"],
+:global([data-theme="light"]) .widgetContent input[type="number"],
+:global([data-theme="light"]) .widgetContent select,
+:global([data-theme="light"]) .widgetContent textarea,
+:global([data-theme="light"]) .pageSettingsGroup input[type="number"],
+:global([data-theme="light"]) .pageSettingsGroup select,
+:global([data-theme="light"]) .pageEditInput {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: var(--card-text);
+}
+
+:global([data-theme="light"]) .widgetContent input[type="text"]:focus,
+:global([data-theme="light"]) .widgetContent input[type="number"]:focus,
+:global([data-theme="light"]) .widgetContent select:focus,
+:global([data-theme="light"]) .widgetContent textarea:focus,
+:global([data-theme="light"]) .pageSettingsGroup input[type="number"]:focus,
+:global([data-theme="light"]) .pageSettingsGroup select:focus,
+:global([data-theme="light"]) .pageEditInput:focus {
+  border-color: color-mix(in srgb, var(--accent) 70%, #000 30%);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:global([data-theme="light"]) .divider,
+:global([data-theme="light"]) .pageSettingsDivider {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme="light"]) .pageNavBar button,
+:global([data-theme="light"]) .newPageButton,
+:global([data-theme="light"]) .downloadButton,
+:global([data-theme="light"]) .widgetContent button,
+:global([data-theme="light"]) .switchButton {
+  color: #101010;
+  text-shadow: 0 0 0 transparent;
+}
+
+:global([data-theme="light"]) .rightControls .saveStatus {
+  color: color-mix(in srgb, var(--accent) 80%, #000 20%);
+}
+
+:global([data-theme="light"]) .deleteIcon {
+  color: rgba(0, 0, 0, 0.55);
+}
+:global([data-theme="light"]) .deleteIcon:hover {
+  color: var(--accent);
+}
+
+.widgetContent select option,
+.widgetContent select optgroup,
+.pageSettingsGroup select option,
+.pageSettingsGroup select optgroup {
+  color: #000;
+  background: #fff;
+}
+
+:global([data-theme="light"]) .widgetContent label,
+:global([data-theme="light"]) .pageSettingsGroup label {
+  color: var(--card-text);
+}

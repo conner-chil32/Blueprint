@@ -6,8 +6,6 @@ import Navbar from "../components/navbar";
 import styles from "./page.module.css";
 
 export default function PortalPage() {
-    const [websites, setWebsites] = useState([]);
-    const userId = 1; // TODO: Get from session/cookie
 
     useEffect(() => {
         // Fetch websites from API route instead of direct database access
@@ -19,10 +17,10 @@ export default function PortalPage() {
             });
     }, [userId]);
 
-    return (
-        <div>
-            {/* The Navbar floats on top, so we add padding to the content below */}
-            <Navbar />
+      {/* Top bar */}
+      <div className={styles.userBar}>
+        <span>Welcome to your Portal</span>
+      </div>
 
             <div id="websites">
                 <div className={styles.tableContainer}>
@@ -64,5 +62,15 @@ export default function PortalPage() {
                 </div>
             </div>
         </div>
-    );
+      </div>
+
+      {/* Button to create website */}
+      <div className={styles.createButtonContainer}>
+        <Link href="/canvas">
+          <button className={styles.createButton}>Create Website</button>
+        </Link>
+      </div>
+      
+    </div>
+  );
 }

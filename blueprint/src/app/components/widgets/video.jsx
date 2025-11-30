@@ -7,7 +7,7 @@ export function Video(props) {
         id,
         videoUrl = "",
         autoplay = true,
-        controls = true,
+        controls = false,
         loop = false,
         muted = true,
         objectFit = "contain",

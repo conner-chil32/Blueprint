@@ -55,6 +55,7 @@ describe('Admin Home Page', () => {
         expect(screen.getByRole('button',{name:"Ban user"})).toBeInTheDocument();
         expect(screen.getByRole('button',{name:"Login history"})).toBeInTheDocument();
         expect(screen.getByRole('button',{name:"Add note"})).toBeInTheDocument();
+        expect(screen.getByRole('button',{name:"Add Account"})).toBeInTheDocument();
     });
     test('Checking if Modify Account textbox loads',()=>{
         render(<AdminView />);
