@@ -305,7 +305,7 @@ If you make any changes to the server, be sure to rebuild the containers before 
 
 <div style="display: flex; flex-direction:column">
   <div style="display: flex; flex-wrap: wrap; justify-content: space-between">
-    <img src="" style="height:150px; width:190px;" alt="features page" /> <!-- I have no idea how the original images were stored -->
+    <img src="https://github.com/conner-chil32/Blueprint/pictures/features.png" style="height:150px; width:190px;" alt="features page" /> <!-- I have no idea how the original images were stored -->
     <img src="" style="height:150px; width:190px;" alt="pricing page" />
     <img src="" style="height:150px; width:190px;" alt="login page" />
     <img src="" style="height:150px; width:190px;" alt="account creation page" />
