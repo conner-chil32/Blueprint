@@ -373,11 +373,31 @@ If you make any changes to the server, be sure to rebuild the containers before 
       on their site. It has many <br>
       widgets that allow them to <br>
       use different building blocks <br>
-      to form their site's pages
+      to form their site's pages.
     </div>
-    <img src="./pictures/admin-backend.png" style="height:150px; width:190px;" alt="admin backend page" />
-    <img src="./pictures/portal.png" style="height:150px; width:190px;" alt="user created website list page" />
-    <img src="./pictures/wordpress.png" style="height:150px; width:190px;" alt="wordpress backend page" />
+    <div>
+      <img src="./pictures/admin-backend.png" style="height:150px; width:190px;" alt="admin backend page" />
+      This page allows the user to manage their <br>
+      site. It shows information on how many views <br>
+      they have, and to view the status of their <br>
+      webpage.
+    </div>
+    <div>
+      <img src="./pictures/portal.png" style="height:150px; width:190px;" alt="user created website list page" />
+      The portal page is a place for users to <br>
+      view what projects they have. It shows <br>
+      a list of sites that they currently own <br>
+      and allows them to access any of them <br>
+      more easily.
+    </div>
+    <div>
+      <img src="./pictures/wordpress.png" style="height:150px; width:190px;" alt="wordpress backend page" />
+      The wordpress backend serves as a <br>
+      template and connection point for <br>
+      the rest of the site. It functions <br>
+      as an entrance point for the <br>
+      Wordpress API.
+    </div>
   </div>
 </div>
 
