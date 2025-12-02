@@ -30,11 +30,11 @@ Contact Information:
 ### Christopher Parsons
 Contact Information:
  - Email: bomrr12@gmail.com
- - LinkedIn: www.linkedin.com/in/christopher-parsons-599723256
+ - LinkedIn: https://www.linkedin.com/in/christopher-parsons-599723256/
 ### Aaron Goodlund
 Contact Information:
  - Email: agoodlund229@gmail.com
- - LinkedIn: www.linkedin.com/in/aaron-goodlund-18011617a
+ - LinkedIn: https://www.linkedin.com/in/aaron-goodlund-18011617a/
 ### Lydell Jones
 Contact Information:
  - Email: lydell1233@gmail.com
@@ -42,7 +42,7 @@ Contact Information:
 ### Jacob Francis
 Contact Information:
  - Email: jacobfrancisr1@gmail.com
- - LinkedIn: linkedin.com/in/jfncs
+ - LinkedIn: https://www.linkedin.com/in/jfncs/
 ### David Vigil
 Contact Information:
  - Email: dvigil658@gmail.com
@@ -50,7 +50,7 @@ Contact Information:
 ### Angel Ramirez
 Contact Information:
  - Email: angelr050103@gmail.com
- - LinkedIn: linkedin.com/in/angelramirez003
+ - LinkedIn: https://linkedin.com/in/angelramirez003/
 ### Alex Miller
 Contact Information:
  - Email: 
